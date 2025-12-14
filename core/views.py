@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
@@ -10,6 +11,7 @@ from .models import (
     HealthRecord, Medicine, Prescription, MentalHealthLog,
     InsurancePolicy, LifestyleLog, ActivityLog, SystemSettings
 )
+from .forms import MedicineForm, HealthRecordForm, PrescriptionForm
 
 def home(request):
     if request.user.is_authenticated:
@@ -46,24 +48,25 @@ def medicines(request):
 @login_required
 def add_medicine(request):
     if request.method == 'POST':
-        Medicine.objects.create(
-            user=request.user,
-            name=request.POST.get('name'),
-            dosage=request.POST.get('dosage'),
-            frequency=request.POST.get('frequency'),
-            start_date=request.POST.get('start_date'),
-            end_date=request.POST.get('end_date') or None,
-            prescribed_by=request.POST.get('prescribed_by', ''),
-            notes=request.POST.get('notes', ''),
-        )
-        ActivityLog.objects.create(
-            user=request.user,
-            action='medicine_added',
-            details=f"Added medicine: {request.POST.get('name')}"
-        )
-        messages.success(request, 'Medicine added successfully')
-        return redirect('medicines')
-    return render(request, 'core/add_medicine.html')
+        form = MedicineForm(request.POST)
+        if form.is_valid():
+            medicine = form.save(commit=False)
+            medicine.user = request.user
+            medicine.save()
+            ActivityLog.objects.create(
+                user=request.user,
+                action='medicine_added',
+                details=f"Added medicine: {medicine.name}"
+            )
+            messages.success(request, 'Medicine added successfully')
+            return redirect('medicines')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}')
+    else:
+        form = MedicineForm()
+    return render(request, 'core/add_medicine.html', {'form': form})
 
 @login_required
 def health_track(request):
@@ -74,25 +77,25 @@ def health_track(request):
 @login_required
 def add_health_record(request):
     if request.method == 'POST':
-        HealthRecord.objects.create(
-            user=request.user,
-            blood_pressure_systolic=request.POST.get('bp_systolic') or None,
-            blood_pressure_diastolic=request.POST.get('bp_diastolic') or None,
-            blood_sugar=request.POST.get('blood_sugar') or None,
-            weight=request.POST.get('weight') or None,
-            heart_rate=request.POST.get('heart_rate') or None,
-            temperature=request.POST.get('temperature') or None,
-            oxygen_level=request.POST.get('oxygen_level') or None,
-            notes=request.POST.get('notes', ''),
-        )
-        ActivityLog.objects.create(
-            user=request.user,
-            action='record_added',
-            details='Added new health record'
-        )
-        messages.success(request, 'Health record added successfully')
-        return redirect('health_track')
-    return render(request, 'core/add_health_record.html')
+        form = HealthRecordForm(request.POST)
+        if form.is_valid():
+            record = form.save(commit=False)
+            record.user = request.user
+            record.save()
+            ActivityLog.objects.create(
+                user=request.user,
+                action='record_added',
+                details='Added new health record'
+            )
+            messages.success(request, 'Health record added successfully')
+            return redirect('health_track')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}')
+    else:
+        form = HealthRecordForm()
+    return render(request, 'core/add_health_record.html', {'form': form})
 
 @login_required
 def mental_health(request):
@@ -113,23 +116,25 @@ def prescriptions(request):
 @login_required
 def add_prescription(request):
     if request.method == 'POST':
-        Prescription.objects.create(
-            user=request.user,
-            doctor_name=request.POST.get('doctor_name'),
-            hospital_name=request.POST.get('hospital_name', ''),
-            diagnosis=request.POST.get('diagnosis'),
-            prescription_date=request.POST.get('prescription_date'),
-            follow_up_date=request.POST.get('follow_up_date') or None,
-            notes=request.POST.get('notes', ''),
-        )
-        ActivityLog.objects.create(
-            user=request.user,
-            action='prescription_added',
-            details=f"Added prescription from {request.POST.get('doctor_name')}"
-        )
-        messages.success(request, 'Prescription added successfully')
-        return redirect('prescriptions')
-    return render(request, 'core/add_prescription.html')
+        form = PrescriptionForm(request.POST, request.FILES)
+        if form.is_valid():
+            prescription = form.save(commit=False)
+            prescription.user = request.user
+            prescription.save()
+            ActivityLog.objects.create(
+                user=request.user,
+                action='prescription_added',
+                details=f"Added prescription from {prescription.doctor_name}"
+            )
+            messages.success(request, 'Prescription added successfully')
+            return redirect('prescriptions')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}')
+    else:
+        form = PrescriptionForm()
+    return render(request, 'core/add_prescription.html', {'form': form})
 
 @login_required
 def lifestyle(request):
@@ -262,7 +267,26 @@ def admin_approve_user(request, user_id):
     user = get_object_or_404(User, id=user_id)
     user.is_approved = True
     user.save()
+    ActivityLog.objects.create(
+        user=request.user,
+        action='user_approved',
+        details=f'Approved user: {user.username}'
+    )
     messages.success(request, f'User {user.username} has been approved')
+    return redirect('admin_users')
+
+@login_required
+@user_passes_test(is_admin)
+def admin_reject_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    username = user.username
+    user.delete()
+    ActivityLog.objects.create(
+        user=request.user,
+        action='user_rejected',
+        details=f'Rejected and deleted user: {username}'
+    )
+    messages.success(request, f'User {username} has been rejected and removed')
     return redirect('admin_users')
 
 @login_required
@@ -272,6 +296,11 @@ def admin_delete_user(request, user_id):
     if request.method == 'POST':
         username = user.username
         user.delete()
+        ActivityLog.objects.create(
+            user=request.user,
+            action='user_deleted',
+            details=f'Deleted user: {username}'
+        )
         messages.success(request, f'User {username} has been deleted')
         return redirect('admin_users')
     return render(request, 'admin_panel/confirm_delete.html', {'profile_user': user})
@@ -319,10 +348,25 @@ def admin_reports(request):
     
     user_type_distribution = User.objects.values('user_type').annotate(count=Count('id'))
     
+    reg_labels = [item['date'].strftime('%Y-%m-%d') for item in user_registrations]
+    reg_data = [item['count'] for item in user_registrations]
+    
+    health_labels = [item['month'].strftime('%b %Y') if item['month'] else 'Unknown' for item in health_records_by_month]
+    health_data = [item['count'] for item in health_records_by_month]
+    
+    type_labels = [item['user_type'] or 'Unknown' for item in user_type_distribution]
+    type_data = [item['count'] for item in user_type_distribution]
+    
     context = {
         'user_registrations': list(user_registrations),
         'health_records_by_month': list(health_records_by_month),
         'user_type_distribution': list(user_type_distribution),
+        'reg_labels_json': json.dumps(reg_labels),
+        'reg_data_json': json.dumps(reg_data),
+        'health_labels_json': json.dumps(health_labels),
+        'health_data_json': json.dumps(health_data),
+        'type_labels_json': json.dumps(type_labels),
+        'type_data_json': json.dumps(type_data),
     }
     return render(request, 'admin_panel/reports.html', context)
 
@@ -336,11 +380,14 @@ def admin_settings(request):
         value = request.POST.get('value')
         description = request.POST.get('description', '')
         
-        SystemSettings.objects.update_or_create(
-            key=key,
-            defaults={'value': value, 'description': description}
-        )
-        messages.success(request, 'Setting saved successfully')
+        if key and value:
+            SystemSettings.objects.update_or_create(
+                key=key,
+                defaults={'value': value, 'description': description}
+            )
+            messages.success(request, 'Setting saved successfully')
+        else:
+            messages.error(request, 'Key and value are required')
         return redirect('admin_settings')
     
     context = {'settings': settings}

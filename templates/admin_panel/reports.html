@@ -60,18 +60,21 @@
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const registrations = {{ user_registrations|safe }};
-    const healthRecords = {{ health_records_by_month|safe }};
-    const userDist = {{ user_type_distribution|safe }};
+    const regLabels = {{ reg_labels_json|safe }};
+    const regData = {{ reg_data_json|safe }};
+    const healthLabels = {{ health_labels_json|safe }};
+    const healthData = {{ health_data_json|safe }};
+    const typeLabels = {{ type_labels_json|safe }};
+    const typeData = {{ type_data_json|safe }};
     
     if (document.getElementById('registrationsChart')) {
         new Chart(document.getElementById('registrationsChart'), {
             type: 'line',
             data: {
-                labels: registrations.map(r => r.date),
+                labels: regLabels,
                 datasets: [{
                     label: 'New Users',
-                    data: registrations.map(r => r.count),
+                    data: regData,
                     borderColor: '#20B2AA',
                     backgroundColor: 'rgba(32, 178, 170, 0.1)',
                     fill: true,
@@ -90,10 +93,10 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(document.getElementById('healthRecordsChart'), {
             type: 'bar',
             data: {
-                labels: healthRecords.map(r => r.month ? new Date(r.month).toLocaleDateString('en', {month: 'short', year: 'numeric'}) : 'N/A'),
+                labels: healthLabels,
                 datasets: [{
                     label: 'Records',
-                    data: healthRecords.map(r => r.count),
+                    data: healthData,
                     backgroundColor: '#17a2b8'
                 }]
             },
@@ -109,9 +112,9 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(document.getElementById('userDistributionChart'), {
             type: 'doughnut',
             data: {
-                labels: userDist.map(u => u.user_type.charAt(0).toUpperCase() + u.user_type.slice(1)),
+                labels: typeLabels.map(t => t.charAt(0).toUpperCase() + t.slice(1)),
                 datasets: [{
-                    data: userDist.map(u => u.count),
+                    data: typeData,
                     backgroundColor: ['#17a2b8', '#28a745', '#6c757d']
                 }]
             },

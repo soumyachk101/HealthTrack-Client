@@ -20,6 +20,7 @@ urlpatterns = [
     path('admin-panel/users/', views.admin_users, name='admin_users'),
     path('admin-panel/users/<int:user_id>/', views.admin_user_detail, name='admin_user_detail'),
     path('admin-panel/users/<int:user_id>/approve/', views.admin_approve_user, name='admin_approve_user'),
+    path('admin-panel/users/<int:user_id>/reject/', views.admin_reject_user, name='admin_reject_user'),
     path('admin-panel/users/<int:user_id>/delete/', views.admin_delete_user, name='admin_delete_user'),
     path('admin-panel/providers/', views.admin_providers, name='admin_providers'),
     path('admin-panel/health-data/', views.admin_health_data, name='admin_health_data'),
