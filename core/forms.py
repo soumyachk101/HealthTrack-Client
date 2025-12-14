@@ -11,7 +11,7 @@ class MedicineForm(forms.ModelForm):
             'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'dosage': forms.TextInput(attrs={'class': 'form-control'}),
-            'frequency': forms.TextInput(attrs={'class': 'form-control'}),
+            'frequency': forms.Select(attrs={'class': 'form-select'}),
             'prescribed_by': forms.TextInput(attrs={'class': 'form-control'}),
             'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
@@ -104,7 +104,7 @@ class InsurancePolicyForm(forms.ModelForm):
     class Meta:
         model = InsurancePolicy
         fields = ['provider_name', 'policy_number', 'policy_type', 'start_date', 'end_date', 
-                  'premium_amount', 'coverage_amount']
+                  'premium_amount', 'coverage_amount', 'document']
         widgets = {
             'provider_name': forms.TextInput(attrs={'class': 'form-control'}),
             'policy_number': forms.TextInput(attrs={'class': 'form-control'}),
@@ -113,4 +113,9 @@ class InsurancePolicyForm(forms.ModelForm):
             'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'premium_amount': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
             'coverage_amount': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'document': forms.FileInput(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['document'].required = False

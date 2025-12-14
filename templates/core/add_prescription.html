@@ -16,7 +16,7 @@
         <div class="dashboard-content">
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
-                    <form method="POST">
+                    <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -41,6 +41,10 @@
                                 <label class="form-label">Follow-up Date</label>
                                 <input type="date" name="follow_up_date" class="form-control">
                             </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Upload Document (Optional)</label>
+                            <input type="file" name="document" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Notes</label>
