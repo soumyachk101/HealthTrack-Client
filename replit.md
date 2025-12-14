@@ -19,10 +19,12 @@ A comprehensive health management platform built with Django and PostgreSQL, fea
 ├── accounts/               # User authentication app
 │   ├── models.py           # User and ServiceProvider models
 │   ├── views.py            # Auth views (login, register)
+│   ├── forms.py            # Login, Register, Profile forms
 │   └── urls.py             # Auth URL routing
 ├── core/                   # Main application
 │   ├── models.py           # Health data models
 │   ├── views.py            # Dashboard and admin views
+│   ├── forms.py            # Medicine, HealthRecord, Prescription forms
 │   └── urls.py             # App URL routing
 ├── templates/              # HTML templates
 │   ├── base.html           # Base template
