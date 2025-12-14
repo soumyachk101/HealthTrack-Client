@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign In | HealthTrack+{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header text-center mb-4">
+            <a href="{% url 'home' %}" class="d-flex align-items-center justify-content-center text-decoration-none mb-3">
+                <img src="{% static 'images/Logo.png' %}" alt="Logo" height="50" class="me-2">
+                <span class="brand-text fs-3">HealthTrack+</span>
+            </a>
+            <h2 class="fw-bold">Welcome Back</h2>
+            <p class="text-muted">Sign in to your account</p>
+        </div>
+
+        {% if messages %}
+        <div class="mb-3">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    <input type="text" name="username" class="form-control form-control-lg" placeholder="Enter username" required>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    <input type="password" name="password" class="form-control form-control-lg" placeholder="Enter password" required>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="remember">
+                    <label class="form-check-label" for="remember">Remember me</label>
+                </div>
+                <a href="{% url 'forgot_password' %}" class="text-primary text-decoration-none">Forgot password?</a>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                <i class="fas fa-sign-in-alt me-2"></i> Sign In
+            </button>
+        </form>
+
+        <div class="text-center">
+            <p class="text-muted mb-2">Don't have an account?</p>
+            <a href="{% url 'register' %}" class="btn btn-outline-primary">Create Account</a>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="text-center">
+            <p class="text-muted small mb-2">Are you a service provider?</p>
+            <a href="{% url 'register_provider' %}" class="text-primary text-decoration-none">Register as Provider</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

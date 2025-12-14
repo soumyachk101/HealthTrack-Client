@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard | HealthTrack+{% endblock %}
+{% block body_class %}dashboard-page{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <img src="{% static 'images/Logo.png' %}" alt="Logo" height="40">
+            <span>HealthTrack+</span>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="{% url 'dashboard' %}" class="nav-link active">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+            <a href="{% url 'medicines' %}" class="nav-link">
+                <i class="fas fa-pills"></i> Medicines
+            </a>
+            <a href="{% url 'health_track' %}" class="nav-link">
+                <i class="fas fa-heartbeat"></i> Health Track
+            </a>
+            <a href="{% url 'mental_health' %}" class="nav-link">
+                <i class="fas fa-brain"></i> Mental Health
+            </a>
+            <a href="{% url 'prescriptions' %}" class="nav-link">
+                <i class="fas fa-file-medical"></i> Prescriptions
+            </a>
+            <a href="{% url 'past_records' %}" class="nav-link">
+                <i class="fas fa-folder-open"></i> Past Records
+            </a>
+            <a href="{% url 'lifestyle' %}" class="nav-link">
+                <i class="fas fa-running"></i> Lifestyle
+            </a>
+            <a href="{% url 'insurance' %}" class="nav-link">
+                <i class="fas fa-shield-alt"></i> Insurance
+            </a>
+            <a href="{% url 'profile' %}" class="nav-link">
+                <i class="fas fa-user"></i> Profile
+            </a>
+        </nav>
+        
+        <a href="{% url 'logout' %}" class="sidebar-logout">
+            <i class="fas fa-sign-out-alt"></i> Log Out
+        </a>
+    </aside>
+    
+    <main class="main-content">
+        <header class="dashboard-header">
+            <h1>Welcome Back, {{ request.user.first_name|default:request.user.username }}</h1>
+            <div class="header-actions">
+                <a href="{% url 'profile' %}" class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </a>
+            </div>
+        </header>
+        
+        <div class="dashboard-content">
+            <section class="hero-card">
+                <h2>Dashboard</h2>
+                <p>Your comprehensive health overview</p>
+            </section>
+            
+            <section class="stats-grid">
+                <div class="stat-card stat-primary">
+                    <div class="stat-icon"><i class="fas fa-heartbeat"></i></div>
+                    <h3>Blood Pressure</h3>
+                    <strong>{% if latest_record and latest_record.blood_pressure_systolic %}{{ latest_record.blood_pressure_systolic }}/{{ latest_record.blood_pressure_diastolic }} mmHg{% else %}--/-- mmHg{% endif %}</strong>
+                    <p>{% if latest_record %}{{ latest_record.bp_status }}{% else %}No data{% endif %}</p>
+                </div>
+                <div class="stat-card stat-info">
+                    <div class="stat-icon"><i class="fas fa-tint"></i></div>
+                    <h3>Blood Sugar</h3>
+                    <strong>{% if latest_record and latest_record.blood_sugar %}{{ latest_record.blood_sugar }} mg/dL{% else %}-- mg/dL{% endif %}</strong>
+                    <p>{% if latest_record.blood_sugar %}Normal{% else %}No data{% endif %}</p>
+                </div>
+                <div class="stat-card stat-success">
+                    <div class="stat-icon"><i class="fas fa-weight"></i></div>
+                    <h3>Weight</h3>
+                    <strong>{% if latest_record and latest_record.weight %}{{ latest_record.weight }} Kg{% else %}-- Kg{% endif %}</strong>
+                    <p>{% if latest_record.weight %}Stable{% else %}No data{% endif %}</p>
+                </div>
+                <div class="stat-card stat-warning">
+                    <div class="stat-icon"><i class="fas fa-heart"></i></div>
+                    <h3>Heart Rate</h3>
+                    <strong>{% if latest_record and latest_record.heart_rate %}{{ latest_record.heart_rate }} bpm{% else %}-- bpm{% endif %}</strong>
+                    <p>{% if latest_record.heart_rate %}Normal{% else %}No data{% endif %}</p>
+                </div>
+            </section>
+            
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h3>Wellness Overview</h3>
+                </div>
+                <div class="wellness-cards">
+                    <div class="wellness-card">
+                        <div class="wellness-icon"><i class="fas fa-pills"></i></div>
+                        <div class="wellness-info">
+                            <span>Active Medicines</span>
+                            <strong>{{ active_medicines }}</strong>
+                        </div>
+                    </div>
+                    <div class="wellness-card">
+                        <div class="wellness-icon"><i class="fas fa-bed"></i></div>
+                        <div class="wellness-info">
+                            <span>Sleep Hours</span>
+                            <strong>{% if latest_lifestyle %}{{ latest_lifestyle.sleep_hours|default:"--" }}{% else %}--{% endif %}</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h3>Recent Activity</h3>
+                    <a href="{% url 'past_records' %}" class="btn btn-outline-primary btn-sm">View All</a>
+                </div>
+                <div class="activity-list">
+                    {% for activity in recent_activities %}
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <span class="activity-title">{{ activity.get_action_display }}</span>
+                            <span class="activity-time">{{ activity.created_at|timesince }} ago</span>
+                        </div>
+                        <span class="activity-detail">{{ activity.details|truncatechars:30 }}</span>
+                    </div>
+                    {% empty %}
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <span class="activity-title">No recent activity</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            
+            <section class="quick-actions">
+                <a href="{% url 'add_health_record' %}" class="action-btn">
+                    <i class="fas fa-plus-circle"></i> Add Health Record
+                </a>
+                <a href="{% url 'add_medicine' %}" class="action-btn">
+                    <i class="fas fa-pills"></i> Add Medicine
+                </a>
+                <a href="{% url 'add_prescription' %}" class="action-btn">
+                    <i class="fas fa-file-medical"></i> Add Prescription
+                </a>
+            </section>
+        </div>
+    </main>
+</div>
+{% endblock %}

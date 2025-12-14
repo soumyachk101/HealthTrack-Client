@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HealthTrack+ | Forgot Password</title>
+  <link rel="stylesheet" href="../assets/css/app.css">
+</head>
+<body class="provider-form-page">
+  <div class="container">
+    <div class="heading">
+      <p>Forgot Password !</p>
+    </div>
+
+    <form onsubmit="return resetPassword()" data-validate="basic">
+      <div class="input-group">
+        <label for="email">E Mail</label>
+        <input type="email" id="email" placeholder="xxxxxxxx@xxx.com" required />
+      </div>
+
+      <div class="input-group">
+        <label for="provider">Service Provider Name</label>
+        <input type="text" id="provider" placeholder="xxxxxx xxxxxx" required />
+      </div>
+
+      <div class="input-group">
+        <label for="otp">Enter OTP</label>
+        <div class="otp-section">
+          <input
+            type="number"
+            id="otp"
+            class="otp-input"
+            placeholder="xxx xxx"
+            required
+          />
+          <div class="resend" onclick="resendOtp()">Resend ?</div>
+        </div>
+      </div>
+
+      
+      <button type="submit" class="submit-btn">Verify & Reset Password</button>
+      <a href="login.html" class="back-link">Back to Login</a>
+    </form>
+  </div>
+
+  <script>
+    function resendOtp() {
+      alert("A new OTP has been sent to your registered email.");
+    }
+
+    function resetPassword() {
+      const email = document.getElementById("email").value.trim();
+      const provider = document.getElementById("provider").value.trim();
+      const otp = document.getElementById("otp").value.trim();
+
+      if (!email || !provider || !otp) {
+        alert("Please fill all fields before submitting!");
+        return false;
+      }
+
+      alert(`OTP verified! Password reset link sent to ${email}`);
+      return false;                                                                                                                                                                                                                                                                              
+    }
+  </script>
+  <script defer src="../assets/js/app.js"></script>
+</body>
+</html>

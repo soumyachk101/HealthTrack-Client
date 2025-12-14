@@ -1,0 +1,126 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% load static %}
+
+{% block title %}Reports | HealthTrack+{% endblock %}
+{% block page_title %}Reports & Analytics{% endblock %}
+
+{% block admin_content %}
+<div class="admin-reports">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">User Registrations (Last 30 Days)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="registrationsChart" height="100"></canvas>
+                </div>
+            </div>
+            
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">Health Records by Month</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="healthRecordsChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">User Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="userDistributionChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">Quick Stats</h5>
+                </div>
+                <div class="card-body">
+                    <div class="quick-stat-item">
+                        <span>Total Registrations (30 days)</span>
+                        <strong>{{ user_registrations|length }}</strong>
+                    </div>
+                    <div class="quick-stat-item">
+                        <span>Average Daily Signups</span>
+                        <strong>{% widthratio user_registrations|length 30 1 %}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const registrations = {{ user_registrations|safe }};
+    const healthRecords = {{ health_records_by_month|safe }};
+    const userDist = {{ user_type_distribution|safe }};
+    
+    if (document.getElementById('registrationsChart')) {
+        new Chart(document.getElementById('registrationsChart'), {
+            type: 'line',
+            data: {
+                labels: registrations.map(r => r.date),
+                datasets: [{
+                    label: 'New Users',
+                    data: registrations.map(r => r.count),
+                    borderColor: '#20B2AA',
+                    backgroundColor: 'rgba(32, 178, 170, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    }
+    
+    if (document.getElementById('healthRecordsChart')) {
+        new Chart(document.getElementById('healthRecordsChart'), {
+            type: 'bar',
+            data: {
+                labels: healthRecords.map(r => r.month ? new Date(r.month).toLocaleDateString('en', {month: 'short', year: 'numeric'}) : 'N/A'),
+                datasets: [{
+                    label: 'Records',
+                    data: healthRecords.map(r => r.count),
+                    backgroundColor: '#17a2b8'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    }
+    
+    if (document.getElementById('userDistributionChart')) {
+        new Chart(document.getElementById('userDistributionChart'), {
+            type: 'doughnut',
+            data: {
+                labels: userDist.map(u => u.user_type.charAt(0).toUpperCase() + u.user_type.slice(1)),
+                datasets: [{
+                    data: userDist.map(u => u.count),
+                    backgroundColor: ['#17a2b8', '#28a745', '#6c757d']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

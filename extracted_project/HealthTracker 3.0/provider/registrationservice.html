@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Service Provider Registration</title>
+  <link rel="stylesheet" href="../assets/css/app.css">
+</head>
+<body class="provider-form-page">
+  <div class="form-hero provider-layout">
+    <section class="info-panel warm">
+      <div class="brand-chip">
+        <img src="../Image/Logo.png" alt="HealthTracker+ logo">
+        <span>HealthTracker+</span>
+      </div>
+      <p class="eyebrow">Join the network</p>
+      <h1>Register your service with HealthTracker+</h1>
+      <p class="lead">
+        Onboard in minutes, manage prescriptions securely, and reach thousands of patients who
+        trust HealthTracker+ for chronic and emergency care.
+      </p>
+      <ul class="benefits-list">
+        <li>Digital prescription &amp; billing</li>
+        <li>Inventory alerts &amp; refill reminders</li>
+        <li>Analytics dashboard for footfall &amp; sales</li>
+      </ul>
+      <div class="badge-grid">
+        <div class="badge">
+          <span>SLA</span>
+          <strong>Go live &lt; 24 hrs</strong>
+        </div>
+        <div class="badge">
+          <span>Support</span>
+          <strong>Dedicated onboarding</strong>
+        </div>
+      </div>
+    </section>
+
+    <div class="form-panel provider-card">
+      <div class="form-heading">
+        <p class="eyebrow">Please register as</p>
+        <h2>Service provider onboarding</h2>
+      </div>
+
+      <div class="role-select elevated">
+        <a href="../Patient/Registration-patient.html" class="role-btn ghost">Patient</a>
+        <a href="registrationservice.html" class="role-btn active">Service Provider</a>
+      </div>
+
+      <div class="progress-dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+
+      <form data-validate="basic">
+        <div class="form-section">
+          <p class="section-label">Business basics</p>
+          <div class="row">
+            <div class="col">
+              <label for="providerName">Provider Name</label>
+              <input type="text" id="providerName" placeholder="Enter provider name" required>
+            </div>
+            <div class="col">
+              <label for="phone">Primary Phone</label>
+              <input type="tel" id="phone" placeholder="+91 99999 99999" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label for="email">Official Email</label>
+              <input type="email" id="email" placeholder="xxxxxxxx@xxx.com" required>
+            </div>
+            <div class="col">
+              <label for="gst">GST / License Number</label>
+              <input type="text" id="gst" placeholder="9999 9999 9999">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <p class="section-label">Location &amp; contact</p>
+          <label for="storeAddress">Store Address</label>
+          <textarea id="storeAddress" rows="2" placeholder="Enter store address"></textarea>
+
+          <div class="row">
+            <div class="col">
+              <label for="state">State</label>
+              <input type="text" id="state" placeholder="Enter state">
+            </div>
+            <div class="col">
+              <label for="district">District</label>
+              <input type="text" id="district" placeholder="Enter district">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <label for="pincode">Pincode</label>
+              <input type="text" id="pincode" placeholder="Enter pincode">
+            </div>
+            <div class="col">
+              <label for="city">City / Village</label>
+              <input type="text" id="city" placeholder="Enter city or village">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <label for="alternateContact">Alternate Contact</label>
+              <input type="tel" id="alternateContact" placeholder="+91 99999 99999">
+            </div>
+            <div class="col">
+              <label for="ownerPhone">Owner Phone Number</label>
+              <input type="tel" id="ownerPhone" placeholder="+91 99999 99999">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <label for="ownerName">Owner Name</label>
+              <input type="text" id="ownerName" placeholder="Enter owner name">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <p class="section-label">Service categories</p>
+          <div class="tag-list">
+            <span class="chip subtle">Medicines</span>
+            <span class="chip subtle">Diagnostics</span>
+            <span class="chip subtle">Tele-consult</span>
+          </div>
+
+          <div class="store-types">
+            <div class="label">Medicine &amp; Consultation</div>
+            <div class="checkbox-group">
+              <label><input type="checkbox" name="storeType" value="chemist"> Chemist &amp; Druggist</label>
+              <label><input type="checkbox" name="storeType" value="doctor1"> Doctor Chamber (1)</label>
+              <label><input type="checkbox" name="storeType" value="doctorMultiple"> Doctor Chamber (&gt;1)</label>
+            </div>
+          </div>
+
+          <div class="store-types">
+            <div class="label">Diagnostic &amp; Lab</div>
+            <div class="checkbox-group">
+              <label><input type="checkbox" name="storeType" value="pathology"> Pathology Lab</label>
+              <label><input type="checkbox" name="storeType" value="diagnostic"> Diagnostic / Imaging Center</label>
+              <label><input type="checkbox" name="storeType" value="sample"> Sample Collection Point</label>
+            </div>
+          </div>
+
+          <div class="store-types">
+            <div class="label">Special Services</div>
+            <div class="checkbox-group">
+              <label><input type="checkbox" name="storeType" value="vaccination"> Vaccination Center</label>
+              <label><input type="checkbox" name="storeType" value="blood"> Blood Donor &amp; Collection</label>
+              <label><input type="checkbox" name="storeType" value="healthCamp"> Health Camp Point</label>
+              <label><input type="checkbox" name="storeType" value="supplements"> Health Products / Supplements</label>
+              <label><input type="checkbox" name="storeType" value="other"> Other Any Specific</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <p class="section-label">Verification</p>
+          <div class="otp-section stacked">
+            <div class="col">
+              <label for="providerOtp">Enter OTP (SMS)</label>
+              <div class="otp-input-group">
+                <input type="text" id="providerOtp" placeholder="XXXXXX">
+                <button
+                  type="button"
+                  class="btn-outline otp-trigger"
+                  data-otp-target="#providerOtp"
+                  data-otp-length="6"
+                  data-otp-contact="#phone"
+                  data-otp-channel="sms"
+                >
+                  Send OTP
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="terms">
+          <input type="checkbox" id="terms" required>
+          <label for="terms">I agree to the Disclaimer &amp; Terms and Conditions</label>
+        </div>
+
+        <button type="submit" class="btn-primary">Start Your Journey</button>
+      </form>
+
+      <div class="link-group two-column">
+        <a href="login.html">Already registered?</a>
+        <a href="forgotService.html">Forgot password?</a>
+      </div>
+    </div>
+  </div>
+  <script defer src="../assets/js/app.js"></script>
+</body>
+</html>

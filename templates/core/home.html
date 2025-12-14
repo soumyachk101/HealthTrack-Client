@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}HealthTrack+ | Your Complete Health Companion{% endblock %}
+{% block body_class %}home-page{% endblock %}
+
+{% block content %}
+<header class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+            <img src="{% static 'images/Logo.png' %}" alt="Logo" height="40" class="me-2">
+            <span class="brand-text">HealthTrack+</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <div class="d-flex gap-2">
+                <a href="{% url 'register' %}" class="btn btn-primary">
+                    <i class="fas fa-user-plus me-1"></i> Register
+                </a>
+                <a href="{% url 'login' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-sign-in-alt me-1"></i> Sign In
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="hero-section py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold mb-4">Comprehensive Health Management Platform</h1>
+                <p class="lead text-muted mb-4">
+                    Track your health metrics, manage medications, store medical records, and access healthcare services 
+                    all in one secure, professional platform designed for modern healthcare needs.
+                </p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4">Get Started</a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg px-4">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cities-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5">Available in Major Cities</h2>
+        <div class="row g-4">
+            <div class="col-md-3 col-6">
+                <div class="city-card card h-100 border-0 shadow-sm">
+                    <img src="{% static 'images/Gemini_Generated_Image_New_Delhi.png' %}" class="card-img-top" alt="New Delhi">
+                    <div class="card-body text-center">
+                        <h5 class="card-title"><i class="fas fa-map-marker-alt text-primary me-2"></i>New Delhi</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="city-card card h-100 border-0 shadow-sm">
+                    <img src="{% static 'images/Gemini_Generated_Image_Mumbai.png' %}" class="card-img-top" alt="Mumbai">
+                    <div class="card-body text-center">
+                        <h5 class="card-title"><i class="fas fa-map-marker-alt text-primary me-2"></i>Mumbai</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="city-card card h-100 border-0 shadow-sm">
+                    <img src="{% static 'images/Gemini_Generated_Image_Kolkata.png' %}" class="card-img-top" alt="Kolkata">
+                    <div class="card-body text-center">
+                        <h5 class="card-title"><i class="fas fa-map-marker-alt text-primary me-2"></i>Kolkata</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="city-card card h-100 border-0 shadow-sm">
+                    <img src="{% static 'images/Gemini_Generated_Image_Chennai.jpeg.png' %}" class="card-img-top" alt="Chennai">
+                    <div class="card-body text-center">
+                        <h5 class="card-title"><i class="fas fa-map-marker-alt text-primary me-2"></i>Chennai</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Core Features</h2>
+            <p class="text-muted">Everything you need to manage your health effectively</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card card h-100 border-0 shadow-sm p-4">
+                    <div class="feature-icon bg-primary text-white rounded-3 mb-3">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h5 class="fw-semibold">Monthly Health Tracking</h5>
+                    <p class="text-muted small mb-0">Monitor vital signs including blood pressure, sugar levels, weight, and heart rate with detailed analytics.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card card h-100 border-0 shadow-sm p-4">
+                    <div class="feature-icon bg-primary text-white rounded-3 mb-3">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <h5 class="fw-semibold">Medicine Tracker</h5>
+                    <p class="text-muted small mb-0">Keep track of your medications with smart schedules, dosage reminders, and refill alerts.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card card h-100 border-0 shadow-sm p-4">
+                    <div class="feature-icon bg-primary text-white rounded-3 mb-3">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h5 class="fw-semibold">Mental Health</h5>
+                    <p class="text-muted small mb-0">Track your mental wellbeing with regular check-ins, mood monitoring, and personalized insights.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card card h-100 border-0 shadow-sm p-4">
+                    <div class="feature-icon bg-primary text-white rounded-3 mb-3">
+                        <i class="fas fa-file-medical"></i>
+                    </div>
+                    <h5 class="fw-semibold">Digital Records</h5>
+                    <p class="text-muted small mb-0">Store prescriptions, lab reports, and health documents securely in one centralized location.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="advanced-features py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Advanced Features</h2>
+            <p class="text-muted">Powerful tools for comprehensive health management</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card card h-100 border-0 shadow-sm p-4">
+                    <div class="feature-icon bg-success text-white rounded-3 mb-3">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <h5 class="fw-semibold">Lifestyle Tracking</h5>
+                    <p class="text-muted small mb-0">Maintain diet, sleep cycle, eating habits, and workout routine with intelligent insights.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card card h-100 border-0 shadow-sm p-4">
+                    <div class="feature-icon bg-success text-white rounded-3 mb-3">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h5 class="fw-semibold">Health Insurance</h5>
+                    <p class="text-muted small mb-0">Manage insurance claims, policy details, and coverage information in one dashboard.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card card h-100 border-0 shadow-sm p-4">
+                    <div class="feature-icon bg-success text-white rounded-3 mb-3">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <h5 class="fw-semibold">QR Health Summary</h5>
+                    <p class="text-muted small mb-0">Get your complete health summary instantly - share with doctors in one click.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card card h-100 border-0 shadow-sm p-4">
+                    <div class="feature-icon bg-success text-white rounded-3 mb-3">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h5 class="fw-semibold">Find Nearby Services</h5>
+                    <p class="text-muted small mb-0">Locate the nearest clinics, labs, doctors, and pharmacies with real-time availability.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-3">Ready to Start Your Health Journey?</h2>
+        <p class="mb-4">Join thousands of users who are taking control of their health today</p>
+        <a href="{% url 'register' %}" class="btn btn-light btn-lg px-5">
+            Create Free Account <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+    </div>
+</section>
+
+<footer class="footer py-4 bg-dark text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="d-flex align-items-center">
+                    <img src="{% static 'images/Logo.png' %}" alt="Logo" height="30" class="me-2">
+                    <span class="brand-text">HealthTrack+</span>
+                </div>
+            </div>
+            <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                <a href="#" class="text-white-50 me-3">About Us</a>
+                <a href="#" class="text-white-50 me-3">Privacy Policy</a>
+                <a href="#" class="text-white-50 me-3">Terms of Service</a>
+                <a href="#" class="text-white-50">Contact</a>
+            </div>
+        </div>
+        <hr class="my-3 border-secondary">
+        <p class="text-center text-white-50 mb-0 small">&copy; 2025 HealthTrack+ | All Rights Reserved</p>
+    </div>
+</footer>
+{% endblock %}

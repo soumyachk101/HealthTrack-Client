@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add Health Record | HealthTrack+{% endblock %}
+{% block body_class %}dashboard-page{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+    {% include 'core/partials/sidebar.html' with active='health_track' %}
+    
+    <main class="main-content">
+        <header class="dashboard-header">
+            <h1>Add Health Record</h1>
+        </header>
+        
+        <div class="dashboard-content">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Blood Pressure (Systolic)</label>
+                                <input type="number" name="bp_systolic" class="form-control" placeholder="e.g., 120">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Blood Pressure (Diastolic)</label>
+                                <input type="number" name="bp_diastolic" class="form-control" placeholder="e.g., 80">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Blood Sugar (mg/dL)</label>
+                                <input type="number" step="0.01" name="blood_sugar" class="form-control">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Weight (kg)</label>
+                                <input type="number" step="0.01" name="weight" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Heart Rate (bpm)</label>
+                                <input type="number" name="heart_rate" class="form-control">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Temperature (&deg;F)</label>
+                                <input type="number" step="0.1" name="temperature" class="form-control">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Oxygen Level (%)</label>
+                                <input type="number" name="oxygen_level" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Notes</label>
+                            <textarea name="notes" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Save Record</button>
+                            <a href="{% url 'health_track' %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

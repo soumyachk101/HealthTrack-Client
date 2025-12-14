@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HealthTrack+ | Log In</title>
+  <link rel="stylesheet" href="../assets/css/app.css">
+</head>
+
+<body class="provider-form-page">
+  <div class="form-hero provider-layout">
+    <section class="info-panel warm">
+      <div class="brand-chip">
+        <img src="../Image/Logo.png" alt="HealthTracker+ logo">
+        <span>HealthTracker+</span>
+      </div>
+      <p class="eyebrow">Partner network</p>
+      <h1>Serve patients with confidence</h1>
+      <p class="lead">
+        Manage prescriptions, diagnostics, and tele-consults in one secure platform tailored for
+        hospitals, pharmacies, and clinics across India.
+      </p>
+      <div class="badge-grid">
+        <div class="badge">
+          <span>Verified</span>
+          <strong>PCI compliant</strong>
+        </div>
+        <div class="badge">
+          <span>Support</span>
+          <strong>Dedicated SPOC</strong>
+        </div>
+      </div>
+    </section>
+
+    <div class="form-panel provider-card">
+      <div class="form-heading">
+        <p class="eyebrow">Provider access</p>
+        <h2>Log in to HealthTracker+ Pro</h2>
+      </div>
+
+      <div class="role-select elevated">
+        <a href="../Patient/loginPatient.html" class="role-btn ghost">Patient</a>
+        <a href="login.html" class="role-btn active">Service Provider</a>
+      </div>
+
+      <form data-validate="basic">
+        <div class="chip-stack">
+          <span class="chip">Hospital</span>
+          <span class="chip">Pharmacy</span>
+          <span class="chip">Diagnostic</span>
+        </div>
+
+        <label for="username">Provider name</label>
+        <input type="text" id="username" placeholder="Enter provider / store name" required />
+
+        <label for="password">Password</label>
+        <div class="input-with-action">
+          <input type="password" id="password" placeholder="Enter password" required />
+          <button type="button" class="text-link">Show</button>
+        </div>
+
+        <div class="link-group two-column">
+          <a href="forgotService.html">Forgot password?</a>
+          <a href="registrationservice.html">Need an account?</a>
+        </div>
+
+        <button type="submit" class="btn-primary">Access dashboard</button>
+      </form>
+    </div>
+  </div>
+  <script defer src="../assets/js/app.js"></script>
+</body>
+</html>
+
+

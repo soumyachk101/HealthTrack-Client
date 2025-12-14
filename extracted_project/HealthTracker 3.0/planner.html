@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthTrack+ | Admin Dashboard</title>
+  <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body class="dashboard-page">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">HealthTrack+</div>
+
+      <a href="Admin.html" class="primary-cta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <path d="M9 9h6v6H9z"/>
+        </svg>
+        Admin Dashboard
+      </a>
+
+      <nav>
+        <a href="Admin.html" class="nav-item active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M9 9h6v6H9z"/>
+          </svg>
+          Dashboard
+        </a>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          User Management
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          Service Providers
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          </svg>
+          Registrations
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+          Analytics
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          Reports
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          System Settings
+        </div>
+      </nav>
+
+      <button class="logout-btn">
+        Log Out
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
+    </aside>
+
+    <main class="main">
+      <div class="top-bar">
+        Admin Dashboard
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+
+      <section class="hero-card">
+        <h1>Admin Dashboard</h1>
+        <p>Manage users, monitor system activity, and oversee platform operations</p>
+      </section>
+
+      <section class="stats-grid">
+        <div class="stat-card">
+          <h3>Total Users</h3>
+          <strong>12,458</strong>
+          <p>+234 this month</p>
+        </div>
+        <div class="stat-card">
+          <h3>Active Patients</h3>
+          <strong>8,923</strong>
+          <p>71.6% of total</p>
+        </div>
+        <div class="stat-card">
+          <h3>Service Providers</h3>
+          <strong>3,535</strong>
+          <p>28.4% of total</p>
+        </div>
+        <div class="stat-card">
+          <h3>Pending Approvals</h3>
+          <strong>127</strong>
+          <p>Requires attention</p>
+        </div>
+        <div class="stat-card">
+          <h3>Total Records</h3>
+          <strong>45,892</strong>
+          <p>Health records stored</p>
+        </div>
+        <div class="stat-card">
+          <h3>System Health</h3>
+          <strong>98.5%</strong>
+          <p>All systems operational</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <h2>Pending Registrations . . .</h2>
+          <button class="btn-add">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            View All
+          </button>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Email/Phone</th>
+                <th>Location</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Soumya</td>
+                <td><span class="badge badge-info">Patient</span></td>
+                <td>+91 98765 43210</td>
+                <td>New Delhi</td>
+                <td>27 Sep 2025</td>
+                <td><span class="badge badge-warning">Pending</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="btn-icon" title="Approve">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                    </button>
+                    <button class="btn-icon" title="Reject">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                      </svg>
+                    </button>
+                    <button class="btn-icon" title="View">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>MediCare Pharmacy</td>
+                <td><span class="badge badge-success">Provider</span></td>
+                <td>contact@medicare.com</td>
+                <td>Mumbai</td>
+                <td>26 Sep 2025</td>
+                <td><span class="badge badge-warning">Pending</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="btn-icon" title="Approve">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                    </button>
+                    <button class="btn-icon" title="Reject">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                      </svg>
+                    </button>
+                    <button class="btn-icon" title="View">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Soumya</td>
+                <td><span class="badge badge-info">Patient</span></td>
+                <td>+91 91234 56789</td>
+                <td>Kolkata</td>
+                <td>25 Sep 2025</td>
+                <td><span class="badge badge-warning">Pending</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="btn-icon" title="Approve">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                    </button>
+                    <button class="btn-icon" title="Reject">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                      </svg>
+                    </button>
+                    <button class="btn-icon" title="View">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <h2>Recent User Activity . . .</h2>
+          <div class="filter-bar">
+            <button class="filter-btn active">All</button>
+            <button class="filter-btn">Patients</button>
+            <button class="filter-btn">Providers</button>
+            <button class="filter-btn">Today</button>
+          </div>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Type</th>
+                <th>Action</th>
+                <th>Details</th>
+                <th>Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Soumya</td>
+                <td><span class="badge badge-info">Patient</span></td>
+                <td>Record Added</td>
+                <td>Blood Pressure: 120/80</td>
+                <td>2 hours ago</td>
+                <td><span class="badge badge-success">Active</span></td>
+              </tr>
+              <tr>
+                <td>Dr. Soumya</td>
+                <td><span class="badge badge-success">Provider</span></td>
+                <td>Prescription Created</td>
+                <td>Patient: Soumya</td>
+                <td>5 hours ago</td>
+                <td><span class="badge badge-success">Active</span></td>
+              </tr>
+              <tr>
+                <td>Soumya</td>
+                <td><span class="badge badge-info">Patient</span></td>
+                <td>Medicine Added</td>
+                <td>Aspirin 100mg</td>
+                <td>1 day ago</td>
+                <td><span class="badge badge-success">Active</span></td>
+              </tr>
+              <tr>
+                <td>City Hospital</td>
+                <td><span class="badge badge-success">Provider</span></td>
+                <td>Registration</td>
+                <td>New service provider</td>
+                <td>2 days ago</td>
+                <td><span class="badge badge-warning">Pending</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <h2>System Statistics . . .</h2>
+        </div>
+        <div class="stats-grid stats-grid--compact">
+          <div class="stat-card">
+            <h3>Total Prescriptions</h3>
+            <strong>23,456</strong>
+            <p>This month: 1,234</p>
+          </div>
+          <div class="stat-card">
+            <h3>Medicine Records</h3>
+            <strong>67,890</strong>
+            <p>Active: 12,345</p>
+          </div>
+          <div class="stat-card">
+            <h3>Health Records</h3>
+            <strong>89,234</strong>
+            <p>Last 30 days</p>
+          </div>
+          <div class="stat-card">
+            <h3>Insurance Policies</h3>
+            <strong>5,678</strong>
+            <p>Active policies</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script defer src="assets/js/app.js"></script>
+</body>
+</html>

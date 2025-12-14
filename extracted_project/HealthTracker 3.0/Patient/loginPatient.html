@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HealthTracker+ Login</title>
+  <link rel="stylesheet" href="../assets/css/app.css">
+</head>
+<body class="patient-form-page">
+  <div class="form-hero">
+    <section class="info-panel patient-login-panel">
+      <div class="brand-chip">
+        <img src="../Image/Logo.png" alt="HealthTracker+ logo">
+        <span>HealthTracker+</span>
+      </div>
+      <h1>Care is just one tap away</h1>
+      <p class="lead">
+        Pick up your journey exactly where you left off. Track vitals, medicines, mood,
+        and appointments in one secure place synced across every device.
+      </p>
+      <ul class="insight-card">
+        <li>
+          <div>
+            <strong>Vitals &amp; meds</strong>
+            <span>Auto reminders &amp; refill alerts</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Mood snapshots</strong>
+            <span>Daily check-ins + breathing coach</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Emergency vault</strong>
+            <span>Share history with doctors instantly</span>
+          </div>
+        </li>
+      </ul>
+      <div class="badge-grid">
+        <div class="badge">
+          <span>Upgraded</span>
+          <strong>Wearable sync</strong>
+        </div>
+        <div class="badge">
+          <span>New</span>
+          <strong>Smart alerts</strong>
+        </div>
+      </div>
+    </section>
+
+    <div class="form-panel login-card">
+      <div class="form-heading">
+        <p class="eyebrow">Welcome Back</p>
+        <h2>Log in to HealthTracker+</h2>
+      </div>
+
+      <div class="role-select elevated">
+        <a href="loginPatient.html" class="role-btn active">Patient</a>
+        <a href="../provider/login.html" class="role-btn ghost">Service Provider</a>
+      </div>
+
+      <form data-validate="basic">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" placeholder="+91 99999 99999" required />
+
+        <label for="password">Password</label>
+        <div class="input-with-action">
+          <input type="password" id="password" placeholder="Enter your password" required />
+          <button type="button" class="text-link">Show</button>
+        </div>
+
+        <button type="submit" class="btn-login">Welcome Back!</button>
+
+        <div class="link-group two-column">
+          <a href="forget.html">Forgot Password?</a>
+          <a href="../provider/login.html">Switch to provider</a>
+        </div>
+
+        <p class="form-footnote">
+          New to HealthTracker+? <a href="Registration-patient.html">Create an account</a>
+        </p>
+      </form>
+    </div>
+  </div>
+  <script defer src="../assets/js/app.js"></script>
+</body>
+</html>

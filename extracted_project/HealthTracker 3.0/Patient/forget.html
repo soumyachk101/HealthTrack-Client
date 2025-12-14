@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HealthTracker+ | Forgot Password</title>
+  <link rel="stylesheet" href="../assets/css/app.css">
+</head>
+<body class="patient-form-page">
+  <div class="forgot-container">
+    <h1>Forgot Password !!!</h1>
+    <form data-validate="basic">
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" placeholder="+91 99999 99999" required />
+
+      <label for="security">Security Question</label>
+      <select id="security" required>
+        <option value="">Select a question</option>
+        <option>What is your pet’s name?</option>
+        <option>What is your mother’s maiden name?</option>
+        <option>What is your favorite book?</option>
+        <option>What was the name of your first school?</option>
+      </select>
+
+      <label for="answer">Your Answer</label>
+      <input type="text" id="answer" placeholder="Enter your answer" required />
+
+      <button type="submit" class="btn-submit">Reset Password</button>
+    </form>
+
+    <a href="loginPatient.html" class="back-link">Back to Login</a>
+  </div>
+  <script defer src="../assets/js/app.js"></script>
+</body>
+</html>

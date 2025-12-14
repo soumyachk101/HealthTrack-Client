@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthTracker+ Registration</title>
+  <link rel="stylesheet" href="../assets/css/app.css">
+</head>
+<body class="patient-form-page">
+  <div class="form-hero">
+    <section class="info-panel">
+      <div class="brand-chip">
+        <img src="../Image/Logo.png" alt="HealthTracker+ logo">
+        <span>HealthTracker+</span>
+      </div>
+      <p class="eyebrow">Create Account</p>
+      <h1>Welcome to HealthTracker+</h1>
+      <p class="lead">
+        A personalized record vault, appointment planner, and wellness coach wrapped into one smart
+        experience. Join thousands of West Bengal residents who trust us with their health data.
+      </p>
+      <ul class="benefits-list">
+        <li>Smart vitals tracking &amp; reminders</li>
+        <li>Secure storage for labs, prescriptions, and insurance</li>
+        <li>Faster admission at partnered hospitals</li>
+      </ul>
+    </section>
+
+    <div class="form-panel register-card">
+      <div class="form-heading">
+        <p class="eyebrow">Please register as</p>
+        <h2>Get started in a few steps</h2>
+      </div>
+
+      <div class="role-select elevated">
+        <a href="Registration-patient.html" class="role-btn active">Patient</a>
+        <a href="../provider/registrationservice.html" class="role-btn ghost">Service Provider</a>
+      </div>
+
+      <div class="progress-dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+
+      <form data-validate="basic">
+        <div class="row">
+          <div class="col">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="Enter your full name" required>
+          </div>
+          <div class="col">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" placeholder="+91 99999 99999" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="dob">Date of Birth</label>
+            <input type="date" id="dob" required>
+          </div>
+          <div class="col">
+            <label for="blood">Blood Group</label>
+            <select id="blood" required>
+              <option value="">Select</option>
+              <option>A+</option>
+              <option>A-</option>
+              <option>B+</option>
+              <option>B-</option>
+              <option>AB+</option>
+              <option>AB-</option>
+              <option>O+</option>
+              <option>O-</option>
+            </select>
+          </div>
+        </div>
+
+        <label>Gender</label>
+        <div class="gender-group">
+          <label><input type="radio" name="gender" value="Male"> Male</label>
+          <label><input type="radio" name="gender" value="Female"> Female</label>
+          <label><input type="radio" name="gender" value="Other"> Others</label>
+        </div>
+
+        <label for="address">Residential Address</label>
+        <textarea id="address" rows="2" placeholder="Enter your address"></textarea>
+
+        <div class="row">
+          <div class="col">
+            <label for="state">State</label>
+            <input type="text" id="state" placeholder="Enter your state">
+          </div>
+          <div class="col">
+            <label for="district">District</label>
+            <input type="text" id="district" placeholder="Enter your district">
+          </div>
+          <div class="col">
+            <label for="city">City / Village</label>
+            <select id="city" required>
+              <option value="" disabled selected>Select a West Bengal city</option>
+              <option value="Kolkata">Kolkata</option>
+              <option value="Howrah">Howrah</option>
+              <option value="Salt Lake City">Salt Lake City</option>
+              <option value="Barasat">Barasat</option>
+              <option value="Barrackpore">Barrackpore</option>
+              <option value="Serampore">Serampore</option>
+              <option value="Chandannagar">Chandannagar</option>
+              <option value="Hooghly">Hooghly</option>
+              <option value="Krishnanagar">Krishnanagar</option>
+              <option value="Kalyani">Kalyani</option>
+              <option value="Bardhaman">Bardhaman</option>
+              <option value="Durgapur">Durgapur</option>
+              <option value="Asansol">Asansol</option>
+              <option value="Bolpur">Bolpur</option>
+              <option value="Rampurhat">Rampurhat</option>
+              <option value="Bankura">Bankura</option>
+              <option value="Purulia">Purulia</option>
+              <option value="Medinipur">Medinipur</option>
+              <option value="Kharagpur">Kharagpur</option>
+              <option value="Haldia">Haldia</option>
+              <option value="Contai">Contai</option>
+              <option value="Tamluk">Tamluk</option>
+              <option value="Jhargram">Jhargram</option>
+              <option value="Berhampore">Berhampore</option>
+              <option value="Murshidabad">Murshidabad</option>
+              <option value="Malda">Malda</option>
+              <option value="Raiganj">Raiganj</option>
+              <option value="Balurghat">Balurghat</option>
+              <option value="Siliguri">Siliguri</option>
+              <option value="Jalpaiguri">Jalpaiguri</option>
+              <option value="Alipurduar">Alipurduar</option>
+              <option value="Cooch Behar">Cooch Behar</option>
+              <option value="Darjeeling">Darjeeling</option>
+              <option value="Kalimpong">Kalimpong</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="emergency">Emergency Contact</label>
+            <input type="tel" id="emergency" placeholder="+91 99999 99999">
+          </div>
+        <div class="col">
+          <label for="otp">Enter OTP (SMS)</label>
+          <div class="otp-input-group">
+            <input type="text" id="otp" placeholder="XXXXXX">
+            <button
+              type="button"
+              class="btn-outline otp-trigger"
+              data-otp-target="#otp"
+              data-otp-length="6"
+              data-otp-contact="#phone"
+              data-otp-channel="sms"
+            >
+              Send OTP
+            </button>
+          </div>
+        </div>
+        </div>
+
+        <div class="terms">
+          <input type="checkbox" id="terms" required>
+          <label for="terms">I agree to the Disclaimer & Terms and Conditions</label>
+        </div>
+
+        <button type="submit" class="btn-primary">Start Your Journey</button>
+      </form>
+    </div>
+  </div>
+  <script defer src="../assets/js/app.js"></script>
+</body>
+</html>

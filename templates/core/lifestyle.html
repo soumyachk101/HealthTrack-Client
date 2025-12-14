@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lifestyle | HealthTrack+{% endblock %}
+{% block body_class %}dashboard-page{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+    {% include 'core/partials/sidebar.html' with active='lifestyle' %}
+    
+    <main class="main-content">
+        <header class="dashboard-header">
+            <h1>Lifestyle Tracking</h1>
+        </header>
+        
+        <div class="dashboard-content">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Water Intake</th>
+                                    <th>Exercise</th>
+                                    <th>Steps</th>
+                                    <th>Calories</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in logs %}
+                                <tr>
+                                    <td>{{ log.recorded_at|date:"d M Y" }}</td>
+                                    <td>{{ log.water_intake }} glasses</td>
+                                    <td>{{ log.exercise_minutes }} min</td>
+                                    <td>{{ log.steps_count }}</td>
+                                    <td>{{ log.calories_consumed|default:"-" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">No lifestyle logs yet</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

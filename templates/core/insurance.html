@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Insurance | HealthTrack+{% endblock %}
+{% block body_class %}dashboard-page{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+    {% include 'core/partials/sidebar.html' with active='insurance' %}
+    
+    <main class="main-content">
+        <header class="dashboard-header">
+            <h1>Insurance Policies</h1>
+        </header>
+        
+        <div class="dashboard-content">
+            <div class="stats-row mb-4">
+                <div class="stat-mini">
+                    <i class="fas fa-shield-alt text-success"></i>
+                    <div>
+                        <strong>{{ active_policies }}</strong>
+                        <span>Active Policies</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Provider</th>
+                                    <th>Policy Type</th>
+                                    <th>Policy Number</th>
+                                    <th>Coverage</th>
+                                    <th>Valid Until</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for policy in policies %}
+                                <tr>
+                                    <td>{{ policy.provider_name }}</td>
+                                    <td>{{ policy.get_policy_type_display }}</td>
+                                    <td>{{ policy.policy_number }}</td>
+                                    <td>&#8377;{{ policy.coverage_amount|floatformat:0 }}</td>
+                                    <td>{{ policy.end_date|date:"d M Y" }}</td>
+                                    <td>
+                                        {% if policy.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">Expired</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">No insurance policies added</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
