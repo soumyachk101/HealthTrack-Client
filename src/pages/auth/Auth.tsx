@@ -2,21 +2,23 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { getCookie } from "@/lib/csrf"
 import { Loader2, Sparkles, CheckCircle2, Eye, EyeOff, Mail, Lock, User, MapPin, ArrowRight, Activity, Shield, Heart } from "lucide-react"
 import { cn } from "@/lib/utils"
+// import { getCookie } from "@/lib/csrf" // Not needed for JWT
+import { useNavigate } from "react-router-dom"
 
 type AuthMode = "login" | "register"
 
 export default function Auth() {
+    const navigate = useNavigate()
     const [mode, setMode] = useState<AuthMode>(() => {
         const path = window.location.pathname
         return path.includes('register') ? 'register' : 'login'
     })
     const [isLoading, setIsLoading] = useState(false)
-    const [csrfToken, setCsrfToken] = useState<string>("")
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+    const [errorMessage, setErrorMessage] = useState("")
 
     // Form Data
     const [formData, setFormData] = useState({
@@ -29,16 +31,59 @@ export default function Auth() {
         password2: ""
     })
 
-    useEffect(() => {
-        const token = getCookie("csrftoken")
-        if (token) setCsrfToken(token)
-    }, [])
-
-    const handleSubmit = () => setIsLoading(true)
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target
         setFormData(prev => ({ ...prev, [name]: value }))
+    }
+
+    const API_URL = import.meta.env.VITE_API_URL || ""
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setIsLoading(true)
+        setErrorMessage("")
+
+        try {
+            const endpoint = mode === 'login' ? '/accounts/api/login/' : '/accounts/api/register/'
+            const url = `${API_URL}${endpoint}`
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Authentication failed')
+            }
+
+            if (data.success) {
+                // Store Token
+                localStorage.setItem('token', data.token)
+                localStorage.setItem('user', JSON.stringify(data.user))
+
+                // Redirect
+                if (mode === 'register') {
+                    // Maybe show success message then login? 
+                    // Or auto login (which API does).
+                    navigate('/dashboard')
+                } else {
+                    navigate('/dashboard')
+                }
+            } else {
+                setErrorMessage(data.error || 'Something went wrong')
+            }
+
+        } catch (error: any) {
+            console.error("Auth Error:", error)
+            setErrorMessage(error.message || "Failed to connect to server")
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     const indianStates = [
@@ -117,10 +162,17 @@ export default function Auth() {
                         </button>
                     </div>
 
+                    {/* Error Message */}
+                    {errorMessage && (
+                        <div className="mb-6 p-4 rounded-lg bg-red-50 text-red-600 text-sm border border-red-100 flex items-start gap-2 animate-in fade-in slide-in-from-top-1">
+                            <div className="mt-0.5 min-w-[16px]">⚠️</div>
+                            <p>{errorMessage}</p>
+                        </div>
+                    )}
+
                     {/* Forms */}
                     {mode === 'login' ? (
-                        <form method="POST" action="/accounts/login/" onSubmit={handleSubmit} className="space-y-6">
-                            <input type="hidden" name="csrfmiddlewaretoken" value={csrfToken} />
+                        <form onSubmit={handleSubmit} className="space-y-6">
 
                             {/* Email Field */}
                             <div className="space-y-2">
@@ -131,10 +183,10 @@ export default function Auth() {
                                 <Input
                                     name="username"
                                     required
+                                    value={formData.username}
+                                    onChange={handleChange}
                                     placeholder="Enter your email or username"
                                     className="h-13 px-4 bg-white border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:border-teal-500 focus:ring-teal-500/20 focus:ring-4 transition-all duration-200 shadow-sm hover:border-slate-300"
-                                    
-                                    
                                 />
                             </div>
 
@@ -153,11 +205,11 @@ export default function Auth() {
                                     <Input
                                         name="password"
                                         type={showPassword ? "text" : "password"}
+                                        value={formData.password}
+                                        onChange={handleChange}
                                         required
                                         placeholder="Enter your password"
                                         className="h-13 px-4 pr-12 bg-white border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:border-teal-500 focus:ring-teal-500/20 focus:ring-4 transition-all duration-200 shadow-sm hover:border-slate-300"
-                                        
-                                        
                                     />
                                     <button
                                         type="button"
@@ -185,8 +237,7 @@ export default function Auth() {
                             </Button>
                         </form>
                     ) : (
-                        <form method="POST" action="/accounts/register/" onSubmit={handleSubmit} className="space-y-5">
-                            <input type="hidden" name="csrfmiddlewaretoken" value={csrfToken} />
+                        <form onSubmit={handleSubmit} className="space-y-5">
                             {role && <input type="hidden" name="role" value={role} />}
 
                             {/* Name Fields */}
@@ -203,8 +254,6 @@ export default function Auth() {
                                         required
                                         placeholder="First name"
                                         className="h-12 px-4 bg-white border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:border-teal-500 focus:ring-teal-500/20 focus:ring-4 transition-all duration-200 shadow-sm hover:border-slate-300"
-                                        
-                                        
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -247,69 +296,8 @@ export default function Auth() {
                                     required
                                     placeholder="Enter your email"
                                     className="h-12 px-4 bg-white border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:border-teal-500 focus:ring-teal-500/20 focus:ring-4 transition-all duration-200 shadow-sm hover:border-slate-300"
-                                    
-                                    
                                 />
                             </div>
-
-                            {/* Role Specific Fields */}
-                            {role === 'doctor' && (
-                                <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-2">
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-semibold text-slate-700">Specialization</Label>
-                                        <Input
-                                            name="specialization"
-                                            placeholder="e.g. Cardiologist"
-                                            className="h-12 px-4 bg-blue-50/50 border-blue-200 rounded-xl focus:border-blue-500 focus:ring-blue-500/20 focus:ring-4 transition-all duration-200"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-semibold text-slate-700">Medical Reg. No</Label>
-                                        <Input
-                                            name="registration_number"
-                                            placeholder="MCI-12345"
-                                            className="h-12 px-4 bg-blue-50/50 border-blue-200 rounded-xl focus:border-blue-500 focus:ring-blue-500/20 focus:ring-4 transition-all duration-200"
-                                        />
-                                    </div>
-                                </div>
-                            )}
-
-                            {role === 'service_provider' && (
-                                <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-semibold text-slate-700">Business Name</Label>
-                                        <Input
-                                            name="business_name"
-                                            placeholder="Your Business/Organization Name"
-                                            required
-                                            className="h-12 px-4 bg-emerald-50/50 border-emerald-200 rounded-xl focus:border-emerald-500 focus:ring-emerald-500/20 focus:ring-4 transition-all duration-200"
-                                        />
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label className="text-sm font-semibold text-slate-700">Service Type</Label>
-                                            <select
-                                                name="provider_type"
-                                                required
-                                                className="flex h-12 w-full rounded-xl border border-emerald-200 bg-emerald-50/50 px-4 py-2 text-sm focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all duration-200"
-                                            >
-                                                <option value="pharmacy">Pharmacy</option>
-                                                <option value="lab">Lab / Diagnostic</option>
-                                                <option value="hospital">Hospital</option>
-                                                <option value="clinic">Clinic</option>
-                                            </select>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label className="text-sm font-semibold text-slate-700">License Number</Label>
-                                            <Input
-                                                name="license_number"
-                                                placeholder="LIC-98765"
-                                                className="h-12 px-4 bg-emerald-50/50 border-emerald-200 rounded-xl focus:border-emerald-500 focus:ring-emerald-500/20 focus:ring-4 transition-all duration-200"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
 
                             {/* State */}
                             <div className="space-y-2">
@@ -322,8 +310,6 @@ export default function Auth() {
                                     required
                                     value={formData.state}
                                     onChange={handleChange}
-                                    
-                                    
                                     className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-900 shadow-sm hover:border-slate-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 focus:outline-none transition-all duration-200 appearance-none cursor-pointer"
                                     style={{
                                         backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
@@ -355,15 +341,13 @@ export default function Auth() {
                                             required
                                             placeholder="••••••••"
                                             className="h-12 px-4 pr-12 bg-white border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:border-teal-500 focus:ring-teal-500/20 focus:ring-4 transition-all duration-200 shadow-sm hover:border-slate-300"
-                                            
-                                            
                                         />
                                         <button
                                             type="button"
                                             onClick={() => setShowPassword(!showPassword)}
                                             className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
                                         >
-                                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                            {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                                         </button>
                                     </div>
                                 </div>
