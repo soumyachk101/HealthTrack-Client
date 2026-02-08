@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Auth from './pages/auth/Auth'
 import Dashboard from './pages/core/Dashboard'
 import Medicines from './pages/core/Medicines'
@@ -20,78 +21,37 @@ import DoctorDashboard from './pages/core/DoctorDashboard'
 import ProviderDashboard from './pages/core/ProviderDashboard'
 import './index.css'
 
-const rootElement = document.getElementById('root')
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Auth />} />
+        <Route path="/register" element={<Auth />} />
+        <Route path="/verify-otp" element={<VerifyOTP />} />
 
-if (rootElement) {
-  const page = rootElement.getAttribute('data-page')
-  const root = ReactDOM.createRoot(rootElement)
+        {/* Core Features */}
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
+        <Route path="/provider-dashboard" element={<ProviderDashboard />} />
+        <Route path="/medicines" element={<Medicines />} />
+        <Route path="/health-track" element={<HealthTrack />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/mental-health" element={<MentalHealth />} />
+        <Route path="/lifestyle" element={<Lifestyle />} />
+        <Route path="/insurance" element={<Insurance />} />
+        <Route path="/prescriptions" element={<Prescriptions />} />
+        <Route path="/past-records" element={<PastRecords />} />
 
-  let Component: React.ComponentType = () => <div className="p-10 text-center text-red-500">Page Not Found: {page}</div>
+        {/* Forms */}
+        <Route path="/add-medicine" element={<AddMedicine />} />
+        <Route path="/add-health-record" element={<AddHealthRecord />} />
+        <Route path="/add-prescription" element={<AddPrescription />} />
 
-  switch (page) {
-    case 'Landing':
-      Component = Landing
-      break;
-    case 'Login':
-    case 'Register':
-      Component = Auth
-      break;
-    case 'Dashboard':
-      Component = Dashboard
-      break;
-    case 'DoctorDashboard':
-      Component = DoctorDashboard
-      break;
-    case 'ProviderDashboard':
-      Component = ProviderDashboard
-      break;
-    case 'Medicines':
-      Component = Medicines
-      break;
-    case 'HealthTrack':
-      Component = HealthTrack
-      break;
-    case 'Profile':
-      Component = Profile
-      break;
-    case 'MentalHealth':
-      Component = MentalHealth
-      break;
-    case 'Lifestyle':
-      Component = Lifestyle
-      break;
-    case 'Insurance':
-      Component = Insurance
-      break;
-    case 'Prescriptions':
-      Component = Prescriptions
-      break;
-    case 'PastRecords':
-      Component = PastRecords
-      break;
-    case 'VerifyOTP':
-      Component = VerifyOTP
-      break;
-    case 'AddMedicine':
-      Component = AddMedicine
-      break;
-    case 'AddHealthRecord':
-      Component = AddHealthRecord
-      break;
-    case 'AddPrescription':
-      Component = AddPrescription
-      break;
-    default:
-      console.warn(`No component found for page: ${page}`)
-      break;
-  }
-
-  if (page) {
-    root.render(
-      <React.StrictMode>
-        <Component />
-        <Chatbot />
-      </React.StrictMode>
-    )
-  }
-}
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+      <Chatbot />
+    </BrowserRouter>
+  </React.StrictMode>
+)
