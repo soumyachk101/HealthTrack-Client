@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Sparkles, Shield, Activity, CheckCircle2, ArrowRight, Menu, X, Pill, Brain, FileText, Smartphone, Heart, Moon, User, Stethoscope, Briefcase } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -63,23 +64,23 @@ export default function Landing() {
 
                         {/* Explicit Login Buttons */}
                         <div className="flex items-center gap-4 border-r border-border pr-6 mr-2">
-                            <a href="/accounts/login/?role=patient" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                            <Link to="/login?role=patient" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
                                 <User className="h-4 w-4" />
                                 Patient
-                            </a>
-                            <a href="/accounts/login/?role=doctor" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                            </Link>
+                            <Link to="/login?role=doctor" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
                                 <Stethoscope className="h-4 w-4" />
                                 Doctor
-                            </a>
-                            <a href="/accounts/login/?role=service_provider" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                            </Link>
+                            <Link to="/login?role=service_provider" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
                                 <Briefcase className="h-4 w-4" />
                                 Provider
-                            </a>
+                            </Link>
                         </div>
 
-                        <a href="/accounts/register/" className="inline-flex h-10 items-center justify-center rounded-xl bg-primary px-5 py-2 text-sm font-medium text-white shadow-lg shadow-primary/20 transition-all hover:bg-teal-500 hover:-translate-y-0.5 active:translate-y-0">
+                        <Link to="/register" className="inline-flex h-10 items-center justify-center rounded-xl bg-primary px-5 py-2 text-sm font-medium text-white shadow-lg shadow-primary/20 transition-all hover:bg-teal-500 hover:-translate-y-0.5 active:translate-y-0">
                             Get Started
-                        </a>
+                        </Link>
                     </div>
 
                     <button className="md:hidden text-foreground" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -98,14 +99,14 @@ export default function Landing() {
                         </div>
                         <div className="flex flex-col gap-2 border-b border-border pb-2 mb-2">
                             <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2">Professional Access</div>
-                            <a href="/accounts/login/?role=doctor" className="flex items-center gap-2 px-2 py-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
+                            <Link to="/login?role=doctor" className="flex items-center gap-2 px-2 py-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
                                 <Stethoscope className="h-4 w-4" /> For Doctors
-                            </a>
-                            <a href="/accounts/login/?role=service_provider" className="flex items-center gap-2 px-2 py-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
+                            </Link>
+                            <Link to="/login?role=service_provider" className="flex items-center gap-2 px-2 py-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
                                 <Briefcase className="h-4 w-4" /> For Providers
-                            </a>
+                            </Link>
                         </div>
-                        <a href="/accounts/login/?role=patient" className="block w-full py-2 text-center bg-primary text-white rounded-lg font-medium shadow-md">Log In / Sign Up</a>
+                        <Link to="/login?role=patient" className="block w-full py-2 text-center bg-primary text-white rounded-lg font-medium shadow-md">Log In / Sign Up</Link>
                     </div>
                 )}
             </nav>
@@ -184,29 +185,29 @@ export default function Landing() {
                             {/* Sign Up / Sign In Buttons - Show when role is selected */}
                             {selectedRole && (
                                 <div className="flex items-center gap-4 animate-in fade-in slide-in-from-top-2">
-                                    <a
-                                        href={`/accounts/register/?role=${selectedRole}`}
+                                    <Link
+                                        to={`/register?role=${selectedRole}`}
                                         className="px-6 py-2.5 rounded-lg bg-primary hover:bg-teal-500 text-white font-semibold text-sm shadow-md shadow-primary/20 transition-all hover:shadow-lg"
                                     >
                                         Sign Up
-                                    </a>
-                                    <a
-                                        href={`/accounts/login/?role=${selectedRole}`}
+                                    </Link>
+                                    <Link
+                                        to={`/login?role=${selectedRole}`}
                                         className="px-6 py-2.5 rounded-lg bg-white hover:bg-muted border border-border text-foreground font-medium text-sm transition-all"
                                     >
                                         Sign In
-                                    </a>
+                                    </Link>
                                 </div>
                             )}
 
                             {/* Default Sign Up / Sign In Button - Show when no role selected */}
                             {!selectedRole && (
-                                <a
-                                    href="/accounts/register/"
+                                <Link
+                                    to="/register"
                                     className="px-8 py-3 rounded-xl bg-primary hover:bg-teal-500 text-white font-semibold text-base shadow-xl shadow-primary/20 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/30"
                                 >
                                     Sign Up / Sign In
-                                </a>
+                                </Link>
                             )}
                         </div>
 
@@ -325,13 +326,13 @@ export default function Landing() {
                         <p className="text-lg text-slate-300 mb-8 max-w-2xl mx-auto relative z-10">
                             Join the fastest growing health management platform today. No credit card required.
                         </p>
-                        <a
-                            href="/accounts/register/"
+                        <Link
+                            to="/register"
                             className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-foreground font-bold hover:bg-primary hover:text-white transition-all relative z-10 hover:shadow-lg hover:shadow-white/10 hover:-translate-y-0.5"
                         >
                             Create Free Account
                             <ArrowRight className="w-5 h-5" />
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </section>
