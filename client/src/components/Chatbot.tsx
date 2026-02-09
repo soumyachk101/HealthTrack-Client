@@ -170,7 +170,9 @@ const Chatbot: React.FC = () => {
         setIsLoading(true);
 
         try {
-            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            const API_URL = import.meta.env.VITE_API_URL || '';
+            console.log("DEBUG Chatbot API_URL:", API_URL);
+            if (!API_URL) console.error("Chatbot: VITE_API_URL is missing");
             const response = await fetch(`${API_URL}/chatbot/api/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
