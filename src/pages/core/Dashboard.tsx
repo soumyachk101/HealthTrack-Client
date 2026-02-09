@@ -2,58 +2,96 @@ import { useEffect, useState } from "react"
 import { Sidebar } from "@/components/layout/Sidebar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Heart, Droplet, Weight, Activity, Pill, Moon, Plus, FileText } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
-// Define interfaces for data passed from Django
-// Define interfaces for data passed from Django (could be strings or numbers)
+// Define interfaces for data passed from API
 interface DashboardData {
     user: {
         name: string
+        email: string
     }
-    latest_record?: {
-        blood_pressure_systolic?: string | number
-        blood_pressure_diastolic?: string | number
-        bp_status?: string
-        blood_sugar?: string | number
-        weight?: string | number
-        heart_rate?: string | number
-    }
-    active_medicines: number | string
-    active_medicines_count?: number | string
-    latest_mental_health?: {
-        sleep_hours?: string | number
-    }
-    recent_activities?: Array<{
+    latest_record: {
+        blood_pressure_systolic: number | null
+        blood_pressure_diastolic: number | null
+        bp_status: string
+        blood_sugar: string | null
+        weight: string | null
+        heart_rate: number | null
+        recorded_at: string
+    } | null
+    active_medicines: number
+    active_medicines_count: number
+    latest_mental_health: {
+        sleep_hours: string | null
+        mood_score: number
+        stress_level: number
+    } | null
+    recent_activities: Array<{
+        action: string
         action_display: string
-        created_at_since: string
         details: string
+        created_at: string
+        created_at_since: string
     }>
 }
 
 export default function Dashboard() {
     const [data, setData] = useState<DashboardData | null>(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+    const navigate = useNavigate()
 
     useEffect(() => {
-        // Read data from script tag
-        const dataScript = document.getElementById("dashboard-data")
-        if (dataScript && dataScript.textContent) {
+        const fetchData = async () => {
+            const token = localStorage.getItem('token')
+            if (!token) {
+                navigate('/login')
+                return
+            }
+
             try {
-                const parsedData = JSON.parse(dataScript.textContent)
-                setData(parsedData)
-            } catch (e) {
-                console.error("Failed to parse dashboard data", e)
+                const API_URL = import.meta.env.VITE_API_URL || ""
+                const response = await fetch(`${API_URL}/core/api/dashboard/`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+
+                if (response.status === 401 || response.status === 403) {
+                    localStorage.removeItem('token')
+                    navigate('/login')
+                    return
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch dashboard data')
+                }
+
+                const result = await response.json()
+                setData(result)
+            } catch (err: any) {
+                console.error("Dashboard Fetch Error:", err)
+                setError(err.message || "Failed to load dashboard")
+            } finally {
+                setLoading(false)
             }
         }
-    }, [])
 
-    if (!data) return <div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>
+        fetchData()
+    }, [navigate])
+
+    if (loading) return <div className="min-h-screen bg-background flex items-center justify-center">Loading Dashboard...</div>
+    if (error) return <div className="min-h-screen bg-background flex items-center justify-center text-destructive">{error}</div>
+    if (!data) return null
 
     // Helper to safely get display value
-    const getVal = (val: string | number | undefined, suffix: string = "") => {
+    const getVal = (val: string | number | undefined | null, suffix: string = "") => {
         if (val === undefined || val === null || val === "" || val === "None") return `-- ${suffix}`.trim()
         return `${val} ${suffix}`.trim()
     }
 
-    const hasVal = (val: string | number | undefined) => {
+    const hasVal = (val: string | number | undefined | null) => {
         return val !== undefined && val !== null && val !== "" && val !== "None"
     }
 
@@ -95,7 +133,7 @@ export default function Dashboard() {
         }
     ]
 
-    const activeMeds = data.active_medicines || data.active_medicines_count || 0
+    const activeMeds = data.active_medicines || 0
     const sleepHours = data.latest_mental_health?.sleep_hours
 
     return (

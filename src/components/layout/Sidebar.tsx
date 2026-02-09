@@ -1,4 +1,5 @@
 import { Home, Pill, Activity, Heart, FileText, FolderOpen, Shield, User, LogOut, Sparkles } from "lucide-react"
+import { Link, useLocation } from "react-router-dom"
 
 export function Sidebar() {
     const navItems = [
@@ -12,6 +13,8 @@ export function Sidebar() {
         { icon: Shield, label: "Insurance", href: "/insurance/" },
         { icon: User, label: "Profile", href: "/profile/" },
     ]
+
+    const location = useLocation()
 
     return (
         <aside className="fixed left-0 top-0 h-screen w-64 border-r border-border bg-white hidden lg:flex flex-col shadow-sm">
@@ -27,12 +30,12 @@ export function Sidebar() {
             <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
                 {navItems.map((item) => {
                     // Check if current path starts with the item's href (to handle sub-paths like /medicines/add/)
-                    const isActive = window.location.pathname.startsWith(item.href)
+                    const isActive = location.pathname.startsWith(item.href) || (item.href !== "/" && location.pathname.includes(item.href))
 
                     return (
-                        <a
+                        <Link
                             key={item.label}
-                            href={item.href}
+                            to={item.href}
                             className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
                                 ? "bg-primary text-white shadow-md shadow-primary/20"
                                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -40,7 +43,7 @@ export function Sidebar() {
                         >
                             <item.icon className="h-4 w-4" />
                             {item.label}
-                        </a>
+                        </Link>
                     )
                 })}
             </nav>
