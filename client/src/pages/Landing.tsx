@@ -92,13 +92,13 @@ export default function Landing() {
                 {mobileMenuOpen && (
                     <div className="absolute top-full left-0 right-0 bg-white border-b border-border p-4 md:hidden flex flex-col gap-4 shadow-xl animate-in slide-in-from-top-5">
                         <div className="flex flex-col gap-2 border-b border-border pb-2 mb-2">
-                            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2">Menu</div>
+                            <div className="text-xs font-semibold text-muted-foreground px-2">Menu</div>
                             <a href="#" className="px-2 py-2 text-foreground hover:bg-muted rounded-lg transition-colors">Find Doctors</a>
                             <a href="#" className="px-2 py-2 text-foreground hover:bg-muted rounded-lg transition-colors">Lab Tests</a>
                             <a href="#" className="px-2 py-2 text-foreground hover:bg-muted rounded-lg transition-colors">Articles</a>
                         </div>
                         <div className="flex flex-col gap-2 border-b border-border pb-2 mb-2">
-                            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2">Professional Access</div>
+                            <div className="text-xs font-semibold text-muted-foreground px-2">Professional Access</div>
                             <Link to="/login?role=doctor" className="flex items-center gap-2 px-2 py-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
                                 <Stethoscope className="h-4 w-4" /> For Doctors
                             </Link>
@@ -287,7 +287,7 @@ export default function Landing() {
                 <div className="container mx-auto px-4 md:px-8">
                     <div className="text-center max-w-2xl mx-auto mb-16">
                         <div className="inline-block mb-4">
-                            <span className="bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Features</span>
+                            <span className="bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full">Features</span>
                         </div>
                         <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Everything you need</h2>
                         <p className="text-muted-foreground text-lg">Powerful features designed to make health management effortless and effective.</p>
@@ -347,7 +347,7 @@ export default function Landing() {
                             </div>
                             <div className="flex flex-col">
                                 <span className="font-bold text-foreground leading-none">HealthTrack</span>
-                                <span className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">Medical Suite</span>
+                                <span className="text-[10px] text-muted-foreground font-semibold">Medical Suite</span>
                             </div>
                         </div>
                         <div className="flex gap-8 text-sm font-medium">

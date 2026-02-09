@@ -102,7 +102,7 @@ export default function DoctorDashboard() {
                                         <div className="flex-shrink-0">
                                             <div className="h-12 w-20 flex flex-col items-center justify-center bg-blue-50 rounded-lg border border-blue-100 text-blue-700">
                                                 <span className="text-sm font-bold">{appt.time.split(' ')[0]}</span>
-                                                <span className="text-[10px] uppercase font-bold text-blue-400">{appt.time.split(' ')[1]}</span>
+                                                <span className="text-[10px] font-bold text-blue-400">{appt.time.split(' ')[1]}</span>
                                             </div>
                                         </div>
                                         <div className="flex-1 min-w-0">

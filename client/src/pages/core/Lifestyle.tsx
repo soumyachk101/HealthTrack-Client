@@ -96,7 +96,7 @@ export default function Lifestyle() {
                 <Card className="border-border shadow-sm overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm text-left">
-                            <thead className="text-xs text-muted-foreground uppercase bg-secondary/50 border-b border-border">
+                            <thead className="text-xs text-muted-foreground bg-secondary/50 border-b border-border">
                                 <tr>
                                     <th className="px-6 py-4 font-medium">Date</th>
                                     <th className="px-6 py-4 font-medium">Water</th>
