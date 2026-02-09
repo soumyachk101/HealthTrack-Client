@@ -342,11 +342,11 @@ export default function Landing() {
                 <div className="container mx-auto px-4 md:px-8">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                         <div className="flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                                <Sparkles className="h-4 w-4 text-white" />
+                            <div className="h-8 w-8 rounded-lg flex items-center justify-center">
+                                <img src="/logo.svg" alt="HealthTrack Logo" className="h-8 w-8" />
                             </div>
                             <div className="flex flex-col">
-                                <span className="font-bold text-foreground leading-none">HealthTrack+</span>
+                                <span className="font-bold text-foreground leading-none">HealthTrack</span>
                                 <span className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">Medical Suite</span>
                             </div>
                         </div>
