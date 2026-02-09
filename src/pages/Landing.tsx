@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Sparkles, Shield, Activity, CheckCircle2, ArrowRight, Menu, X, Pill, Brain, FileText, Smartphone, Heart, Moon, User, Stethoscope, Briefcase } from "lucide-react"
+import { Shield, Activity, CheckCircle2, ArrowRight, Menu, X, Pill, Brain, FileText, Smartphone, Heart, Moon, User, Stethoscope, Briefcase } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export default function Landing() {

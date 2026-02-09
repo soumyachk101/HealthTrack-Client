@@ -1,4 +1,4 @@
-import { Home, Pill, Activity, Heart, FileText, FolderOpen, Shield, User, LogOut, Sparkles } from "lucide-react"
+import { Home, Pill, Activity, Heart, FileText, FolderOpen, Shield, User, LogOut } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 
 export function Sidebar() {
