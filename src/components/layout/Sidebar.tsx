@@ -20,10 +20,10 @@ export function Sidebar() {
         <aside className="fixed left-0 top-0 h-screen w-64 border-r border-border bg-white hidden lg:flex flex-col shadow-sm">
             <div className="p-6 border-b border-border/50">
                 <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-primary text-white flex items-center justify-center shadow-md shadow-primary/20">
-                        <Sparkles className="h-4 w-4" />
+                    <div className="h-8 w-8 rounded-lg flex items-center justify-center">
+                        <img src="/logo.svg" alt="HealthTrack Logo" className="h-8 w-8" />
                     </div>
-                    <span className="font-bold tracking-tight text-foreground text-lg">HealthTrack+</span>
+                    <span className="font-bold tracking-tight text-foreground text-lg">HealthTrack</span>
                 </div>
             </div>
 

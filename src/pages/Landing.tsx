@@ -51,11 +51,11 @@ export default function Landing() {
             )}>
                 <div className="container mx-auto px-4 md:px-8 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <div className="h-9 w-9 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-                            <Sparkles className="h-5 w-5 text-white" />
+                        <div className="h-9 w-9 rounded-xl flex items-center justify-center">
+                            <img src="/logo.svg" alt="HealthTrack Logo" className="h-9 w-9" />
                         </div>
                         <span className="text-xl font-bold text-foreground tracking-tight">
-                            HealthTrack+
+                            HealthTrack
                         </span>
                     </div>
 
