@@ -38,13 +38,6 @@ export default function Auth() {
 
     const API_URL = import.meta.env.VITE_API_URL || ""
 
-    useEffect(() => {
-        console.log("DEBUG: Current API_URL:", API_URL);
-        if (!API_URL) {
-            console.error("CRITICAL: VITE_API_URL is missing! Requests will likely fail.");
-        }
-    }, [API_URL]);
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setIsLoading(true)
