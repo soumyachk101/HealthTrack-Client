@@ -126,7 +126,7 @@ export default function Auth() {
 
                     {/* Header */}
                     <div className="mb-8">
-                        <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight mb-3">
+                        <h1 className="text-3xl sm:text-4xl font-bold font-display text-slate-900 tracking-tight mb-3 uppercase">
                             {mode === 'login' ? roleTitle : 'Create your account'}
                         </h1>
                         <p className="text-slate-500 text-lg">
@@ -141,7 +141,7 @@ export default function Auth() {
                         <button
                             onClick={() => setMode('login')}
                             className={cn(
-                                "py-3 text-sm font-semibold rounded-lg transition-all duration-300",
+                                "py-3 text-sm font-bold tracking-wide uppercase rounded-lg transition-all duration-300 font-display",
                                 mode === 'login'
                                     ? "bg-white text-teal-600 shadow-md"
                                     : "text-slate-500 hover:text-slate-700"
@@ -152,7 +152,7 @@ export default function Auth() {
                         <button
                             onClick={() => setMode('register')}
                             className={cn(
-                                "py-3 text-sm font-semibold rounded-lg transition-all duration-300",
+                                "py-3 text-sm font-bold tracking-wide uppercase rounded-lg transition-all duration-300 font-display",
                                 mode === 'register'
                                     ? "bg-white text-teal-600 shadow-md"
                                     : "text-slate-500 hover:text-slate-700"
@@ -176,7 +176,7 @@ export default function Auth() {
 
                             {/* Email Field */}
                             <div className="space-y-2">
-                                <Label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                                <Label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 font-display">
                                     <Mail className="h-4 w-4 text-teal-500" />
                                     Email or Username
                                 </Label>
@@ -193,7 +193,7 @@ export default function Auth() {
                             {/* Password Field */}
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center">
-                                    <Label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                                    <Label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 font-display">
                                         <Lock className="h-4 w-4 text-teal-500" />
                                         Password
                                     </Label>
@@ -230,7 +230,7 @@ export default function Auth() {
                                     <Loader2 className="h-5 w-5 animate-spin" />
                                 ) : (
                                     <>
-                                        Sign In
+                                        SIGN IN
                                         <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                                     </>
                                 )}
@@ -243,7 +243,7 @@ export default function Auth() {
                             {/* Name Fields */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                                    <Label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 font-display">
                                         <User className="h-4 w-4 text-teal-500" />
                                         First Name
                                     </Label>
@@ -257,7 +257,7 @@ export default function Auth() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-sm font-semibold text-slate-700">Last Name</Label>
+                                    <Label className="text-xs font-bold uppercase tracking-wider text-slate-700 font-display">Last Name</Label>
                                     <Input
                                         name="last_name"
                                         value={formData.last_name}
@@ -271,7 +271,7 @@ export default function Auth() {
 
                             {/* Username */}
                             <div className="space-y-2">
-                                <Label className="text-sm font-semibold text-slate-700">Username</Label>
+                                <Label className="text-xs font-bold uppercase tracking-wider text-slate-700 font-display">Username</Label>
                                 <Input
                                     name="username"
                                     value={formData.username}
@@ -284,7 +284,7 @@ export default function Auth() {
 
                             {/* Email */}
                             <div className="space-y-2">
-                                <Label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                                <Label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 font-display">
                                     <Mail className="h-4 w-4 text-teal-500" />
                                     Email
                                 </Label>
@@ -301,7 +301,7 @@ export default function Auth() {
 
                             {/* State */}
                             <div className="space-y-2">
-                                <Label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                                <Label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 font-display">
                                     <MapPin className="h-4 w-4 text-teal-500" />
                                     State
                                 </Label>
@@ -352,7 +352,7 @@ export default function Auth() {
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-sm font-semibold text-slate-700">Confirm</Label>
+                                    <Label className="text-xs font-bold uppercase tracking-wider text-slate-700 font-display">Confirm</Label>
                                     <div className="relative">
                                         <Input
                                             name="password2"
@@ -396,7 +396,7 @@ export default function Auth() {
                                     <Loader2 className="h-5 w-5 animate-spin" />
                                 ) : (
                                     <>
-                                        Create Account
+                                        CREATE ACCOUNT
                                         <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                                     </>
                                 )}
@@ -433,10 +433,10 @@ export default function Auth() {
                     <div>
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 mb-8">
                             <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                            <span className="text-sm font-medium text-white/90">Trusted by 50,000+ users</span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-white/90 font-display">Trusted by 50,000+ users</span>
                         </div>
 
-                        <h2 className="text-4xl xl:text-5xl font-bold text-white leading-tight mb-6">
+                        <h2 className="text-4xl xl:text-5xl font-bold font-display text-white leading-tight mb-6 uppercase tracking-wide">
                             Healthcare
                             <br />
                             <span className="bg-gradient-to-r from-teal-400 to-cyan-400 bg-clip-text text-transparent">
