@@ -51,11 +51,7 @@ export default function Dashboard() {
             }
 
             try {
-<<<<<<< HEAD
-                const API_URL = import.meta.env.VITE_API_URL || ""
-=======
                 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
->>>>>>> d4e507b (Enhance Chatbot UI, Branding to HealthTrack+, cleanup and build fixes)
                 const response = await fetch(`${API_URL}/api/dashboard/`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
