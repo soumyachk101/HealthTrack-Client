@@ -246,17 +246,17 @@ export default function Landing() {
                                     </div>
 
                                     {/* Main Widget Area */}
-                                    <div className="col-span-12 md:col-span-11 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 z-10 overflow-y-auto md:overflow-hidden pb-4">
-                                        {/* Big Widget */}
-                                        <div className="md:col-span-2 bg-[#EFF6FF] rounded-2xl md:rounded-3xl p-4 md:p-8 shadow-skeuo-lg border border-white/60 relative overflow-hidden">
-                                            <div className="flex justify-between items-center mb-4 md:mb-8">
-                                                <h3 className="text-xl md:text-2xl font-bold text-slate-700">Heart Rhythm</h3>
-                                                <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#EFF6FF] shadow-skeuo-convex flex items-center justify-center text-slate-400">
-                                                    <Activity className="w-4 h-4 md:w-5 md:h-5" />
+                                    <div className="col-span-12 md:col-span-11 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-8 z-10">
+                                        {/* Big Widget - Simplified on mobile */}
+                                        <div className="md:col-span-2 bg-[#EFF6FF] rounded-2xl md:rounded-3xl p-3 md:p-8 shadow-skeuo-lg border border-white/60 relative overflow-hidden">
+                                            <div className="flex justify-between items-center mb-3 md:mb-8">
+                                                <h3 className="text-base md:text-2xl font-bold text-slate-700">Heart</h3>
+                                                <div className="w-6 h-6 md:w-10 md:h-10 rounded-full bg-[#EFF6FF] shadow-skeuo-convex flex items-center justify-center text-slate-400">
+                                                    <Activity className="w-3 h-3 md:w-5 md:h-5" />
                                                 </div>
                                             </div>
                                             {/* Graph Simulation */}
-                                            <div className="flex items-end gap-2 md:gap-3 h-24 md:h-40 px-1 md:px-2 pb-2">
+                                            <div className="flex items-end gap-1.5 md:gap-3 h-16 md:h-40 px-1 md:px-2 pb-2">
                                                 {[30, 50, 45, 80, 60, 90, 55, 70, 40].map((h, i) => (
                                                     <div key={i} className="flex-1 bg-[#EFF6FF] rounded-full shadow-skeuo-inset-sm relative overflow-hidden group">
                                                         <div style={{ height: `${h}%` }} className="absolute bottom-0 w-full bg-teal-500 rounded-full opacity-80 shadow-[0_0_10px_rgba(20,184,166,0.5)]"></div>
@@ -265,17 +265,17 @@ export default function Landing() {
                                             </div>
                                         </div>
 
-                                        {/* Small Widget */}
-                                        <div className="md:col-span-1 bg-[#EFF6FF] rounded-2xl md:rounded-3xl p-4 md:p-8 shadow-skeuo-convex border border-white/60 flex flex-col justify-between items-center text-center">
-                                            <div className="w-12 h-12 md:w-20 md:h-20 rounded-full bg-[#EFF6FF] shadow-skeuo-md flex items-center justify-center text-teal-500 mb-2 md:mb-4 border border-white">
-                                                <span className="text-xl md:text-2xl font-bold">98</span>
+                                        {/* Small Widget - Simplified on mobile */}
+                                        <div className="md:col-span-1 bg-[#EFF6FF] rounded-2xl md:rounded-3xl p-3 md:p-8 shadow-skeuo-convex border border-white/60 flex flex-col justify-between items-center text-center">
+                                            <div className="w-10 h-10 md:w-20 md:h-20 rounded-full bg-[#EFF6FF] shadow-skeuo-md flex items-center justify-center text-teal-500 mb-2 md:mb-4 border border-white">
+                                                <span className="text-lg md:text-2xl font-bold">98</span>
                                             </div>
                                             <div>
-                                                <div className="text-slate-800 font-bold text-base md:text-lg">Wellness Score</div>
-                                                <div className="text-slate-400 text-xs md:text-sm mt-1">Excellent</div>
+                                                <div className="text-slate-800 font-bold text-sm md:text-lg">Score</div>
+                                                <div className="text-slate-400 text-xs md:text-sm mt-0.5 md:mt-1 hidden md:block">Excellent</div>
                                             </div>
-                                            <button className="mt-4 md:mt-6 w-full py-2.5 md:py-3 rounded-xl bg-[#EFF6FF] shadow-skeuo-sm text-xs md:text-sm font-bold text-teal-600 active:shadow-skeuo-inset-sm transition-all">
-                                                View Report
+                                            <button className="mt-3 md:mt-6 w-full py-2 md:py-3 rounded-xl bg-[#EFF6FF] shadow-skeuo-sm text-[10px] md:text-sm font-bold text-teal-600 active:shadow-skeuo-inset-sm transition-all">
+                                                View
                                             </button>
                                         </div>
                                     </div>
