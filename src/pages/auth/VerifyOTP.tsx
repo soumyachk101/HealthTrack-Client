@@ -66,6 +66,36 @@ export default function VerifyOTP() {
         }
     }
 
+    const handleResend = async () => {
+        setError(null)
+        setSuccess(null)
+        setIsLoading(true)
+
+        try {
+            const response = await fetch(`${API_URL}/accounts/api/resend-otp/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                credentials: 'include'
+            })
+
+            const data = await response.json()
+
+            if (data.success) {
+                setSuccess(data.message || "A new code has been sent!")
+            } else {
+                setError(data.error || "Failed to resend code.")
+            }
+        } catch (err) {
+            setError("Network error. Please try again.")
+            console.error(err)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#FAFAFA] text-slate-900 font-sans selection:bg-teal-500/30 relative overflow-hidden">
             {/* Background Grid */}
@@ -151,14 +181,23 @@ export default function VerifyOTP() {
                     <div className="mt-8 pt-6 border-t border-slate-100 flex flex-col gap-4 text-center text-sm">
                         <p className="text-slate-500">
                             No code received?{" "}
-                            <a href="/accounts/register/" className="text-teal-600 font-bold hover:underline hover:text-teal-700">
+                            <button
+                                type="button"
+                                onClick={handleResend}
+                                disabled={isLoading}
+                                className="text-teal-600 font-bold hover:underline hover:text-teal-700 disabled:opacity-50"
+                            >
                                 Resend_Packet
-                            </a>
+                            </button>
                         </p>
-                        <a href="/accounts/register/" className="flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors text-xs font-mono uppercase tracking-wider group">
+                        <button
+                            type="button"
+                            onClick={() => navigate('/login')}
+                            className="flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors text-xs font-mono uppercase tracking-wider group"
+                        >
                             <ArrowLeft className="mr-1 h-3 w-3 group-hover:-translate-x-1 transition-transform" />
                             Return to Initialization
-                        </a>
+                        </button>
                     </div>
                 </div>
 
