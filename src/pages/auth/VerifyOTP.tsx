@@ -88,7 +88,11 @@ export default function VerifyOTP() {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken
                 },
-                credentials: 'include'
+                credentials: 'include',
+                body: JSON.stringify({
+                    email,
+                    otp_type: otpType
+                })
             })
 
             const data = await response.json()
