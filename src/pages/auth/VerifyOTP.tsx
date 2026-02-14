@@ -10,8 +10,9 @@ export default function VerifyOTP() {
     const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
     const [csrfToken, setCsrfToken] = useState<string>("")
-    const [email, setEmail] = useState<string>("")
-    const [otp, setOtp] = useState<string>("")
+    const [email, setEmail] = useState('')
+    const [otp, setOtp] = useState('')
+    const [otpType, setOtpType] = useState('register')
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState<string | null>(null)
 
@@ -21,9 +22,11 @@ export default function VerifyOTP() {
         const token = getCookie("csrftoken")
         if (token) setCsrfToken(token)
 
-        // Try to get email from localStorage or previous state
+        // Try to get email and type from localStorage
         const storedEmail = localStorage.getItem("verification_email")
+        const storedType = localStorage.getItem("verification_type") || "register"
         if (storedEmail) setEmail(storedEmail)
+        if (storedType) setOtpType(storedType)
     }, [])
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -40,13 +43,20 @@ export default function VerifyOTP() {
                     'X-CSRFToken': csrfToken
                 },
                 credentials: 'include',
-                body: JSON.stringify({ otp })
+                body: JSON.stringify({
+                    otp,
+                    email,
+                    otp_type: otpType
+                })
             })
 
             const data = await response.json()
 
             if (data.success) {
                 setSuccess(data.message || "Verified successfully!")
+                // Clear verification data
+                localStorage.removeItem('verification_email')
+                localStorage.removeItem('verification_type')
                 // Store token if returned
                 if (data.token) {
                     localStorage.setItem('token', data.token)

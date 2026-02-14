@@ -74,6 +74,7 @@ export default function Register() {
             if (data.success) {
                 if (data.otp_required) {
                     localStorage.setItem('verification_email', formData.email)
+                    localStorage.setItem('verification_type', 'register')
                     navigate('/verify-otp')
                     return
                 }

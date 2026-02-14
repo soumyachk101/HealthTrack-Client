@@ -46,6 +46,7 @@ export default function Login() {
             if (data.success) {
                 if (data.otp_required) {
                     localStorage.setItem('verification_email', (e.target as any).username.value)
+                    localStorage.setItem('verification_type', 'login')
                     navigate('/verify-otp')
                     return
                 }
