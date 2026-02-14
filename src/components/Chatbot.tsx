@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { X, Send, Bot, Mic, MicOff, Volume2, VolumeX, MessageCircle } from 'lucide-react';
+import { X, Send, Sparkles, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 
 type Message = {
@@ -17,7 +16,7 @@ const Chatbot: React.FC = () => {
         {
             id: '1',
             sender: 'bot',
-            text: 'Hello! I am your AI Health Assistant. How can I help you today?',
+            text: 'Hello! I am your HealthTrack+ assistant. How can I help you today?',
             timestamp: new Date(),
         },
     ]);
@@ -189,7 +188,7 @@ const Chatbot: React.FC = () => {
 
             setMessages((prev) => [...prev, botMessage]);
             speak(botMessage.text);
-        } catch (error) {
+        } catch {
             const errorMessage: Message = {
                 id: (Date.now() + 1).toString(),
                 sender: 'bot',
@@ -218,46 +217,50 @@ const Chatbot: React.FC = () => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
                         transition={{ duration: 0.25, ease: 'easeOut' }}
-                        className="pointer-events-auto mb-4 w-[360px] sm:w-[400px] h-[550px] flex flex-col shadow-2xl rounded-2xl bg-white overflow-hidden border border-slate-200"
+                        className="pointer-events-auto mb-4 w-[360px] sm:w-[400px] h-[600px] flex flex-col shadow-2xl rounded-3xl bg-white overflow-hidden border border-slate-100 ring-1 ring-slate-900/5"
                     >
-                        {/* Clean Header */}
-                        <div className="bg-gradient-to-r from-teal-500 to-cyan-500 px-5 py-4 flex items-center justify-between shrink-0">
-                            <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
-                                    <Bot className="h-5 w-5 text-white" />
+                        {/* Premium Header */}
+                        <div className="bg-slate-900 px-6 py-5 flex items-center justify-between shrink-0 relative overflow-hidden">
+                            {/* Decorative background elements */}
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                            <div className="absolute bottom-0 left-0 w-24 h-24 bg-teal-500/20 rounded-full blur-2xl -ml-12 -mb-12 pointer-events-none"></div>
+
+                            <div className="flex items-center gap-4 relative z-10">
+                                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-blue-500 to-teal-400 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                                    <Sparkles className="h-6 w-6 text-white" />
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold text-white text-base">Health Assistant</h3>
-                                    <div className="flex items-center gap-1.5">
+                                    <h3 className="font-bold text-white text-lg tracking-tight">HealthTrack+</h3>
+                                    <div className="flex items-center gap-2">
                                         <span className={cn(
                                             "w-2 h-2 rounded-full",
-                                            isSpeaking ? "bg-yellow-300 animate-pulse" : "bg-emerald-300"
+                                            isSpeaking ? "bg-yellow-400 animate-pulse shadow-[0_0_8px_rgba(250,204,21,0.6)]" : "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.4)]"
                                         )} />
-                                        <span className="text-xs text-white/80">
-                                            {isSpeaking ? "Speaking..." : "Online"}
+                                        <span className="text-xs text-slate-300 font-medium">
+                                            {isSpeaking ? "Speaking..." : "AI Assistant Online"}
                                         </span>
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1 relative z-10">
                                 <button
                                     onClick={() => {
                                         setVoiceEnabled(!voiceEnabled);
                                         if (voiceEnabled) window.speechSynthesis.cancel();
                                     }}
                                     className={cn(
-                                        "p-2 rounded-full transition-all",
+                                        "p-2 rounded-full transition-all duration-200",
                                         voiceEnabled
-                                            ? "bg-white/20 text-white"
-                                            : "text-white/60 hover:text-white hover:bg-white/10"
+                                            ? "bg-white/10 text-white hover:bg-white/20"
+                                            : "text-slate-400 hover:text-white hover:bg-white/10"
                                     )}
-                                    title={voiceEnabled ? "Voice On" : "Voice Off"}
+                                    title={voiceEnabled ? "Mute Voice" : "Enable Voice"}
                                 >
-                                    {voiceEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                                    {voiceEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
                                 </button>
                                 <button
                                     onClick={() => setIsOpen(false)}
-                                    className="p-2 rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-all"
+                                    className="p-2 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-all duration-200"
                                 >
                                     <X className="h-5 w-5" />
                                 </button>
@@ -265,28 +268,31 @@ const Chatbot: React.FC = () => {
                         </div>
 
                         {/* Messages Area */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
+                        <div className="flex-1 overflow-y-auto p-5 space-y-6 bg-slate-50/50 scroll-smooth">
                             {messages.map((msg) => (
                                 <motion.div
                                     key={msg.id}
-                                    initial={{ opacity: 0, y: 8 }}
+                                    initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.2 }}
-                                    className={cn("flex", msg.sender === 'user' ? "justify-end" : "justify-start")}
+                                    transition={{ duration: 0.3 }}
+                                    className={cn("flex w-full", msg.sender === 'user' ? "justify-end" : "justify-start")}
                                 >
                                     <div className={cn(
-                                        "max-w-[85%] px-4 py-3 rounded-2xl text-sm leading-relaxed",
-                                        msg.sender === 'user'
-                                            ? "bg-teal-500 text-white rounded-br-md"
-                                            : "bg-white text-slate-700 border border-slate-200 rounded-bl-md shadow-sm"
+                                        "flex flex-col gap-1 max-w-[85%]",
+                                        msg.sender === 'user' ? "items-end" : "items-start"
                                     )}>
-                                        <p className="whitespace-pre-wrap">{msg.text}</p>
-                                        <p className={cn(
-                                            "text-[10px] mt-1.5",
-                                            msg.sender === 'user' ? "text-teal-100" : "text-slate-400"
+                                        <div className={cn(
+                                            "px-5 py-3.5 text-[15px] leading-relaxed shadow-sm",
+                                            msg.sender === 'user'
+                                                ? "bg-blue-600 text-white rounded-2xl rounded-tr-sm"
+                                                : "bg-white text-slate-700 border border-slate-100 rounded-2xl rounded-tl-sm"
                                         )}>
+                                            <p className="whitespace-pre-wrap">{msg.text}</p>
+                                        </div>
+                                        <span className="text-[10px] font-medium text-slate-400 px-1">
+                                            {msg.sender === 'bot' ? 'HealthTrack+ AI • ' : 'You • '}
                                             {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                        </p>
+                                        </span>
                                     </div>
                                 </motion.div>
                             ))}
@@ -295,19 +301,23 @@ const Chatbot: React.FC = () => {
                                 <motion.div
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
-                                    className="flex justify-start"
+                                    className="flex justify-start w-full"
                                 >
-                                    <div className="bg-white px-4 py-3 rounded-2xl rounded-bl-md border border-slate-200 shadow-sm">
+                                    <div className="bg-white px-5 py-4 rounded-2xl rounded-tl-sm border border-slate-100 shadow-sm flex items-center gap-3">
                                         <div className="flex gap-1.5">
                                             {[0, 1, 2].map((i) => (
                                                 <motion.div
                                                     key={i}
-                                                    animate={{ y: [0, -4, 0] }}
-                                                    transition={{ repeat: Infinity, duration: 0.5, delay: i * 0.1 }}
-                                                    className="w-2 h-2 bg-teal-400 rounded-full"
+                                                    animate={{
+                                                        y: [0, -6, 0],
+                                                        opacity: [0.6, 1, 0.6]
+                                                    }}
+                                                    transition={{ repeat: Infinity, duration: 0.6, delay: i * 0.15 }}
+                                                    className="w-2.5 h-2.5 bg-blue-500 rounded-full"
                                                 />
                                             ))}
                                         </div>
+                                        <span className="text-xs font-medium text-slate-400">Thinking...</span>
                                     </div>
                                 </motion.div>
                             )}
@@ -315,44 +325,59 @@ const Chatbot: React.FC = () => {
                         </div>
 
                         {/* Input Area */}
-                        <div className="p-4 bg-white border-t border-slate-200">
-                            <div className="flex items-center gap-2">
-                                <button
+                        <div className="p-5 bg-white border-t border-slate-100">
+                            <div className="relative flex items-center gap-2">
+                                <motion.button
+                                    whileTap={{ scale: 0.95 }}
                                     onClick={toggleListening}
                                     className={cn(
-                                        "p-2.5 rounded-full transition-all",
+                                        "p-3 rounded-xl transition-all duration-300 shadow-sm border",
                                         isListening
-                                            ? "bg-red-500 text-white animate-pulse"
-                                            : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                                            ? "bg-red-50 border-red-200 text-red-500"
+                                            : "bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-700"
                                     )}
                                 >
-                                    {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                                </button>
-                                <input
-                                    type="text"
-                                    value={input}
-                                    onChange={(e) => setInput(e.target.value)}
-                                    onKeyDown={handleKeyPress}
-                                    placeholder={isListening ? "Listening..." : "Type your message..."}
-                                    className="flex-1 px-4 py-2.5 bg-slate-100 rounded-full text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:bg-white border border-transparent focus:border-teal-300 transition-all"
-                                />
-                                <Button
-                                    size="icon"
+                                    {isListening ? (
+                                        <span className="relative flex h-5 w-5">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                            <MicOff className="relative inline-flex h-5 w-5" />
+                                        </span>
+                                    ) : (
+                                        <Mic className="h-5 w-5" />
+                                    )}
+                                </motion.button>
+
+                                <div className="flex-1 relative">
+                                    <input
+                                        type="text"
+                                        value={input}
+                                        onChange={(e) => setInput(e.target.value)}
+                                        onKeyDown={handleKeyPress}
+                                        placeholder={isListening ? "Listening..." : "Tell me what's on your mind..."}
+                                        className="w-full pl-5 pr-4 py-3.5 bg-slate-50 border-slate-200 rounded-xl text-[15px] text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all shadow-sm"
+                                    />
+                                </div>
+
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
                                     disabled={!input.trim() || isLoading}
                                     onClick={handleSend}
                                     className={cn(
-                                        "h-10 w-10 rounded-full transition-all",
+                                        "p-3.5 rounded-xl shadow-md transition-all duration-300 flex items-center justify-center",
                                         input.trim()
-                                            ? "bg-teal-500 hover:bg-teal-600 text-white"
-                                            : "bg-slate-100 text-slate-400"
+                                            ? "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/30"
+                                            : "bg-slate-100 text-slate-300 shadow-none cursor-not-allowed"
                                     )}
                                 >
-                                    <Send className="h-4 w-4" />
-                                </Button>
+                                    <Send className="h-5 w-5" />
+                                </motion.button>
                             </div>
-                            <p className="text-[10px] text-center text-slate-400 mt-3">
-                                AI responses are not medical advice
-                            </p>
+                            <div className="mt-3 flex items-center justify-center gap-2 text-[10px] text-slate-400">
+                                <div className="h-px w-8 bg-slate-200"></div>
+                                <span>HealthTrack+ AI can make mistakes. Verify important info.</span>
+                                <div className="h-px w-8 bg-slate-200"></div>
+                            </div>
                         </div>
                     </motion.div>
                 )}
@@ -360,20 +385,26 @@ const Chatbot: React.FC = () => {
 
             {/* Floating Button */}
             <motion.button
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, rotate: isOpen ? 90 : 0 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "pointer-events-auto h-14 w-14 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center",
+                    "pointer-events-auto h-16 w-16 rounded-2xl shadow-2xl transition-all duration-300 flex items-center justify-center ring-4 ring-white/20 backdrop-blur-sm",
                     isOpen
-                        ? "bg-slate-600 hover:bg-slate-700"
-                        : "bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600"
+                        ? "bg-slate-800 rotate-90"
+                        : "bg-gradient-to-tr from-blue-600 to-teal-500 hover:shadow-blue-500/40"
                 )}
             >
                 {isOpen ? (
-                    <X className="h-6 w-6 text-white" />
+                    <X className="h-7 w-7 text-white" />
                 ) : (
-                    <MessageCircle className="h-6 w-6 text-white" />
+                    <div className="relative">
+                        <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400/80 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-yellow-400 border-2 border-blue-600"></span>
+                        </span>
+                        <Sparkles className="h-8 w-8 text-white" />
+                    </div>
                 )}
             </motion.button>
         </div>

@@ -1,13 +1,20 @@
-import { useState } from 'react'
-import { Calendar, Clock, FileText, Search, Bell, MoreVertical, Video, Users, Stethoscope, ChevronRight } from 'lucide-react'
+import { Calendar, Clock, FileText, Search, Bell, Video, Users, Stethoscope, Settings, Home, MoreVertical } from 'lucide-react'
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { DashboardLayout } from "@/components/layout/DashboardLayout"
+
+const doctorNavItems = [
+    { icon: Home, label: "Dashboard", href: "/doctor-dashboard" },
+    { icon: Calendar, label: "Appointments", href: "/doctor/appointments" },
+    { icon: Users, label: "Patients", href: "/doctor/patients" },
+    { icon: FileText, label: "Reports", href: "/doctor/reports" },
+    { icon: Clock, label: "Schedule", href: "/doctor/schedule" },
+    { icon: Settings, label: "Settings", href: "/doctor/settings" },
+]
 
 export default function DoctorDashboard() {
-    const [sidebarOpen, setSidebarOpen] = useState(true)
-
     // Mock Data
     const stats = [
         { label: "Total Patients", value: "1,248", icon: Users, color: "text-blue-500", bg: "bg-blue-50" },
@@ -24,34 +31,11 @@ export default function DoctorDashboard() {
     ]
 
     return (
-        <div className="min-h-screen bg-background font-sans text-slate-900 flex p-4 gap-4">
-            {/* Sidebar (Simplified) */}
-            {/* Sidebar (Floating Clay) */}
-            <aside className={cn("bg-white shadow-clay-card rounded-3xl fixed inset-y-4 left-4 z-50 w-64 transition-transform duration-300 lg:translate-x-0 lg:static", !sidebarOpen && "-translate-x-full")}>
-                <div className="h-20 flex items-center px-6">
-                    <div className="h-10 w-10 bg-blue-600 rounded-xl flex items-center justify-center text-white mr-3 shadow-clay-btn">
-                        <Stethoscope className="h-6 w-6" />
-                    </div>
-                    <span className="font-bold text-lg text-slate-800 tracking-tight">Practo Ray</span>
-                </div>
-                <nav className="p-4 space-y-2">
-                    {['Dashboard', 'Appointments', 'Patients', 'Reports', 'Schedule', 'Settings'].map((item, idx) => (
-                        <a key={idx} href="#" className={cn("flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all hover:scale-105", idx === 0 ? "bg-blue-50 text-blue-600 shadow-clay-inner" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900")}>
-                            {idx === 0 ? <Calendar className="h-5 w-5" /> : <ChevronRight className="h-4 w-4" />}
-                            {item}
-                        </a>
-                    ))}
-                </nav>
-            </aside>
-
-            {/* Main Content */}
-            <main className="flex-1 flex flex-col min-w-0 overflow-hidden gap-4">
+        <DashboardLayout sidebarItems={doctorNavItems}>
+            <div className="flex flex-col min-w-0 overflow-hidden gap-4 h-full">
                 {/* Header (Floating Clay) */}
-                <header className="h-20 bg-white shadow-clay-card rounded-3xl flex items-center justify-between px-4 sm:px-6 lg:px-8 mx-4 mt-0">
+                <header className="h-20 bg-white shadow-clay-card rounded-3xl flex items-center justify-between px-4 sm:px-6 lg:px-8 mb-8">
                     <div className="flex items-center gap-4">
-                        <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(!sidebarOpen)}>
-                            <Clock className="h-5 w-5" /> {/* Using Clock as Placeholder Menu Icon */}
-                        </Button>
                         <h1 className="text-xl font-bold text-slate-800">Hello, Dr. Smith</h1>
                     </div>
                     <div className="flex items-center gap-4">
@@ -70,12 +54,12 @@ export default function DoctorDashboard() {
                 </header>
 
                 {/* Dashboard Content */}
-                <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+                <div className="flex-1 overflow-y-auto">
 
                     {/* Stats Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                         {stats.map((stat, idx) => (
-                            <Card key={idx} className="hover:-translate-y-1 transition-transform">
+                            <Card key={idx} className="hover:-translate-y-1 transition-transform border-border shadow-sm">
                                 <CardContent className="p-6 flex items-center justify-between">
                                     <div>
                                         <p className="text-sm font-medium text-slate-500 mb-1">{stat.label}</p>
@@ -97,7 +81,7 @@ export default function DoctorDashboard() {
                                 <Button variant="outline" className="text-sm text-blue-600 border-blue-200 hover:bg-blue-50">View All</Button>
                             </div>
 
-                            <div className="bg-white rounded-3xl shadow-clay-card overflow-hidden">
+                            <div className="bg-white rounded-3xl shadow-clay-card overflow-hidden border border-border/50">
                                 {appointments.map((appt, idx) => (
                                     <div key={appt.id} className={cn("p-4 flex items-center gap-4 hover:bg-slate-50 transition-colors", idx !== appointments.length - 1 && "border-b border-slate-100")}>
                                         <div className="flex-shrink-0">
@@ -130,6 +114,7 @@ export default function DoctorDashboard() {
                                 ))}
                             </div>
                         </div>
+
 
                         {/* Recent Activity / Next Patient */}
                         <div className="space-y-6">
@@ -178,7 +163,7 @@ export default function DoctorDashboard() {
                     </div>
 
                 </div>
-            </main>
-        </div>
+            </div>
+        </DashboardLayout>
     )
 }
