@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Mint & Blue Palette - HSL values for Tailwind base */
+    --background: 178 60% 96%;
+    /* Light Mint #ECFEFF */
+    --foreground: 215 28% 17%;
+    /* Charcoal #1F2937 */
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 28% 17%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 28% 17%;
+
+    --primary: 173 63% 50%;
+    /* Mint Green #2DD4BF */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 213 94% 68%;
+    /* Soft Blue #60A5FA */
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 152 76% 97%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 145 78% 73%;
+    /* Pastel Green #86EFAC */
+    --accent-foreground: 215 28% 17%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 173 63% 90%;
+    /* Light Teal/Mint */
+    --input: 173 63% 90%;
+    --ring: 173 63% 50%;
+    /* Mint */
+
+    --radius: 0.75rem;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+@layer components {
+
+  /* Modern clean card - Mint Border */
+  .card-modern {
+    @apply bg-white border border-teal-100 rounded-2xl shadow-soft;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .card-modern:hover {
+    @apply shadow-lg transform -translate-y-1 border-teal-200;
+  }
+
+  /* Clean Gradient Text - Mint/Blue */
+  .gradient-text {
+    @apply bg-gradient-to-r from-teal-500 to-blue-500 bg-clip-text text-transparent;
+  }
+
+  /* Modern Button - Mint/Blue */
+  .btn-modern {
+    @apply bg-primary text-white font-medium px-6 py-3 rounded-xl;
+    @apply hover:bg-teal-500 active:scale-95 transition-all duration-200 shadow-md shadow-teal-200;
+  }
+}
+
+/* Accessibility Optimizations */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
