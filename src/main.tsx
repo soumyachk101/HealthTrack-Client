@@ -1,7 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import Auth from './pages/auth/Auth'
+import Login from './pages/auth/Login'
+import Register from './pages/auth/Register'
 import Dashboard from './pages/core/Dashboard'
 import Medicines from './pages/core/Medicines'
 import HealthTrack from './pages/core/HealthTrack'
@@ -26,8 +27,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Auth />} />
-        <Route path="/register" element={<Auth />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/verify-otp" element={<VerifyOTP />} />
 
         {/* Core Features */}

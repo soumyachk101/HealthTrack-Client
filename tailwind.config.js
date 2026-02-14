@@ -58,6 +58,11 @@ export default {
             boxShadow: {
                 'soft': '0 4px 20px -2px rgba(45, 212, 191, 0.1)', // Subtle mint shadow
                 'glow': '0 0 20px -2px rgba(45, 212, 191, 0.25)', // Stronger mint glow
+                // Claymorphism Shadows
+                'clay-card': '8px 8px 16px 0px rgba(45, 212, 191, 0.2), -8px -8px 16px 0px rgba(255, 255, 255, 0.8)',
+                'clay-btn': '6px 6px 12px 0px rgba(45, 212, 191, 0.3), -6px -6px 12px 0px rgba(255, 255, 255, 0.9)',
+                'clay-inner': 'inset 6px 6px 12px 0px rgba(45, 212, 191, 0.2), inset -6px -6px 12px 0px rgba(255, 255, 255, 0.8)',
+                'clay-btn-active': 'inset 4px 4px 8px 0px rgba(45, 212, 191, 0.2), inset -4px -4px 8px 0px rgba(255, 255, 255, 0.9)',
             }
         },
     },

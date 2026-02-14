@@ -96,7 +96,7 @@ export default function Insurance() {
                 <Card className="border-border shadow-sm overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm text-left">
-                            <thead className="text-xs text-muted-foreground uppercase bg-secondary/50 border-b border-border">
+                            <thead className="text-xs text-muted-foreground bg-secondary/50 border-b border-border">
                                 <tr>
                                     <th className="px-6 py-4 font-medium">Provider</th>
                                     <th className="px-6 py-4 font-medium">Type</th>
@@ -127,8 +127,8 @@ export default function Insurance() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${policy.is_active
-                                                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                                                    : "bg-slate-500/10 text-slate-500"
+                                                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                                : "bg-slate-500/10 text-slate-500"
                                                 }`}>
                                                 {policy.is_active ? (
                                                     <><CheckCircle className="h-3 w-3 mr-1" /> Active</>

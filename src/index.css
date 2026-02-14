@@ -45,20 +45,22 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
   }
 }
 
 @layer components {
 
-  /* Modern clean card - Mint Border */
+  /* Modern clean card - Clay Style */
   .card-modern {
-    @apply bg-white border border-teal-100 rounded-2xl shadow-soft;
+    @apply bg-white rounded-3xl shadow-clay-card;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+    /* Claymorphism relies on shadows, not borders */
   }
 
   .card-modern:hover {
-    @apply shadow-lg transform -translate-y-1 border-teal-200;
+    @apply transform -translate-y-1;
+    /* Optional: slightly stronger shadow on hover if needed, or keeping it consistent */
   }
 
   /* Clean Gradient Text - Mint/Blue */
@@ -66,10 +68,18 @@
     @apply bg-gradient-to-r from-teal-500 to-blue-500 bg-clip-text text-transparent;
   }
 
-  /* Modern Button - Mint/Blue */
+  /* Modern Button - Clay Style */
   .btn-modern {
-    @apply bg-primary text-white font-medium px-6 py-3 rounded-xl;
-    @apply hover:bg-teal-500 active:scale-95 transition-all duration-200 shadow-md shadow-teal-200;
+    @apply bg-primary text-white font-medium px-6 py-3 rounded-2xl shadow-clay-btn;
+    @apply hover:scale-[1.02] active:scale-95 active:shadow-clay-btn-active transition-all duration-200;
+    border: none;
+  }
+
+  /* New: Clay Input */
+  input,
+  textarea,
+  select {
+    @apply bg-gray-50 rounded-xl shadow-clay-inner border-none p-3 outline-none focus:ring-2 focus:ring-primary/50 transition-shadow;
   }
 }
 
@@ -81,4 +91,81 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Senior/Creative Utilities */
+/* Senior/Creative Utilities */
+/* Senior/Creative Utilities */
+.bg-noise {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.4;
+  /* Slightly higher opacity for light mode to be visible */
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  filter: contrast(170%) brightness(100%);
+  mix-blend-mode: overlay;
+}
+
+.bg-grid {
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+}
+
+.bg-grid-small {
+  background-size: 20px 20px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+}
+
+.text-gradient-premium {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-teal-500 via-emerald-500 to-cyan-500;
+}
+
+/* Optimized CSS Animations (GPU Accelerated) */
+@keyframes blob-spin {
+  from {
+    transform: rotate(0deg) scale(1);
+  }
+
+  50% {
+    transform: rotate(180deg) scale(1.1);
+  }
+
+  to {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes blob-float {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+
+  to {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+.animate-blob-spin {
+  animation: blob-spin 20s infinite linear;
+  will-change: transform;
+}
+
+.animate-blob-float {
+  animation: blob-float 10s infinite ease-in-out;
+  will-change: transform;
 }

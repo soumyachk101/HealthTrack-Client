@@ -53,7 +53,7 @@ export default function Medicines() {
                 </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <Card className="border-border shadow-sm">
+                    <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium text-muted-foreground">Active Medicines</CardTitle>
                             <div className="p-2 rounded-full bg-primary/10 text-primary">
@@ -67,10 +67,10 @@ export default function Medicines() {
                     </Card>
                 </div>
 
-                <Card className="border-border shadow-sm overflow-hidden">
+                <Card className="overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm text-left">
-                            <thead className="text-xs text-muted-foreground uppercase bg-secondary/50 border-b border-border">
+                            <thead className="text-xs text-muted-foreground bg-secondary/50 border-b border-border">
                                 <tr>
                                     <th className="px-6 py-4 font-medium">Medicine Name</th>
                                     <th className="px-6 py-4 font-medium">Dosage</th>

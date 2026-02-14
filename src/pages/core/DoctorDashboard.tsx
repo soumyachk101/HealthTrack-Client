@@ -24,18 +24,19 @@ export default function DoctorDashboard() {
     ]
 
     return (
-        <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex">
+        <div className="min-h-screen bg-background font-sans text-slate-900 flex p-4 gap-4">
             {/* Sidebar (Simplified) */}
-            <aside className={cn("bg-white border-r border-slate-200 fixed inset-y-0 left-0 z-50 w-64 transition-transform duration-300 lg:translate-x-0 lg:static", !sidebarOpen && "-translate-x-full")}>
-                <div className="h-16 flex items-center px-6 border-b border-slate-200">
-                    <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center text-white mr-3">
-                        <Stethoscope className="h-5 w-5" />
+            {/* Sidebar (Floating Clay) */}
+            <aside className={cn("bg-white shadow-clay-card rounded-3xl fixed inset-y-4 left-4 z-50 w-64 transition-transform duration-300 lg:translate-x-0 lg:static", !sidebarOpen && "-translate-x-full")}>
+                <div className="h-20 flex items-center px-6">
+                    <div className="h-10 w-10 bg-blue-600 rounded-xl flex items-center justify-center text-white mr-3 shadow-clay-btn">
+                        <Stethoscope className="h-6 w-6" />
                     </div>
                     <span className="font-bold text-lg text-slate-800 tracking-tight">Practo Ray</span>
                 </div>
-                <nav className="p-4 space-y-1">
+                <nav className="p-4 space-y-2">
                     {['Dashboard', 'Appointments', 'Patients', 'Reports', 'Schedule', 'Settings'].map((item, idx) => (
-                        <a key={idx} href="#" className={cn("flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors", idx === 0 ? "bg-blue-50 text-blue-600" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900")}>
+                        <a key={idx} href="#" className={cn("flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all hover:scale-105", idx === 0 ? "bg-blue-50 text-blue-600 shadow-clay-inner" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900")}>
                             {idx === 0 ? <Calendar className="h-5 w-5" /> : <ChevronRight className="h-4 w-4" />}
                             {item}
                         </a>
@@ -44,9 +45,9 @@ export default function DoctorDashboard() {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-                {/* Header */}
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+            <main className="flex-1 flex flex-col min-w-0 overflow-hidden gap-4">
+                {/* Header (Floating Clay) */}
+                <header className="h-20 bg-white shadow-clay-card rounded-3xl flex items-center justify-between px-4 sm:px-6 lg:px-8 mx-4 mt-0">
                     <div className="flex items-center gap-4">
                         <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(!sidebarOpen)}>
                             <Clock className="h-5 w-5" /> {/* Using Clock as Placeholder Menu Icon */}
@@ -74,7 +75,7 @@ export default function DoctorDashboard() {
                     {/* Stats Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                         {stats.map((stat, idx) => (
-                            <Card key={idx} className="border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                            <Card key={idx} className="hover:-translate-y-1 transition-transform">
                                 <CardContent className="p-6 flex items-center justify-between">
                                     <div>
                                         <p className="text-sm font-medium text-slate-500 mb-1">{stat.label}</p>
@@ -96,13 +97,13 @@ export default function DoctorDashboard() {
                                 <Button variant="outline" className="text-sm text-blue-600 border-blue-200 hover:bg-blue-50">View All</Button>
                             </div>
 
-                            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                            <div className="bg-white rounded-3xl shadow-clay-card overflow-hidden">
                                 {appointments.map((appt, idx) => (
                                     <div key={appt.id} className={cn("p-4 flex items-center gap-4 hover:bg-slate-50 transition-colors", idx !== appointments.length - 1 && "border-b border-slate-100")}>
                                         <div className="flex-shrink-0">
                                             <div className="h-12 w-20 flex flex-col items-center justify-center bg-blue-50 rounded-lg border border-blue-100 text-blue-700">
                                                 <span className="text-sm font-bold">{appt.time.split(' ')[0]}</span>
-                                                <span className="text-[10px] uppercase font-bold text-blue-400">{appt.time.split(' ')[1]}</span>
+                                                <span className="text-[10px] font-bold text-blue-400">{appt.time.split(' ')[1]}</span>
                                             </div>
                                         </div>
                                         <div className="flex-1 min-w-0">
@@ -132,7 +133,7 @@ export default function DoctorDashboard() {
 
                         {/* Recent Activity / Next Patient */}
                         <div className="space-y-6">
-                            <Card className="border-slate-200 shadow-sm bg-gradient-to-br from-blue-600 to-blue-700 text-white border-0">
+                            <Card className="bg-gradient-to-br from-blue-400 to-blue-600 text-white border-none shadow-clay-card">
                                 <CardHeader className="pb-2">
                                     <CardTitle className="text-lg font-medium opacity-90">Next Patient</CardTitle>
                                 </CardHeader>
@@ -153,7 +154,7 @@ export default function DoctorDashboard() {
                                 </CardContent>
                             </Card>
 
-                            <Card className="border-slate-200 shadow-sm">
+                            <Card>
                                 <CardHeader>
                                     <CardTitle className="text-base font-bold text-slate-800">Patient Requests</CardTitle>
                                 </CardHeader>

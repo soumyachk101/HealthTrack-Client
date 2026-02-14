@@ -1,365 +1,371 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { Shield, Activity, CheckCircle2, ArrowRight, Menu, X, Pill, Brain, FileText, Smartphone, Heart, Moon, User, Stethoscope, Briefcase } from "lucide-react"
+import {
+    Shield, Activity, ArrowRight, Pill, Brain
+} from "lucide-react"
 import { cn } from "@/lib/utils"
+import { motion, useTransform, useSpring, useMotionValue } from 'framer-motion'
+
+// --- Magnetic Button Component ---
+const MagneticButton = ({ children, className, onClick }: { children: ReactNode, className?: string, onClick?: () => void }) => {
+    const ref = useRef<HTMLButtonElement>(null);
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        const { clientX, clientY } = e;
+        const { left, top, width, height } = ref.current!.getBoundingClientRect();
+        const centerX = left + width / 2;
+        const centerY = top + height / 2;
+        x.set((clientX - centerX) * 0.2); // Magnetic strength
+        y.set((clientY - centerY) * 0.2);
+    }
+
+    const handleMouseLeave = () => {
+        x.set(0);
+        y.set(0);
+    }
+
+    return (
+        <motion.button
+            ref={ref}
+            className={className}
+            onClick={onClick}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{ x, y }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
+        >
+            {children}
+        </motion.button>
+    );
+}
+
+// --- Card Stack Item ---
+
 
 export default function Landing() {
     const [scrolled, setScrolled] = useState(false)
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-    const [selectedRole, setSelectedRole] = useState<'patient' | 'doctor' | 'service_provider' | null>(null)
+
+    // Smooth Mouse parallax
+    const mouseX = useSpring(0, { stiffness: 50, damping: 20 });
+    const mouseY = useSpring(0, { stiffness: 50, damping: 20 });
 
     useEffect(() => {
-        const handleScroll = () => {
-            setScrolled(window.scrollY > 50)
+        const handleScroll = () => setScrolled(window.scrollY > 50)
+        const handleMouseMove = (e: MouseEvent) => {
+            const { clientX, clientY } = e;
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            mouseX.set((clientX - centerX) / centerX);
+            mouseY.set((clientY - centerY) / centerY);
         }
-        window.addEventListener('scroll', handleScroll)
 
+        window.addEventListener('scroll', handleScroll)
+        window.addEventListener('mousemove', handleMouseMove)
         return () => {
             window.removeEventListener('scroll', handleScroll)
+            window.removeEventListener('mousemove', handleMouseMove)
         }
     }, [])
 
+    const rotateX = useTransform(mouseY, [-1, 1], [10, -10]);
+    const rotateY = useTransform(mouseX, [-1, 1], [-10, 10]);
+
+    // Features Data
     const features = [
         {
             icon: Activity,
-            title: "Comprehensive Tracking",
-            desc: "Monitor blood pressure, sugar levels, weight, and heart rate with medical-grade precision."
+            title: "Precision Vitals",
+            desc: "Medical-grade accuracy for monitoring your body's most critical signals in real-time.",
+            points: ["Heart Rate Variance", "Blood Oxygen (SpO2)", "Sleep Architecture"],
+            color: "text-rose-500",
+            bg: "bg-rose-50",
         },
         {
             icon: Pill,
-            title: "Smart Medication",
-            desc: "Never miss a dose with intelligent reminders and automated refill alerts."
+            title: "Smart Regimen",
+            desc: "An intelligent assistant that manages your entire medication schedule and inventory.",
+            points: ["Interaction Warnings", "Refill Predictions", "Family Sharing"],
+            color: "text-indigo-500",
+            bg: "bg-indigo-50",
         },
         {
             icon: Brain,
-            title: "Mental Wellness",
-            desc: "Track mood patterns and get personalized insights for better mental health."
+            title: "Neuro Insights",
+            desc: "Understanding your mental state through behavioral patterns and AI analysis.",
+            points: ["Mood correlations", "Stress triggers", "Focus metrics"],
+            color: "text-amber-500",
+            bg: "bg-amber-50",
         },
         {
-            icon: FileText,
-            title: "Digital Records",
-            desc: "Securely store and share prescriptions and lab reports with your doctors."
+            icon: Shield,
+            title: "Vault Security",
+            desc: "Your data is encrypted, decentralized, and yours. We facilitate sharing, we don't own it.",
+            points: ["End-to-end Encryption", "HIPAA Compliant", "Audit Logs"],
+            color: "text-emerald-500",
+            bg: "bg-emerald-900/20",
         }
     ]
 
+
+
     return (
-        <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/20">
-            {/* Navbar */}
-            <nav className={cn(
-                "fixed top-0 inset-x-0 z-50 transition-all duration-300 border-b",
-                scrolled ? "bg-white/80 backdrop-blur-md border-border py-4 shadow-sm" : "bg-transparent border-transparent py-6"
-            )}>
-                <div className="container mx-auto px-4 md:px-8 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <div className="h-9 w-9 rounded-xl flex items-center justify-center">
-                            <img src="/logo.svg" alt="HealthTrack Logo" className="h-9 w-9" />
+        <div className="min-h-screen bg-[#FAFAFA] text-slate-900 font-sans selection:bg-teal-500/30 overflow-x-hidden relative">
+
+            {/* TECHNICAL GRID BACKGROUND */}
+            <div className="fixed inset-0 bg-grid pointer-events-none [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] opacity-60 z-0"></div>
+
+            {/* NOISE TEXTURE OVERLAY */}
+            <div className="bg-noise"></div>
+
+            {/* FLUID AURORA BACKGROUND (CSS Optimized - Light Mode Colors) */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 opacity-60">
+                <div className="absolute -top-[50%] -left-[20%] w-[120vw] h-[120vw] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-teal-200/40 via-white/0 to-transparent blur-[100px] animate-blob-spin" />
+                <div className="absolute -bottom-[50%] -right-[20%] w-[120vw] h-[120vw] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-200/40 via-white/0 to-transparent blur-[100px] animate-blob-spin" style={{ animationDirection: 'reverse' }} />
+
+                {/* Accent Orbs */}
+                <div className="absolute top-[20%] right-[10%] w-96 h-96 bg-emerald-300/20 rounded-full blur-[128px] animate-blob-float" />
+                <div className="absolute bottom-[20%] left-[10%] w-96 h-96 bg-cyan-300/20 rounded-full blur-[128px] animate-blob-float" style={{ animationDelay: '-5s' }} />
+            </div>
+
+            {/* NAV - Dynamic Island Style */}
+            <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 pointer-events-none">
+                <motion.nav
+                    initial={{ y: -100, width: "300px" }}
+                    animate={{ y: 0, width: scrolled ? "400px" : "600px" }}
+                    transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                    className={cn(
+                        "pointer-events-auto h-16 rounded-full flex items-center justify-between px-2 backdrop-blur-xl border border-slate-200/60 shadow-xl transition-all duration-500",
+                        scrolled ? "bg-white/90 shadow-teal-900/5" : "bg-white/50"
+                    )}
+                >
+                    <div className="flex items-center gap-3 pl-4">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-500 flex items-center justify-center text-white shadow-lg shadow-teal-500/30">
+                            <Activity className="w-4 h-4" />
                         </div>
-                        <span className="text-xl font-bold text-foreground tracking-tight">
-                            HealthTrack
+                        <span className={cn("font-bold text-slate-800 transition-opacity duration-300", scrolled ? "opacity-0 w-0 overflow-hidden" : "opacity-100")}>
+                            HealthTrack+ <span className="text-xs font-mono text-teal-600 ml-1 opacity-60">v2.4</span>
                         </span>
                     </div>
 
-                    <div className="hidden md:flex items-center gap-8">
-                        <a href="#features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Features</a>
-
-                        {/* Explicit Login Buttons */}
-                        <div className="flex items-center gap-4 border-r border-border pr-6 mr-2">
-                            <Link to="/login?role=patient" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-                                <User className="h-4 w-4" />
-                                Patient
-                            </Link>
-                            <Link to="/login?role=doctor" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-                                <Stethoscope className="h-4 w-4" />
-                                Doctor
-                            </Link>
-                            <Link to="/login?role=service_provider" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-                                <Briefcase className="h-4 w-4" />
-                                Provider
-                            </Link>
-                        </div>
-
-                        <Link to="/register" className="inline-flex h-10 items-center justify-center rounded-xl bg-primary px-5 py-2 text-sm font-medium text-white shadow-lg shadow-primary/20 transition-all hover:bg-teal-500 hover:-translate-y-0.5 active:translate-y-0">
-                            Get Started
+                    <div className="flex items-center gap-1 pr-1">
+                        <Link to="/login">
+                            <MagneticButton className="px-5 py-2.5 rounded-full text-sm font-semibold text-slate-600 hover:text-slate-900 bg-transparent hover:bg-white/40 transition-colors">
+                                Login
+                            </MagneticButton>
+                        </Link>
+                        <Link to="/register">
+                            <MagneticButton className="px-5 py-2.5 rounded-full text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 transition-colors shadow-lg shadow-slate-900/20">
+                                Get Started
+                            </MagneticButton>
                         </Link>
                     </div>
+                </motion.nav>
+            </header>
 
-                    <button className="md:hidden text-foreground" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                        {mobileMenuOpen ? <X /> : <Menu />}
-                    </button>
+            {/* HERO */}
+            <section className="relative pt-40 pb-32 z-10 min-h-screen flex flex-col justify-center items-center text-center px-4">
+                <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className="max-w-5xl mx-auto space-y-8"
+                >
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-4 cursor-default">
+                        <span className="flex h-2 w-2 rounded-full bg-teal-500 animate-pulse"></span>
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-400">SYS_STATUS: ONLINE</span>
+                    </div>
+
+                    <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-slate-900 leading-[0.9]">
+                        Design Your <br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 via-emerald-500 to-cyan-500">
+                            Health Future
+                        </span>
+                    </h1>
+
+                    <p className="text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed font-medium">
+                        An elegant, AI-powered sanctuary for your medical data.
+                        Precise tracking meets <span className="font-mono text-teal-600 bg-teal-50 px-1 rounded">beautiful_design</span>.
+                    </p>
+
+                    <div className="pt-8 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 items-center">
+                        <Link to="/register">
+                            <MagneticButton className="group relative px-8 py-4 bg-slate-900 text-white rounded-full font-bold text-lg shadow-2xl shadow-teal-900/20 overflow-hidden hover:scale-105 transition-transform min-w-[200px]">
+                                <span className="relative z-10 flex items-center justify-center gap-2">
+                                    Patient Sign Up <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                </span>
+                                <div className="absolute inset-0 bg-gradient-to-r from-teal-500 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            </MagneticButton>
+                        </Link>
+
+                        <div className="flex gap-4">
+                            <Link to="/register?role=doctor">
+                                <MagneticButton className="px-6 py-4 bg-white text-slate-700 border border-slate-200 rounded-full font-semibold text-sm hover:border-teal-400 hover:text-teal-600 transition-colors shadow-sm">
+                                    Doctor Join
+                                </MagneticButton>
+                            </Link>
+                            <Link to="/register?role=provider">
+                                <MagneticButton className="px-6 py-4 bg-white text-slate-700 border border-slate-200 rounded-full font-semibold text-sm hover:border-teal-400 hover:text-teal-600 transition-colors shadow-sm">
+                                    Provider Join
+                                </MagneticButton>
+                            </Link>
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* 3D FLOATING MOCKUP */}
+                <motion.div
+                    style={{ rotateX, rotateY, perspective: 1000 }}
+                    className="mt-24 w-full max-w-6xl mx-auto relative group"
+                >
+                    <div className="absolute -top-12 -left-12 font-mono text-xs text-slate-300 opacity-50 hidden md:block">
+                        // DASHBOARD_PREVIEW_INIT<br />
+                        class: FloatingWrapper<br />
+                        perspective: 1000px
+                    </div>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9, rotateX: 20 }}
+                        animate={{ opacity: 1, scale: 1, rotateX: 10 }}
+                        transition={{ duration: 1, delay: 0.3 }}
+                        className="rounded-[2.5rem] bg-white p-3 shadow-[0_50px_100px_-20px_rgba(50,50,93,0.1)] ring-1 ring-slate-900/5 backdrop-blur-xl"
+                    >
+                        {/* Fake Browser UI */}
+                        <div className="rounded-[2rem] overflow-hidden bg-slate-50 border border-slate-100 aspect-[16/9] flex flex-col">
+                            <div className="h-14 bg-white/80 border-b border-slate-100 flex items-center px-6 gap-3">
+                                <div className="flex gap-2">
+                                    <div className="w-3 h-3 rounded-full bg-slate-200"></div>
+                                    <div className="w-3 h-3 rounded-full bg-slate-200"></div>
+                                    <div className="w-3 h-3 rounded-full bg-slate-200"></div>
+                                </div>
+                                <div className="flex-1 flex justify-center">
+                                    <div className="w-64 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">https://healthtrack.plus</div>
+                                </div>
+                            </div>
+                            {/* Dashboard Content */}
+                            <div className="flex-1 p-8 bg-slate-50/50 grid grid-cols-12 gap-6 relative">
+                                {/* Sidebar */}
+                                <div className="col-span-2 hidden md:flex flex-col gap-4">
+                                    <div className="h-10 w-10 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-lg"><Activity className="w-5 h-5" /></div>
+                                    <div className="h-px bg-slate-200 w-full my-2"></div>
+                                    {[1, 2, 3, 4].map(i => <div key={i} className="w-10 h-10 rounded-xl bg-white border border-slate-200"></div>)}
+                                </div>
+                                {/* Main Stats */}
+                                <div className="col-span-12 md:col-span-10 grid grid-cols-3 gap-6">
+                                    <div className="col-span-2 bg-white rounded-3xl p-8 border border-slate-100 flex flex-col justify-between shadow-sm relative overflow-hidden">
+                                        <div className="absolute top-4 right-4 text-[10px] font-mono text-slate-300">WIDGET_ID: 8842</div>
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <h3 className="text-2xl font-bold text-slate-800">Weekly Wellness</h3>
+                                                <p className="text-slate-400">You're doing great!</p>
+                                            </div>
+                                            <div className="px-3 py-1 bg-teal-50 text-teal-600 rounded-full text-sm font-bold border border-teal-100">+12%</div>
+                                        </div>
+                                        <div className="h-32 flex items-end gap-2 mt-8">
+                                            {[40, 60, 45, 70, 85, 60, 75].map((h, i) => (
+                                                <div key={i} className="flex-1 bg-slate-100 rounded-t-xl relative group hover:bg-teal-50 transition-colors duration-500">
+                                                    <div style={{ height: `${h}%` }} className="absolute bottom-0 w-full bg-slate-900 rounded-xl opacity-10 group-hover:opacity-100 group-hover:bg-teal-500 transition-all"></div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="col-span-1 bg-slate-900 text-white rounded-3xl p-8 shadow-xl flex flex-col justify-between relative overflow-hidden group">
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500 blur-[60px] opacity-30"></div>
+                                        <Activity className="w-8 h-8 text-teal-400" />
+                                        <div>
+                                            <div className="text-4xl font-bold tracking-tight">98</div>
+                                            <div className="text-slate-400 font-mono text-sm">SCORE_VAL</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </motion.div>
+            </section>
+
+            {/* BENTO GRID FEATURES (Replaces Card Stack) */}
+            <section className="py-32 px-4 container mx-auto relative z-10">
+                <div className="mb-24 md:pl-12">
+                    <span className="text-teal-600 font-mono uppercase text-xs mb-4 block tracking-widest">// CAPABILITIES</span>
+                    <h2 className="text-5xl md:text-7xl font-bold text-slate-900">
+                        Powerful features <br />
+                        <span className="text-slate-300">for a better you.</span>
+                    </h2>
                 </div>
 
-                {/* Mobile Menu */}
-                {mobileMenuOpen && (
-                    <div className="absolute top-full left-0 right-0 bg-white border-b border-border p-4 md:hidden flex flex-col gap-4 shadow-xl animate-in slide-in-from-top-5">
-                        <div className="flex flex-col gap-2 border-b border-border pb-2 mb-2">
-                            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2">Menu</div>
-                            <a href="#" className="px-2 py-2 text-foreground hover:bg-muted rounded-lg transition-colors">Find Doctors</a>
-                            <a href="#" className="px-2 py-2 text-foreground hover:bg-muted rounded-lg transition-colors">Lab Tests</a>
-                            <a href="#" className="px-2 py-2 text-foreground hover:bg-muted rounded-lg transition-colors">Articles</a>
-                        </div>
-                        <div className="flex flex-col gap-2 border-b border-border pb-2 mb-2">
-                            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2">Professional Access</div>
-                            <Link to="/login?role=doctor" className="flex items-center gap-2 px-2 py-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
-                                <Stethoscope className="h-4 w-4" /> For Doctors
-                            </Link>
-                            <Link to="/login?role=service_provider" className="flex items-center gap-2 px-2 py-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
-                                <Briefcase className="h-4 w-4" /> For Providers
-                            </Link>
-                        </div>
-                        <Link to="/login?role=patient" className="block w-full py-2 text-center bg-primary text-white rounded-lg font-medium shadow-md">Log In / Sign Up</Link>
-                    </div>
-                )}
-            </nav>
-
-            {/* Hero Section */}
-            <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-                {/* Dynamic Background Elements */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-primary/10 rounded-full blur-[100px] animate-pulse" />
-                    <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-secondary/10 rounded-full blur-[100px] animate-pulse delay-1000" />
-                    {/* Grid Pattern */}
-                    <div className="absolute inset-0 opacity-[0.2]" style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2360A5FA' fill-opacity='0.2' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E")`
-                    }} />
-                </div>
-
-                <div className="container mx-auto px-4 md:px-8 relative z-10">
-                    <div className="max-w-5xl mx-auto flex flex-col items-center text-center space-y-8">
-
-                        {/* Pill Label */}
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-border shadow-sm text-foreground/80 text-sm font-medium animate-fade-in-up hover:border-primary/30 transition-colors cursor-default">
-                            <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse"></span>
-                            <span>#1 Healthcare Management Platform</span>
-                        </div>
-
-                        {/* Title */}
-                        <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-1.1 text-foreground">
-                            Your Complete <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary animate-gradient-x">Health Journey</span>
-                        </h1>
-
-                        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                            Take control of your wellbeing with advanced tracking, AI-powered insights,
-                            and secure medical records—all in one beautiful platform.
-                        </p>
-
-                        {/* User Type Toggle and Auth Buttons */}
-                        <div className="flex flex-col items-center gap-6 pt-8">
-                            {/* Toggle/Segmented Control for User Types */}
-                            <div className="inline-flex items-center gap-1 p-1 bg-muted/50 rounded-lg border border-border">
-                                <button
-                                    onClick={() => setSelectedRole('patient')}
-                                    className={cn(
-                                        "px-6 py-2.5 rounded-md text-sm font-medium transition-all duration-200",
-                                        selectedRole === 'patient'
-                                            ? "bg-white text-primary shadow-sm"
-                                            : "text-muted-foreground hover:text-foreground hover:bg-white/50"
-                                    )}
-                                >
-                                    For Patients
-                                </button>
-                                <button
-                                    onClick={() => setSelectedRole('doctor')}
-                                    className={cn(
-                                        "px-6 py-2.5 rounded-md text-sm font-medium transition-all duration-200",
-                                        selectedRole === 'doctor'
-                                            ? "bg-white text-primary shadow-sm"
-                                            : "text-muted-foreground hover:text-foreground hover:bg-white/50"
-                                    )}
-                                >
-                                    For Doctors
-                                </button>
-                                <button
-                                    onClick={() => setSelectedRole('service_provider')}
-                                    className={cn(
-                                        "px-6 py-2.5 rounded-md text-sm font-medium transition-all duration-200",
-                                        selectedRole === 'service_provider'
-                                            ? "bg-white text-primary shadow-sm"
-                                            : "text-muted-foreground hover:text-foreground hover:bg-white/50"
-                                    )}
-                                >
-                                    For Providers
-                                </button>
-                            </div>
-
-                            {/* Sign Up / Sign In Buttons - Show when role is selected */}
-                            {selectedRole && (
-                                <div className="flex items-center gap-4 animate-in fade-in slide-in-from-top-2">
-                                    <Link
-                                        to={`/register?role=${selectedRole}`}
-                                        className="px-6 py-2.5 rounded-lg bg-primary hover:bg-teal-500 text-white font-semibold text-sm shadow-md shadow-primary/20 transition-all hover:shadow-lg"
-                                    >
-                                        Sign Up
-                                    </Link>
-                                    <Link
-                                        to={`/login?role=${selectedRole}`}
-                                        className="px-6 py-2.5 rounded-lg bg-white hover:bg-muted border border-border text-foreground font-medium text-sm transition-all"
-                                    >
-                                        Sign In
-                                    </Link>
+                <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {features.map((feature, i) => (
+                        <div key={i} className={cn(
+                            "group relative overflow-hidden rounded-[2.5rem] bg-white border border-slate-200 p-10 hover:border-teal-200 transition-colors duration-500",
+                            i === 0 || i === 3 ? "md:col-span-2" : "md:col-span-1"
+                        )}>
+                            <div className="absolute inset-0 bg-grid-small opacity-[0.03] pointer-events-none"></div>
+                            <div className="relative z-10 flex flex-col h-full justify-between">
+                                <div className="mb-8">
+                                    <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center mb-6", feature.bg, feature.color)}>
+                                        <feature.icon className="w-7 h-7" />
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-slate-900 mb-2">{feature.title}</h3>
+                                    <p className="text-slate-500 font-medium">{feature.desc}</p>
                                 </div>
-                            )}
-
-                            {/* Default Sign Up / Sign In Button - Show when no role selected */}
-                            {!selectedRole && (
-                                <Link
-                                    to="/register"
-                                    className="px-8 py-3 rounded-xl bg-primary hover:bg-teal-500 text-white font-semibold text-base shadow-xl shadow-primary/20 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/30"
-                                >
-                                    Sign Up / Sign In
-                                </Link>
-                            )}
-                        </div>
-
-                        {/* Trust Badges */}
-                        <div className="pt-10 flex flex-wrap items-center justify-center gap-6 md:gap-12 text-muted-foreground border-t border-border/60 mt-12 w-full max-w-3xl">
-                            <div className="flex items-center gap-2">
-                                <Shield className="w-5 h-5 text-primary" />
-                                <span className="text-sm font-semibold text-foreground/80">HIPAA Compliant</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <CheckCircle2 className="w-5 h-5 text-secondary" />
-                                <span className="text-sm font-semibold text-foreground/80">Expert Verified</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Smartphone className="w-5 h-5 text-accent" />
-                                <span className="text-sm font-semibold text-foreground/80">Mobile Ready</span>
-                            </div>
-                        </div>
-
-                        {/* Mock Dashboard Graphic */}
-                        <div className="relative w-full max-w-4xl mt-16 perspective-1000">
-                            <div className="relative rounded-2xl bg-white border border-border shadow-2xl shadow-primary/10 overflow-hidden transform rotate-x-12 transition-transform hover:rotate-0 duration-700 ease-out">
-                                {/* Mock Header */}
-                                <div className="h-14 border-b border-border flex items-center px-6 gap-4 bg-muted/30">
-                                    <div className="flex gap-2">
-                                        <div className="w-3 h-3 rounded-full bg-red-400"></div>
-                                        <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-                                        <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                                    </div>
-                                    <div className="h-2 w-32 bg-border rounded-full"></div>
-                                </div>
-                                {/* Mock Content */}
-                                <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6 bg-muted/10">
-                                    {/* Card 1 */}
-                                    <div className="p-6 bg-white rounded-xl border border-border shadow-sm flex flex-col gap-4">
-                                        <div className="flex justify-between items-center">
-                                            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary"><Activity className="w-5 h-5" /></div>
-                                            <div className="text-xs font-semibold text-accent-foreground bg-accent px-2 py-1 rounded-full">+2.4%</div>
-                                        </div>
-                                        <div>
-                                            <div className="text-sm font-medium text-muted-foreground mb-1">Blood Pressure</div>
-                                            <div className="text-2xl font-bold text-foreground">118/75 <span className="text-sm font-normal text-muted-foreground">mmHg</span></div>
-                                        </div>
-                                    </div>
-                                    {/* Card 2 */}
-                                    <div className="p-6 bg-white rounded-xl border border-border shadow-sm flex flex-col gap-4">
-                                        <div className="flex justify-between items-center">
-                                            <div className="h-10 w-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary"><Moon className="w-5 h-5" /></div>
-                                            <div className="text-xs font-semibold text-muted-foreground bg-muted px-2 py-1 rounded-full">Optimal</div>
-                                        </div>
-                                        <div>
-                                            <div className="text-sm font-medium text-muted-foreground mb-1">Sleep Duration</div>
-                                            <div className="text-2xl font-bold text-foreground">8h 12m</div>
-                                        </div>
-                                    </div>
-                                    {/* Card 3 */}
-                                    <div className="p-6 bg-white rounded-xl border border-border shadow-sm flex flex-col gap-4">
-                                        <div className="flex justify-between items-center">
-                                            <div className="h-10 w-10 rounded-full bg-accent/20 flex items-center justify-center text-primary"><Heart className="w-5 h-5" /></div>
-                                            <div className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-full">Resting</div>
-                                        </div>
-                                        <div>
-                                            <div className="text-sm font-medium text-muted-foreground mb-1">Heart Rate</div>
-                                            <div className="text-2xl font-bold text-foreground">72 <span className="text-sm font-normal text-muted-foreground">bpm</span></div>
-                                        </div>
-                                    </div>
+                                <div className="space-y-4">
+                                    <div className="h-px w-full bg-slate-100"></div>
+                                    <ul className="grid grid-cols-2 gap-2">
+                                        {feature.points.map((pt: string, idx: number) => (
+                                            <li key={idx} className="flex items-center gap-2 text-sm text-slate-600 font-mono">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-teal-400"></div>
+                                                {pt}
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </div>
                             </div>
                         </div>
-
-                    </div>
+                    ))}
                 </div>
             </section>
 
-            {/* Features Grid */}
-            <section id="features" className="py-24 relative bg-white border-y border-border">
-                <div className="container mx-auto px-4 md:px-8">
-                    <div className="text-center max-w-2xl mx-auto mb-16">
-                        <div className="inline-block mb-4">
-                            <span className="bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Features</span>
-                        </div>
-                        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Everything you need</h2>
-                        <p className="text-muted-foreground text-lg">Powerful features designed to make health management effortless and effective.</p>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {features.map((feature, idx) => (
-                            <div key={idx} className="group p-8 rounded-2xl bg-muted/30 border border-border hover:bg-white hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
-
-                                <div className="h-12 w-12 rounded-xl bg-white border border-border flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary group-hover:border-primary transition-all duration-300 shadow-sm">
-                                    <feature.icon className="w-6 h-6 text-foreground group-hover:text-white transition-colors" />
-                                </div>
-                                <h3 className="text-xl font-bold mb-3 text-foreground">{feature.title}</h3>
-                                <p className="text-muted-foreground leading-relaxed text-sm">{feature.desc}</p>
+            {/* TRUST */}
+            <section className="py-32 border-t border-slate-100 bg-[#FAFAFA] relative overflow-hidden">
+                <div className="container mx-auto px-4 text-center relative z-10">
+                    <h2 className="text-xl md:text-3xl font-bold mb-16 text-slate-400 font-mono">TRUSTED_BY_INSTITUTIONS</h2>
+                    <div className="flex flex-wrap justify-center gap-12 md:gap-24 opacity-40 grayscale hover:grayscale-0 transition-all duration-500 hover:opacity-100">
+                        {['Mayo Clinic', 'Johns Hopkins', 'Cleveland Clinic', 'NHS'].map((brand, i) => (
+                            <div key={i} className="text-2xl font-bold flex items-center gap-2 text-slate-800">
+                                <Shield className="w-6 h-6" /> {brand}
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* CTA Section */}
-            <section className="py-24 relative overflow-hidden">
-                {/* Background decoration */}
-                <div className="absolute inset-0 bg-background">
-                    <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-white to-transparent"></div>
-                </div>
+            {/* FINAL CTA */}
+            <section className="min-h-[60vh] flex flex-col justify-center items-center text-center px-4 relative overflow-hidden bg-white border-t border-slate-100">
+                {/* Background Glow */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-teal-50/50 via-white to-white pointer-events-none" />
+                <div className="absolute inset-0 bg-grid opacity-[0.05] pointer-events-none"></div>
 
-                <div className="container mx-auto px-4 md:px-8 relative z-10">
-                    <div className="max-w-4xl mx-auto p-12 rounded-3xl bg-foreground text-white text-center shadow-2xl shadow-primary/20 relative overflow-hidden">
-                        {/* Abstract Shapes */}
-                        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-primary rounded-full blur-[80px] opacity-20 animate-pulse"></div>
-                        <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-secondary rounded-full blur-[80px] opacity-20 animate-pulse delay-700"></div>
-
-                        <h2 className="text-3xl md:text-5xl font-bold mb-6 relative z-10">Ready to transform your health?</h2>
-                        <p className="text-lg text-slate-300 mb-8 max-w-2xl mx-auto relative z-10">
-                            Join the fastest growing health management platform today. No credit card required.
-                        </p>
-                        <Link
-                            to="/register"
-                            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-foreground font-bold hover:bg-primary hover:text-white transition-all relative z-10 hover:shadow-lg hover:shadow-white/10 hover:-translate-y-0.5"
-                        >
+                <h2 className="text-[15vw] font-black text-slate-100 leading-none select-none absolute z-0 tracking-tighter">
+                    2026
+                </h2>
+                <div className="relative z-10 space-y-8">
+                    <h2 className="text-5xl md:text-7xl font-bold text-slate-900 tracking-tight">Ready to begin?</h2>
+                    <p className="text-xl text-slate-500">Your journey to better health starts with one click.</p>
+                    <Link to="/register">
+                        <MagneticButton className="px-10 py-5 bg-slate-900 text-white rounded-full font-bold text-xl hover:bg-teal-600 transition-colors shadow-2xl shadow-teal-900/10 hover:shadow-teal-500/20">
                             Create Free Account
-                            <ArrowRight className="w-5 h-5" />
-                        </Link>
-                    </div>
+                        </MagneticButton>
+                    </Link>
                 </div>
             </section>
 
-            {/* Footer */}
-            <footer className="py-12 border-t border-border bg-white text-muted-foreground">
-                <div className="container mx-auto px-4 md:px-8">
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-                        <div className="flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-lg flex items-center justify-center">
-                                <img src="/logo.svg" alt="HealthTrack Logo" className="h-8 w-8" />
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="font-bold text-foreground leading-none">HealthTrack</span>
-                                <span className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">Medical Suite</span>
-                            </div>
-                        </div>
-                        <div className="flex gap-8 text-sm font-medium">
-                            <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
-                            <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
-                            <a href="#" className="hover:text-primary transition-colors">Contact Support</a>
-                        </div>
-                        <div className="text-sm font-medium text-muted-foreground">
-                            © 2026 HealthTrack+. All rights reserved.
-                        </div>
-                    </div>
-                </div>
+            {/* SIMPLE FOOTER */}
+            <footer className="py-8 text-center text-slate-400 text-sm border-t border-slate-100 bg-white">
+                <p className="font-mono text-xs">© 2026 HealthTrack+ <span className="mx-2">|</span> BUILD_VER: 2.4.9 <span className="mx-2">|</span> SECURE</p>
             </footer>
         </div>
     )

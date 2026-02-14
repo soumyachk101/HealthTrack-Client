@@ -36,7 +36,14 @@ export default function Auth() {
         setFormData(prev => ({ ...prev, [name]: value }))
     }
 
-    const API_URL = import.meta.env.VITE_API_URL || ""
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000"
+
+    // Debug logging
+    useEffect(() => {
+        console.log("Auth Component Mounted")
+        console.log("Using API_URL:", API_URL)
+        console.log("Mode:", mode)
+    }, [mode])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -46,6 +53,7 @@ export default function Auth() {
         try {
             const endpoint = mode === 'login' ? '/accounts/api/login/' : '/accounts/api/register/'
             const url = `${API_URL}${endpoint}`
+            console.log("Attempting request to:", url)
 
             const response = await fetch(url, {
                 method: 'POST',
