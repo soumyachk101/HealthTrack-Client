@@ -43,6 +43,11 @@ export default function Login() {
             const data = await response.json()
 
             if (data.success) {
+                if (data.otp_required) {
+                    localStorage.setItem('verification_email', (e.target as any).username.value)
+                    navigate('/verify-otp')
+                    return
+                }
                 localStorage.setItem('token', data.token)
                 // Store user info if needed
                 if (data.user) {

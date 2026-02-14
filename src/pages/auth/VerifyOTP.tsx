@@ -52,7 +52,7 @@ export default function VerifyOTP() {
                     if (data.user) localStorage.setItem('user', JSON.stringify(data.user))
                 }
                 setTimeout(() => {
-                    navigate('/login')
+                    navigate('/dashboard')
                 }, 1500)
             } else {
                 setError(data.error || "Verification failed. Invalid code.")

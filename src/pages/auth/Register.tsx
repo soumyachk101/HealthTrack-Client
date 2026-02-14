@@ -71,7 +71,12 @@ export default function Register() {
             const data = await response.json()
 
             if (data.success) {
-                // Store token if needed, or just redirect to login
+                if (data.otp_required) {
+                    localStorage.setItem('verification_email', formData.email)
+                    navigate('/verify-otp')
+                    return
+                }
+                // Store token if needed
                 localStorage.setItem('token', data.token)
                 navigate('/dashboard')
             } else {
