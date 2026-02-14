@@ -58,6 +58,7 @@ export default function Register() {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     username: formData.username,
                     email: formData.email,

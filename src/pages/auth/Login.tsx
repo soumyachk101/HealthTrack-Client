@@ -34,6 +34,7 @@ export default function Login() {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     username: (e.target as any).username.value,
                     password: (e.target as any).password.value
