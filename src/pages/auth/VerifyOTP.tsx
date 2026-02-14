@@ -145,7 +145,7 @@ export default function VerifyOTP() {
 
                         <div className="space-y-2">
                             <Label htmlFor="otp" className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider text-center block">
-                                Authentication_Code
+                                Authentication Code
                             </Label>
                             <div className="relative group">
                                 <div className="absolute transition-all duration-300 opacity-20 group-focus-within:opacity-100 -inset-0.5 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-lg blur opacity-30 group-hover:opacity-100"></div>
@@ -187,7 +187,7 @@ export default function VerifyOTP() {
                                 disabled={isLoading}
                                 className="text-teal-600 font-bold hover:underline hover:text-teal-700 disabled:opacity-50"
                             >
-                                Resend_Packet
+                                Resend Code
                             </button>
                         </p>
                         <button
@@ -196,7 +196,7 @@ export default function VerifyOTP() {
                             className="flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors text-xs font-mono uppercase tracking-wider group"
                         >
                             <ArrowLeft className="mr-1 h-3 w-3 group-hover:-translate-x-1 transition-transform" />
-                            Return to Initialization
+                            Return to Login
                         </button>
                     </div>
                 </div>

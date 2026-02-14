@@ -188,10 +188,10 @@ export default function Login() {
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center ml-1">
                                     <Label htmlFor="password" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                        Password_Key
+                                        Password
                                     </Label>
                                     <Link to="/accounts/password_reset/" className="text-xs font-bold text-teal-600 hover:text-teal-700">
-                                        Forgot Key?
+                                        Forgot Password?
                                     </Link>
                                 </div>
                                 <div className="relative">
@@ -259,9 +259,9 @@ export default function Login() {
                     <p className="text-center text-xs font-mono text-slate-400 uppercase tracking-widest opacity-60">
                         Secure Connection • 256-bit Encryption
                     </p>
-                </div>
-            </div>
-        </div>
+                </div >
+            </div >
+        </div >
     )
 }
 
