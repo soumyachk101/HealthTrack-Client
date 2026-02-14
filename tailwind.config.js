@@ -56,13 +56,25 @@ export default {
                 '3xl': '2rem',
             },
             boxShadow: {
-                'soft': '0 4px 20px -2px rgba(45, 212, 191, 0.1)', // Subtle mint shadow
-                'glow': '0 0 20px -2px rgba(45, 212, 191, 0.25)', // Stronger mint glow
-                // Claymorphism Shadows
-                'clay-card': '8px 8px 16px 0px rgba(45, 212, 191, 0.2), -8px -8px 16px 0px rgba(255, 255, 255, 0.8)',
-                'clay-btn': '6px 6px 12px 0px rgba(45, 212, 191, 0.3), -6px -6px 12px 0px rgba(255, 255, 255, 0.9)',
-                'clay-inner': 'inset 6px 6px 12px 0px rgba(45, 212, 191, 0.2), inset -6px -6px 12px 0px rgba(255, 255, 255, 0.8)',
-                'clay-btn-active': 'inset 4px 4px 8px 0px rgba(45, 212, 191, 0.2), inset -4px -4px 8px 0px rgba(255, 255, 255, 0.9)',
+                'soft': '0 4px 20px -2px rgba(45, 212, 191, 0.1)',
+
+                // SKEUOMORPHIC SHADOWS (Light Source: Top Left)
+                // Base: #EFF6FF (Light Blue/Grey)
+
+                // Standard Raised Element (Card, Container)
+                'skeuo-sm': '5px 5px 10px #d1d9e6, -5px -5px 10px #ffffff',
+                'skeuo-md': '8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff',
+                'skeuo-lg': '12px 12px 24px #d1d9e6, -12px -12px 24px #ffffff',
+
+                // Pressed/Inset Element (Input, Active Button)
+                'skeuo-inset-sm': 'inset 2px 2px 5px #d1d9e6, inset -2px -2px 5px #ffffff',
+                'skeuo-inset-md': 'inset 5px 5px 10px #d1d9e6, inset -5px -5px 10px #ffffff',
+
+                // Convex/Concave specific (Buttons)
+                'skeuo-convex': '6px 6px 12px #b8c2cc, -6px -6px 12px #ffffff',
+
+                // Floating/Active state
+                'skeuo-floating': '14px 14px 28px #d1d9e6, -14px -14px 28px #ffffff, 0 4px 20px rgba(45, 212, 191, 0.2)',
             }
         },
     },

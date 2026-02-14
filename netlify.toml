@@ -2,9 +2,10 @@
   command = "npm run build"
   publish = "dist"
 
-[build.environment]
-  NODE_VERSION = "20"
-  VITE_API_URL = "https://health-track-server-seven.vercel.app"
+[dev]
+  command = "npm run dev"
+  port = 5173
+  targetPort = 5173
 
 [[redirects]]
   from = "/*"

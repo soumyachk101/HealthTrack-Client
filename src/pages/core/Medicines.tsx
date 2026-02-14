@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
 import { Sidebar } from "@/components/layout/Sidebar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Pill, Plus, Clock } from "lucide-react"
+import { Pill, Plus, Clock, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Link, useNavigate } from "react-router-dom"
 
 interface Medicine {
     name: string
@@ -20,20 +21,64 @@ interface MedicinesData {
 
 export default function Medicines() {
     const [data, setData] = useState<MedicinesData | null>(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+    const navigate = useNavigate()
 
     useEffect(() => {
-        const dataScript = document.getElementById("medicines-data")
-        if (dataScript && dataScript.textContent) {
+        const controller = new AbortController()
+        const fetchData = async () => {
+            const token = localStorage.getItem('token')
+            if (!token) {
+                navigate('/login')
+                return
+            }
+
             try {
-                const parsedData = JSON.parse(dataScript.textContent)
-                setData(parsedData)
-            } catch (e) {
-                console.error("Failed to parse medicines data", e)
+                const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
+                const response = await fetch(`${API_URL}/api/medicines/`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    signal: controller.signal
+                })
+
+                if (response.status === 401 || response.status === 403) {
+                    localStorage.removeItem('token')
+                    navigate('/login')
+                    return
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch medicines data')
+                }
+
+                const result = await response.json()
+                setData(result)
+            } catch (err: any) {
+                if (err.name === 'AbortError') return
+                console.error("Medicines Fetch Error:", err)
+                setError(err.message || "Failed to load medicines")
+            } finally {
+                if (!controller.signal.aborted) {
+                    setLoading(false)
+                }
             }
         }
-    }, [])
 
-    if (!data) return <div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>
+        fetchData()
+        return () => controller.abort()
+    }, [navigate])
+
+    if (loading) return <div className="min-h-screen bg-background flex items-center justify-center">Loading Medicines...</div>
+    if (error) return (
+        <div className="min-h-screen bg-background flex items-center justify-center text-destructive flex-col gap-4">
+            <AlertCircle className="h-10 w-10" />
+            <p>{error}</p>
+            <Button variant="outline" onClick={() => window.location.reload()}>Retry</Button>
+        </div>
+    )
 
     return (
         <div className="min-h-screen bg-background text-foreground flex">
@@ -44,12 +89,12 @@ export default function Medicines() {
                         <h1 className="text-3xl font-bold tracking-tight text-primary">Medicines</h1>
                         <p className="text-muted-foreground mt-1">Manage your active prescriptions and schedules</p>
                     </div>
-                    <a href="/medicines/add/">
+                    <Link to="/add-medicine">
                         <Button className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground">
                             <Plus className="h-4 w-4" />
                             Add Medicine
                         </Button>
-                    </a>
+                    </Link>
                 </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -61,7 +106,7 @@ export default function Medicines() {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-foreground">{data.active_count}</div>
+                            <div className="text-2xl font-bold text-foreground">{data?.active_count || 0}</div>
                             <p className="text-xs text-muted-foreground mt-1">Currently taking</p>
                         </CardContent>
                     </Card>
@@ -80,7 +125,7 @@ export default function Medicines() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border">
-                                {data.medicines.map((med, i) => (
+                                {data?.medicines.map((med, i) => (
                                     <tr key={i} className="bg-card hover:bg-muted/50 transition-colors">
                                         <td className="px-6 py-4 font-medium text-foreground">{med.name}</td>
                                         <td className="px-6 py-4">{med.dosage}</td>
@@ -106,7 +151,7 @@ export default function Medicines() {
                                         </td>
                                     </tr>
                                 ))}
-                                {data.medicines.length === 0 && (
+                                {(!data?.medicines || data.medicines.length === 0) && (
                                     <tr>
                                         <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">
                                             No medicines added yet.

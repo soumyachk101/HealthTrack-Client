@@ -8,6 +8,14 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom', 'lucide-react', 'recharts'],
+          ui: ['@/components/ui/button', '@/components/ui/card', '@/components/ui/input']
+        }
+      }
+    }
   },
   resolve: {
     alias: {

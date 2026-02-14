@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { Sidebar } from "@/components/layout/Sidebar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Heart, FileText, Calendar } from "lucide-react"
@@ -21,20 +22,59 @@ interface PastRecordsData {
 
 export default function PastRecords() {
     const [data, setData] = useState<PastRecordsData | null>(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+    const navigate = useNavigate()
 
     useEffect(() => {
-        const dataScript = document.getElementById("past-records-data")
-        if (dataScript && dataScript.textContent) {
+        const controller = new AbortController()
+        const fetchData = async () => {
+            const token = localStorage.getItem('token')
+            if (!token) {
+                navigate('/login')
+                return
+            }
+
             try {
-                const parsedData = JSON.parse(dataScript.textContent)
-                setData(parsedData)
-            } catch (e) {
-                console.error("Failed to parse past records data", e)
+                const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
+                const response = await fetch(`${API_URL}/api/past-records/`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    signal: controller.signal
+                })
+
+                if (response.status === 401 || response.status === 403) {
+                    localStorage.removeItem('token')
+                    navigate('/login')
+                    return
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch past records')
+                }
+
+                const result = await response.json()
+                setData(result)
+            } catch (err: any) {
+                if (err.name === 'AbortError') return
+                console.error("Past Records Fetch Error:", err)
+                setError(err.message || "Failed to load past records")
+            } finally {
+                if (!controller.signal.aborted) {
+                    setLoading(false)
+                }
             }
         }
-    }, [])
 
-    if (!data) return <div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>
+        fetchData()
+        return () => controller.abort()
+    }, [navigate])
+
+    if (loading) return <div className="min-h-screen bg-background flex items-center justify-center">Loading Past Records...</div>
+    if (error) return <div className="min-h-screen bg-background flex items-center justify-center text-destructive">{error}</div>
+    if (!data) return null
 
     return (
         <div className="min-h-screen bg-background text-foreground flex">

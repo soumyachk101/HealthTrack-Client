@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { Sidebar } from "@/components/layout/Sidebar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -18,20 +19,59 @@ interface LifestyleData {
 
 export default function Lifestyle() {
     const [data, setData] = useState<LifestyleData | null>(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+    const navigate = useNavigate()
 
     useEffect(() => {
-        const dataScript = document.getElementById("lifestyle-data")
-        if (dataScript && dataScript.textContent) {
+        const controller = new AbortController()
+        const fetchData = async () => {
+            const token = localStorage.getItem('token')
+            if (!token) {
+                navigate('/login')
+                return
+            }
+
             try {
-                const parsedData = JSON.parse(dataScript.textContent)
-                setData(parsedData)
-            } catch (e) {
-                console.error("Failed to parse lifestyle data", e)
+                const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
+                const response = await fetch(`${API_URL}/api/lifestyle/`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    signal: controller.signal
+                })
+
+                if (response.status === 401 || response.status === 403) {
+                    localStorage.removeItem('token')
+                    navigate('/login')
+                    return
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch lifestyle data')
+                }
+
+                const result = await response.json()
+                setData(result)
+            } catch (err: any) {
+                if (err.name === 'AbortError') return
+                console.error("Lifestyle Fetch Error:", err)
+                setError(err.message || "Failed to load lifestyle data")
+            } finally {
+                if (!controller.signal.aborted) {
+                    setLoading(false)
+                }
             }
         }
-    }, [])
 
-    if (!data) return <div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>
+        fetchData()
+        return () => controller.abort()
+    }, [navigate])
+
+    if (loading) return <div className="min-h-screen bg-background flex items-center justify-center">Loading Lifestyle Data...</div>
+    if (error) return <div className="min-h-screen bg-background flex items-center justify-center text-destructive">{error}</div>
+    if (!data) return null
 
     const latest = data.logs[0] || {}
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { Sidebar } from "@/components/layout/Sidebar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -16,8 +17,38 @@ export default function AddHealthRecord() {
         if (token) setCsrfToken(token)
     }, [])
 
-    const handleSubmit = () => {
+    const navigate = useNavigate()
+    const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
         setIsLoading(true)
+
+        const formData = new FormData(e.currentTarget)
+        const data = Object.fromEntries(formData.entries())
+
+        try {
+            const response = await fetch(`${API_URL}/core/api/health-track/add/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(data)
+            })
+
+            if (response.ok) {
+                navigate('/health-track')
+            } else {
+                console.error("Failed to add record")
+                // In a real app, set an error state here
+            }
+        } catch (error) {
+            console.error("Error adding record:", error)
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (

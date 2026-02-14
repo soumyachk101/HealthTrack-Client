@@ -3,15 +3,15 @@ import { Link, useLocation } from "react-router-dom"
 
 export function Sidebar() {
     const navItems = [
-        { icon: Home, label: "Dashboard", href: "/dashboard/" },
-        { icon: Pill, label: "Medicines", href: "/medicines/" },
-        { icon: Activity, label: "Health Track", href: "/health-track/" },
-        { icon: Heart, label: "Mental Health", href: "/mental-health/" },
-        { icon: FileText, label: "Prescriptions", href: "/prescriptions/" },
-        { icon: FolderOpen, label: "Past Records", href: "/past-records/" },
-        { icon: Activity, label: "Lifestyle", href: "/lifestyle/" },
-        { icon: Shield, label: "Insurance", href: "/insurance/" },
-        { icon: User, label: "Profile", href: "/profile/" },
+        { icon: Home, label: "Dashboard", href: "/dashboard" },
+        { icon: Pill, label: "Medicines", href: "/medicines" },
+        { icon: Activity, label: "Health Track", href: "/health-track" },
+        { icon: Heart, label: "Mental Health", href: "/mental-health" },
+        { icon: FileText, label: "Prescriptions", href: "/prescriptions" },
+        { icon: FolderOpen, label: "Past Records", href: "/past-records" },
+        { icon: Activity, label: "Lifestyle", href: "/lifestyle" },
+        { icon: Shield, label: "Insurance", href: "/insurance" },
+        { icon: User, label: "Profile", href: "/profile" },
     ]
 
     const location = useLocation()
@@ -49,13 +49,17 @@ export function Sidebar() {
             </nav>
 
             <div className="p-4 border-t border-border/50">
-                <a
-                    href="/accounts/logout/"
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/5 transition-colors"
+                <button
+                    onClick={() => {
+                        localStorage.removeItem('token')
+                        localStorage.removeItem('user')
+                        window.location.href = '/login'
+                    }}
+                    className="flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/5 transition-colors"
                 >
                     <LogOut className="h-4 w-4" />
                     Log Out
-                </a>
+                </button>
             </div>
         </aside>
     )

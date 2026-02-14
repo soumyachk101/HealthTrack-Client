@@ -4,42 +4,65 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { getCookie } from "@/lib/csrf"
 import { Loader2, ShieldCheck, ArrowLeft, AlertCircle, CheckCircle2, Zap } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 export default function VerifyOTP() {
+    const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
     const [csrfToken, setCsrfToken] = useState<string>("")
     const [email, setEmail] = useState<string>("")
+    const [otp, setOtp] = useState<string>("")
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState<string | null>(null)
+
+    const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
 
     useEffect(() => {
         const token = getCookie("csrftoken")
         if (token) setCsrfToken(token)
 
-        // Try to get email from DOM if available
-        const emailEl = document.getElementById("verification-email")
-        if (emailEl) setEmail(emailEl.innerText)
-
-        // Parse server messages
-        const messagesEl = document.getElementById("server-messages")
-        if (messagesEl && messagesEl.textContent) {
-            try {
-                const messages = JSON.parse(messagesEl.textContent)
-                messages.forEach((msg: any) => {
-                    if (msg.level.includes("error") || msg.level.includes("warning")) {
-                        setError(msg.message)
-                    } else if (msg.level.includes("success")) {
-                        setSuccess(msg.message)
-                    }
-                })
-            } catch (e) {
-                console.error("Failed to parse messages", e)
-            }
-        }
+        // Try to get email from localStorage or previous state
+        const storedEmail = localStorage.getItem("verification_email")
+        if (storedEmail) setEmail(storedEmail)
     }, [])
 
-    const handleSubmit = () => {
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setError(null)
+        setSuccess(null)
         setIsLoading(true)
+
+        try {
+            const response = await fetch(`${API_URL}/accounts/api/verify-otp/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ otp })
+            })
+
+            const data = await response.json()
+
+            if (data.success) {
+                setSuccess(data.message || "Verified successfully!")
+                // Store token if returned
+                if (data.token) {
+                    localStorage.setItem('token', data.token)
+                    if (data.user) localStorage.setItem('user', JSON.stringify(data.user))
+                }
+                setTimeout(() => {
+                    navigate('/login')
+                }, 1500)
+            } else {
+                setError(data.error || "Verification failed. Invalid code.")
+            }
+        } catch (err) {
+            setError("Network error. Please try again.")
+            console.error(err)
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -75,21 +98,19 @@ export default function VerifyOTP() {
                         </p>
                     </div>
 
-                    {error && (
-                        <div className="mb-6 p-4 rounded-lg bg-red-50 text-red-600 text-sm border border-red-100 flex items-start gap-2 animate-in fade-in slide-in-from-top-1">
-                            <AlertCircle className="h-4 w-4 mt-0.5" />
-                            <p>{error}</p>
-                        </div>
-                    )}
-                    {success && (
-                        <div className="mb-6 p-4 rounded-lg bg-emerald-50 text-emerald-600 text-sm border border-emerald-100 flex items-start gap-2 animate-in fade-in slide-in-from-top-1">
-                            <CheckCircle2 className="h-4 w-4 mt-0.5" />
-                            <p>{success}</p>
-                        </div>
-                    )}
-
-                    <form method="POST" action="/accounts/verify-otp/" onSubmit={handleSubmit} className="space-y-6">
-                        <input type="hidden" name="csrfmiddlewaretoken" value={csrfToken} />
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        {error && (
+                            <div className="mb-6 p-4 rounded-lg bg-red-50 text-red-600 text-sm border border-red-100 flex items-start gap-2 animate-in fade-in slide-in-from-top-1">
+                                <AlertCircle className="h-4 w-4 mt-0.5" />
+                                <p>{error}</p>
+                            </div>
+                        )}
+                        {success && (
+                            <div className="mb-6 p-4 rounded-lg bg-emerald-50 text-emerald-600 text-sm border border-emerald-100 flex items-start gap-2 animate-in fade-in slide-in-from-top-1">
+                                <CheckCircle2 className="h-4 w-4 mt-0.5" />
+                                <p>{success}</p>
+                            </div>
+                        )}
 
                         <div className="space-y-2">
                             <Label htmlFor="otp" className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider text-center block">
@@ -108,6 +129,8 @@ export default function VerifyOTP() {
                                     autoComplete="one-time-code"
                                     required
                                     autoFocus
+                                    value={otp}
+                                    onChange={(e) => setOtp(e.target.value)}
                                 />
                             </div>
                         </div>

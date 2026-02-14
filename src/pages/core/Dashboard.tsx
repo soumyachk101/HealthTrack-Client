@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Sidebar } from "@/components/layout/Sidebar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Heart, Droplet, Weight, Activity, Pill, Moon, Plus, FileText } from "lucide-react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 
 // Define interfaces for data passed from API
 interface DashboardData {
@@ -42,6 +42,7 @@ export default function Dashboard() {
     const navigate = useNavigate()
 
     useEffect(() => {
+        const controller = new AbortController()
         const fetchData = async () => {
             const token = localStorage.getItem('token')
             if (!token) {
@@ -50,12 +51,13 @@ export default function Dashboard() {
             }
 
             try {
-                const API_URL = import.meta.env.VITE_API_URL || ""
-                const response = await fetch(`${API_URL}/core/api/dashboard/`, {
+                const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
+                const response = await fetch(`${API_URL}/api/dashboard/`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
-                    }
+                    },
+                    signal: controller.signal
                 })
 
                 if (response.status === 401 || response.status === 403) {
@@ -71,14 +73,18 @@ export default function Dashboard() {
                 const result = await response.json()
                 setData(result)
             } catch (err: any) {
+                if (err.name === 'AbortError') return
                 console.error("Dashboard Fetch Error:", err)
                 setError(err.message || "Failed to load dashboard")
             } finally {
-                setLoading(false)
+                if (!controller.signal.aborted) {
+                    setLoading(false)
+                }
             }
         }
 
         fetchData()
+        return () => controller.abort()
     }, [navigate])
 
     if (loading) return <div className="min-h-screen bg-background flex items-center justify-center">Loading Dashboard...</div>
@@ -229,20 +235,20 @@ export default function Dashboard() {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Quick Actions</h3>
                         {[
-                            { label: "Add Health Record", href: "/health-track/add/", icon: Plus },
-                            { label: "Add Medicine", href: "/medicines/add/", icon: Pill },
-                            { label: "Add Prescription", href: "/prescriptions/add/", icon: FileText },
+                            { label: "Add Health Record", href: "/add-health-record", icon: Plus },
+                            { label: "Add Medicine", href: "/add-medicine", icon: Pill },
+                            { label: "Add Prescription", href: "/add-prescription", icon: FileText },
                         ].map((action) => (
-                            <a
+                            <Link
                                 key={action.label}
-                                href={action.href}
+                                to={action.href}
                                 className="flex items-center gap-4 p-4 rounded-xl border border-border bg-card hover:bg-accent transition-all group shadow-sm hover:shadow-md"
                             >
                                 <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                                     <action.icon className="h-5 w-5" />
                                 </div>
                                 <span className="font-medium">{action.label}</span>
-                            </a>
+                            </Link>
                         ))}
                     </div>
                 </div>
