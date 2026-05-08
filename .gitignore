@@ -42,3 +42,7 @@ server/uploads/insurance/*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local dirs
+.vscode/
+/frontend/
