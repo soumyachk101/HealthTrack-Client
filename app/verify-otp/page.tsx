@@ -1,32 +1,24 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { getCookie } from "@/lib/csrf"
-import { Loader2, ArrowRight, ShieldCheck, RefreshCw, Sparkles } from "lucide-react"
+import { Loader2, ShieldCheck, RefreshCw, Sparkles, Mail } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { getApiUrl } from "@/lib/api"
+import { auth } from "@/lib/firebase"
+import { sendSignInLinkToEmail } from "firebase/auth"
 
 export default function VerifyOTP() {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
     const [isResending, setIsResending] = useState(false)
-    const [csrfToken, setCsrfToken] = useState<string>("")
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState<string | null>(null)
-    const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""])
     const [email, setEmail] = useState<string>("")
-    const [username, setUsername] = useState<string>("")
-    const [otpType, setOtpType] = useState<string>("register")
-    const inputRefs = useRef<(HTMLInputElement | null)[]>([])
+    const [linkSent, setLinkSent] = useState(false)
 
     useEffect(() => {
-        const token = getCookie("csrftoken")
-        if (token) setCsrfToken(token)
-
         const storedEmail = localStorage.getItem('verification_email')
-        const storedUsername = localStorage.getItem('verification_username')
-        const storedType = localStorage.getItem('verification_type')
 
         if (!storedEmail) {
             router.push('/login')
@@ -34,130 +26,35 @@ export default function VerifyOTP() {
         }
 
         setEmail(storedEmail)
-        if (storedUsername) setUsername(storedUsername)
-        if (storedType) setOtpType(storedType)
-
-        inputRefs.current[0]?.focus()
+        sendVerificationEmail(storedEmail)
     }, [router])
 
-    const handleChange = (index: number, value: string) => {
-        if (!/^\d*$/.test(value)) return
-
-        const newOtp = [...otp]
-        newOtp[index] = value.slice(-1)
-        setOtp(newOtp)
-
-        if (value && index < 5) {
-            inputRefs.current[index + 1]?.focus()
-        }
-    }
-
-    const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
-        if (e.key === 'Backspace' && !otp[index] && index > 0) {
-            inputRefs.current[index - 1]?.focus()
-        }
-    }
-
-    const handlePaste = (e: React.ClipboardEvent) => {
-        e.preventDefault()
-        const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6)
-        if (pastedData.length === 6) {
-            const newOtp = pastedData.split('')
-            setOtp(newOtp)
-            inputRefs.current[5]?.focus()
-        }
-    }
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setError(null)
-        setSuccess(null)
+    const sendVerificationEmail = async (emailAddress: string) => {
         setIsLoading(true)
-
-        const otpCode = otp.join('')
-        if (otpCode.length !== 6) {
-            setError("Please enter the complete 6-digit code")
-            setIsLoading(false)
-            return
-        }
-
+        setError(null)
         try {
-            const response = await fetch(getApiUrl("/accounts/api/verify-otp/"), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    otp: otpCode,
-                    email: email,
-                    otp_type: otpType,
-                    username: username
-                })
-            })
-
-            const data = await response.json()
-
-            if (data.success) {
-                localStorage.setItem('token', data.token)
-                if (data.user) {
-                    localStorage.setItem('user', JSON.stringify(data.user))
-                }
-
-                localStorage.removeItem('verification_email')
-                localStorage.removeItem('verification_username')
-                localStorage.removeItem('verification_type')
-
-                const role = data.user?.role
-                if (role === 'doctor') {
-                    router.push('/doctor/dashboard')
-                } else if (role === 'provider') {
-                    router.push('/provider/dashboard')
-                } else if (role === 'admin') {
-                    router.push('/admin/dashboard')
-                } else {
-                    router.push('/dashboard')
-                }
-            } else {
-                setError(data.error || "Verification failed")
+            const actionCodeSettings = {
+                url: `${window.location.origin}/verify-email`,
+                handleCodeInApp: true,
             }
-        } catch (err) {
-            setError("Network error. Please try again.")
-            console.error(err)
+            await sendSignInLinkToEmail(auth, emailAddress, actionCodeSettings)
+            window.localStorage.setItem('emailForSignIn', emailAddress)
+            setLinkSent(true)
+            setSuccess("Verification link sent! Check your inbox.")
+        } catch (err: any) {
+            console.error('Firebase email link error:', err)
+            setError(err.message || "Failed to send verification email")
         } finally {
             setIsLoading(false)
         }
     }
 
     const handleResend = async () => {
+        setIsResending(true)
         setError(null)
         setSuccess(null)
-        setIsResending(true)
-
         try {
-            const response = await fetch(getApiUrl("/accounts/api/resend-otp/"), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: email,
-                    otp_type: otpType,
-                    first_name: ''
-                })
-            })
-
-            const data = await response.json()
-
-            if (data.success) {
-                setSuccess("A new verification code has been sent to your email")
-                setOtp(["", "", "", "", "", ""])
-                inputRefs.current[0]?.focus()
-            } else {
-                setError(data.error || "Failed to resend code")
-            }
-        } catch (err) {
-            setError("Network error. Please try again.")
-            console.error(err)
+            await sendVerificationEmail(email)
         } finally {
             setIsResending(false)
         }
@@ -182,14 +79,14 @@ export default function VerifyOTP() {
                             <Sparkles className="h-5 w-5 text-teal-500" />
                             <span className="text-lg font-black text-slate-800 tracking-tighter">HealthTrack+</span>
                         </div>
-                        <h2 className="text-3xl font-bold text-slate-800">Verify Your Identity</h2>
+                        <h2 className="text-3xl font-bold text-slate-800">Check Your Email</h2>
                         <p className="mt-3 text-slate-500 font-medium text-sm">
-                            We sent a 6-digit code to<br />
+                            We sent a verification link to<br />
                             <span className="text-teal-600 font-bold">{maskedEmail}</span>
                         </p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="space-y-6">
                         {error && (
                             <div className="p-3 rounded-lg bg-red-50 text-red-600 text-sm border border-red-100 text-center font-medium">
                                 {error}
@@ -201,44 +98,35 @@ export default function VerifyOTP() {
                             </div>
                         )}
 
-                        <div className="flex justify-center gap-3" onPaste={handlePaste}>
-                            {otp.map((digit, index) => (
-                                <input
-                                    key={index}
-                                    ref={(el) => { inputRefs.current[index] = el }}
-                                    type="text"
-                                    inputMode="numeric"
-                                    maxLength={1}
-                                    value={digit}
-                                    onChange={(e) => handleChange(index, e.target.value)}
-                                    onKeyDown={(e) => handleKeyDown(index, e)}
-                                    className="w-12 h-14 text-center text-xl font-bold rounded-xl border-none bg-input shadow-skeuo-inset-md text-slate-700 focus:ring-2 focus:ring-teal-500/50 outline-none transition-shadow"
-                                />
-                            ))}
-                        </div>
-
-                        <Button
-                            type="submit"
-                            className="w-full btn-skeuo-primary h-14 text-lg shadow-skeuo-md hover:shadow-skeuo-floating"
-                            disabled={isLoading || otp.join('').length !== 6}
-                        >
-                            {isLoading ? (
-                                <Loader2 className="h-6 w-6 animate-spin mx-auto" />
-                            ) : (
-                                <span className="flex items-center justify-center gap-2">
-                                    Verify Code <ArrowRight className="h-5 w-5" />
-                                </span>
-                            )}
-                        </Button>
-                    </form>
+                        {isLoading ? (
+                            <div className="flex flex-col items-center gap-4 py-8">
+                                <Loader2 className="h-10 w-10 animate-spin text-teal-600" />
+                                <p className="text-slate-500 font-medium">Sending verification email...</p>
+                            </div>
+                        ) : linkSent ? (
+                            <div className="flex flex-col items-center gap-4 py-6">
+                                <div className="w-16 h-16 rounded-full bg-teal-50 flex items-center justify-center">
+                                    <Mail className="h-8 w-8 text-teal-600" />
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-slate-700 font-bold text-lg mb-2">Link Sent!</p>
+                                    <p className="text-slate-500 text-sm">
+                                        Click the link in your email from<br />
+                                        <span className="font-bold text-slate-700">noreply@healthtracker-88cf8.firebaseapp.com</span><br />
+                                        to complete verification.
+                                    </p>
+                                </div>
+                            </div>
+                        ) : null}
+                    </div>
 
                     <div className="mt-8 pt-6 border-t border-slate-200 text-center">
                         <p className="text-sm text-slate-500 font-medium mb-3">
-                            Didn&apos;t receive the code?
+                            Didn&apos;t receive the email?
                         </p>
                         <button
                             onClick={handleResend}
-                            disabled={isResending}
+                            disabled={isResending || isLoading}
                             className="inline-flex items-center gap-2 text-teal-600 font-bold text-sm hover:underline decoration-2 underline-offset-4 disabled:opacity-50"
                         >
                             {isResending ? (
@@ -246,13 +134,13 @@ export default function VerifyOTP() {
                             ) : (
                                 <RefreshCw className="h-4 w-4" />
                             )}
-                            Resend Code
+                            Resend Link
                         </button>
                     </div>
                 </div>
 
                 <p className="text-center text-xs font-mono text-slate-400 uppercase tracking-widest opacity-60 mt-6">
-                    Secure Verification • OTP Expires in 10 min
+                    Secure Verification • Firebase Authentication
                 </p>
             </div>
         </div>
