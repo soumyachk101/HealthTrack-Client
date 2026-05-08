@@ -10,6 +10,7 @@ import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { getApiUrl } from "@/lib/api"
+import { GoogleLogin } from "@react-oauth/google"
 
 function RegisterForm() {
     const router = useRouter()
@@ -56,10 +57,8 @@ function RegisterForm() {
             const response = await fetch(getApiUrl("/accounts/api/register/"), {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
+                    'Content-Type': 'application/json'
                 },
-                credentials: 'include',
                 body: JSON.stringify({
                     username: formData.username,
                     email: formData.email,
@@ -359,7 +358,43 @@ function RegisterForm() {
                         </Button>
                     </form>
 
-                    <div className="mt-8 text-center">
+                    <div className="mt-6 pt-6 border-t border-slate-200">
+                        <div className="text-center text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Or sign up with</div>
+                        <div className="flex justify-center">
+                            <GoogleLogin
+                                onSuccess={async (credentialResponse) => {
+                                    setError(null)
+                                    setIsLoading(true)
+                                    try {
+                                        const response = await fetch(getApiUrl("/accounts/api/google-login/"), {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ credential: credentialResponse.credential })
+                                        })
+                                        const data = await response.json()
+                                        if (data.success) {
+                                            localStorage.setItem('token', data.token)
+                                            if (data.user) localStorage.setItem('user', JSON.stringify(data.user))
+                                            router.push('/dashboard')
+                                        } else {
+                                            setError(data.error || 'Google sign up failed')
+                                        }
+                                    } catch (err) {
+                                        setError('Network error. Please try again.')
+                                        console.error(err)
+                                    } finally {
+                                        setIsLoading(false)
+                                    }
+                                }}
+                                onError={() => setError('Google sign up failed')}
+                                theme="outline"
+                                size="large"
+                                text="signup_with"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="mt-6 text-center">
                         <p className="text-slate-500 text-sm font-medium">
                             Already have an account?{" "}
                             <Link href="/login" className="text-teal-600 font-bold hover:underline decoration-2 underline-offset-4">

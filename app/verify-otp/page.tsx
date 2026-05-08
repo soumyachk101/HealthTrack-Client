@@ -85,10 +85,8 @@ export default function VerifyOTP() {
             const response = await fetch(getApiUrl("/accounts/api/verify-otp/"), {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
+                    'Content-Type': 'application/json'
                 },
-                credentials: 'include',
                 body: JSON.stringify({
                     otp: otpCode,
                     email: email,
@@ -139,10 +137,8 @@ export default function VerifyOTP() {
             const response = await fetch(getApiUrl("/accounts/api/resend-otp/"), {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
+                    'Content-Type': 'application/json'
                 },
-                credentials: 'include',
                 body: JSON.stringify({
                     email: email,
                     otp_type: otpType,

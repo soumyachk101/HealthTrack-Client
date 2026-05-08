@@ -10,6 +10,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { getApiUrl } from "@/lib/api"
+import { GoogleLogin } from "@react-oauth/google"
 
 export default function Login() {
     const router = useRouter()
@@ -34,10 +35,8 @@ export default function Login() {
             const response = await fetch(getApiUrl("/accounts/api/login/"), {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
+                    'Content-Type': 'application/json'
                 },
-                credentials: 'include',
                 body: JSON.stringify({
                     username: (e.target as any).username.value,
                     password: (e.target as any).password.value
@@ -250,7 +249,49 @@ export default function Login() {
                             </Button>
                         </form>
 
-                        <div className="mt-8 pt-8 border-t border-slate-200">
+                        <div className="mt-6 pt-6 border-t border-slate-200">
+                            <div className="text-center text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Or continue with</div>
+                            <div className="flex justify-center">
+                                <GoogleLogin
+                                    onSuccess={async (credentialResponse) => {
+                                        setError(null)
+                                        setIsLoading(true)
+                                        try {
+                                            const response = await fetch(getApiUrl("/accounts/api/google-login/"), {
+                                                method: 'POST',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({ credential: credentialResponse.credential })
+                                            })
+                                            const data = await response.json()
+                                            if (data.success) {
+                                                localStorage.setItem('token', data.token)
+                                                if (data.user) {
+                                                    localStorage.setItem('user', JSON.stringify(data.user))
+                                                    if (data.user.role === 'doctor') { router.push('/doctor/dashboard'); return }
+                                                    if (data.user.role === 'provider') { router.push('/provider/dashboard'); return }
+                                                    if (data.user.role === 'admin') { router.push('/admin/dashboard'); return }
+                                                }
+                                                router.push('/dashboard')
+                                            } else {
+                                                setError(data.error || 'Google login failed')
+                                            }
+                                        } catch (err) {
+                                            setError('Network error. Please try again.')
+                                            console.error(err)
+                                        } finally {
+                                            setIsLoading(false)
+                                        }
+                                    }}
+                                    onError={() => setError('Google login failed')}
+                                    theme="outline"
+                                    size="large"
+                                    width="100%"
+                                    text="continue_with"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="mt-6 pt-6 border-t border-slate-200">
                             <p className="text-center text-slate-500 font-medium">
                                 No account found? {" "}
                                 <Link href="/register" className="text-teal-600 font-bold hover:underline decoration-2 underline-offset-4">
