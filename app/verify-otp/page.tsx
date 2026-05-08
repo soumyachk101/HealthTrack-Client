@@ -1,12 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
 import { Loader2, ShieldCheck, RefreshCw, Sparkles, Mail } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { getApiUrl } from "@/lib/api"
-import { auth } from "@/lib/firebase"
-import { sendSignInLinkToEmail } from "firebase/auth"
+import { supabase } from "@/lib/supabase"
 
 export default function VerifyOTP() {
     const router = useRouter()
@@ -33,16 +30,17 @@ export default function VerifyOTP() {
         setIsLoading(true)
         setError(null)
         try {
-            const actionCodeSettings = {
-                url: `${window.location.origin}/verify-email`,
-                handleCodeInApp: true,
-            }
-            await sendSignInLinkToEmail(auth, emailAddress, actionCodeSettings)
-            window.localStorage.setItem('emailForSignIn', emailAddress)
+            const { error: supaError } = await supabase.auth.signInWithOtp({
+                email: emailAddress,
+                options: {
+                    emailRedirectTo: `${window.location.origin}/verify-email`,
+                }
+            })
+            if (supaError) throw supaError
             setLinkSent(true)
             setSuccess("Verification link sent! Check your inbox.")
         } catch (err: any) {
-            console.error('Firebase email link error:', err)
+            console.error('Supabase magic link error:', err)
             setError(err.message || "Failed to send verification email")
         } finally {
             setIsLoading(false)
@@ -111,8 +109,7 @@ export default function VerifyOTP() {
                                 <div className="text-center">
                                     <p className="text-slate-700 font-bold text-lg mb-2">Link Sent!</p>
                                     <p className="text-slate-500 text-sm">
-                                        Click the link in your email from<br />
-                                        <span className="font-bold text-slate-700">noreply@healthtracker-88cf8.firebaseapp.com</span><br />
+                                        Click the magic link in your email<br />
                                         to complete verification.
                                     </p>
                                 </div>
@@ -140,7 +137,7 @@ export default function VerifyOTP() {
                 </div>
 
                 <p className="text-center text-xs font-mono text-slate-400 uppercase tracking-widest opacity-60 mt-6">
-                    Secure Verification • Firebase Authentication
+                    Secure Verification • Supabase Authentication
                 </p>
             </div>
         </div>

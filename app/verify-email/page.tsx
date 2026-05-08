@@ -4,8 +4,7 @@ import { useState, useEffect } from "react"
 import { Loader2, ShieldCheck, Sparkles, CheckCircle2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { getApiUrl } from "@/lib/api"
-import { auth } from "@/lib/firebase"
-import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth"
+import { supabase } from "@/lib/supabase"
 
 export default function VerifyEmail() {
     const router = useRouter()
@@ -13,32 +12,43 @@ export default function VerifyEmail() {
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
-        handleEmailLink()
+        handleCallback()
     }, [])
 
-    const handleEmailLink = async () => {
+    const handleCallback = async () => {
         try {
-            if (!isSignInWithEmailLink(auth, window.location.href)) {
+            const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+
+            if (sessionError) {
                 setStatus('error')
-                setError("Invalid verification link.")
+                setError(sessionError.message)
                 return
             }
 
-            let email = window.localStorage.getItem('emailForSignIn')
-            if (!email) {
-                email = window.prompt('Please provide your email for confirmation')
-                if (!email) {
+            if (!session) {
+                const hashParams = new URLSearchParams(window.location.hash.substring(1))
+                const accessToken = hashParams.get('access_token')
+                const refreshToken = hashParams.get('refresh_token')
+
+                if (accessToken && refreshToken) {
+                    const { error: setErr } = await supabase.auth.setSession({
+                        access_token: accessToken,
+                        refresh_token: refreshToken
+                    })
+                    if (setErr) {
+                        setStatus('error')
+                        setError(setErr.message)
+                        return
+                    }
+                } else {
                     setStatus('error')
-                    setError("Email is required for verification.")
+                    setError("Invalid verification link.")
                     return
                 }
             }
 
-            const result = await signInWithEmailLink(auth, email, window.location.href)
-            const idToken = await result.user.getIdToken()
-
-            window.localStorage.removeItem('emailForSignIn')
-
+            const { data: { user } } = await supabase.auth.getUser()
+            const email = user?.email || localStorage.getItem('verification_email') || ''
             const username = localStorage.getItem('verification_username') || ''
             const otpType = localStorage.getItem('verification_type') || 'register'
 
@@ -46,10 +56,10 @@ export default function VerifyEmail() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    firebase_token: idToken,
                     email: email,
                     username: username,
-                    otp_type: otpType
+                    otp_type: otpType,
+                    supabase_verified: true
                 })
             })
 
@@ -79,7 +89,7 @@ export default function VerifyEmail() {
                 setError(data.error || "Verification failed")
             }
         } catch (err: any) {
-            console.error('Email link verification error:', err)
+            console.error('Email verification error:', err)
             setStatus('error')
             setError(err.message || "Verification failed. The link may have expired.")
         }
@@ -138,7 +148,7 @@ export default function VerifyEmail() {
                 </div>
 
                 <p className="text-center text-xs font-mono text-slate-400 uppercase tracking-widest opacity-60 mt-6">
-                    Secure Verification • Firebase Authentication
+                    Secure Verification • Supabase Authentication
                 </p>
             </div>
         </div>

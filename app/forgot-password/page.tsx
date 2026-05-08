@@ -7,8 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Loader2, ArrowRight, ArrowLeft, Mail, Sparkles, KeyRound } from "lucide-react"
 import Link from "next/link"
 import { getApiUrl } from "@/lib/api"
-import { auth } from "@/lib/firebase"
-import { sendPasswordResetEmail } from "firebase/auth"
+import { supabase } from "@/lib/supabase"
 
 export default function ForgotPassword() {
     const [isLoading, setIsLoading] = useState(false)
@@ -22,28 +21,14 @@ export default function ForgotPassword() {
         setIsLoading(true)
 
         try {
-            await fetch(getApiUrl("/accounts/api/forgot-password/"), {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email })
+            const { error: supaError } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/reset-password`,
             })
-
-            await sendPasswordResetEmail(auth, email, {
-                url: `${window.location.origin}/login`,
-                handleCodeInApp: false,
-            })
+            if (supaError) throw supaError
             setSuccess(true)
         } catch (err: any) {
             console.error('Password reset error:', err)
-            if (err.code === 'auth/user-not-found') {
-                setError("No account found with this email address.")
-            } else if (err.code === 'auth/invalid-email') {
-                setError("Please enter a valid email address.")
-            } else if (err.code === 'auth/too-many-requests') {
-                setError("Too many requests. Please try again later.")
-            } else {
-                setError(err.message || "Failed to send reset email. Please try again.")
-            }
+            setError(err.message || "Failed to send reset email. Please try again.")
         } finally {
             setIsLoading(false)
         }
