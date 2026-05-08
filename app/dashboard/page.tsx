@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Heart, Droplet, Weight, Activity, Pill, Moon, Plus, FileText, Brain, Footprints } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { getApiUrl } from "@/lib/api"
 
 // Define interfaces for data passed from API
 interface DashboardData {
@@ -54,8 +55,7 @@ export default function Dashboard() {
             }
 
             try {
-                const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
-                const response = await fetch(`${API_URL}/api/dashboard/`, {
+                const response = await fetch(getApiUrl("/api/dashboard/"), {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'

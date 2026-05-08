@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { DashboardLayout } from "@/components/layout/DashboardLayout"
 import { getCookie } from "@/lib/csrf"
 import { useRouter } from "next/navigation"
+import { getApiUrl } from "@/lib/api"
 
 const providerNavItems = [
     { icon: Home, label: "Dashboard", href: "/provider/dashboard" },
@@ -23,8 +24,6 @@ export default function ProviderRequests() {
     const [isLoading, setIsLoading] = useState(true)
     const router = useRouter()
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
-
     useEffect(() => {
         fetchRequests()
     }, [])
@@ -36,7 +35,7 @@ export default function ProviderRequests() {
             return
         }
         try {
-            const response = await fetch(`${API_URL}/api/service-requests/`, {
+            const response = await fetch(getApiUrl("/api/service-requests/"), {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
 
@@ -62,7 +61,7 @@ export default function ProviderRequests() {
             const token = localStorage.getItem('token')
             const csrfToken = getCookie("csrftoken")
 
-            const response = await fetch(`${API_URL}/api/service-requests/${id}/action/`, {
+            const response = await fetch(getApiUrl(`/api/service-requests/${id}/action/`), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

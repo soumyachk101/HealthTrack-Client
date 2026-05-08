@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { DashboardLayout } from "@/components/layout/DashboardLayout"
 import { getCookie } from "@/lib/csrf"
 import { useRouter } from "next/navigation"
+import { getApiUrl } from "@/lib/api"
 
 const doctorNavItems = [
     { icon: Home, label: "Dashboard", href: "/doctor/dashboard" },
@@ -22,7 +23,6 @@ export default function DoctorAppointments() {
     const [isLoading, setIsLoading] = useState(true)
     const router = useRouter()
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
 
     useEffect(() => {
         fetchAppointments()
@@ -35,7 +35,7 @@ export default function DoctorAppointments() {
             return
         }
         try {
-            const response = await fetch(`${API_URL}/api/appointments/`, {
+            const response = await fetch(getApiUrl("/api/appointments/"), {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
 
@@ -61,7 +61,7 @@ export default function DoctorAppointments() {
             const token = localStorage.getItem('token')
             const csrfToken = getCookie("csrftoken")
 
-            const response = await fetch(`${API_URL}/api/appointments/${id}/action/`, {
+            const response = await fetch(getApiUrl(`/api/appointments/${id}/action/`), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

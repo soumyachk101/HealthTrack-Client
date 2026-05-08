@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { getApiUrl } from "@/lib/api"
 import { DashboardLayout } from "@/components/layout/DashboardLayout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -35,8 +36,7 @@ export default function Lifestyle() {
             }
 
             try {
-                const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
-                const response = await fetch(`${API_URL}/api/lifestyle/`, {
+                const response = await fetch(getApiUrl("/api/lifestyle/"), {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'

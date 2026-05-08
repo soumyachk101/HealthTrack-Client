@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import { X, Send, Sparkles, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getApiUrl } from '@/lib/api';
 
 type Message = {
     id: string;
@@ -170,8 +171,7 @@ const Chatbot: React.FC = () => {
         setIsLoading(true);
 
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-            const response = await fetch(`${API_URL}/chatbot/api/`, {
+            const response = await fetch(getApiUrl("/chatbot/api/"), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: userMessage.text }),

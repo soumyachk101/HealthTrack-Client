@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { User, Mail, Phone, MapPin, Heart, AlertCircle, Save } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { getApiUrl } from "@/lib/api"
 
 interface ProfileData {
     csrf_token: string
@@ -43,8 +44,7 @@ export default function Profile() {
             }
 
             try {
-                const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
-                const response = await fetch(`${API_URL}/api/profile/`, {
+                const response = await fetch(getApiUrl("/api/profile/"), {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'

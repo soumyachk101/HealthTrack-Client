@@ -6,6 +6,7 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Shield, FileText, CheckCircle, AlertCircle, Plus, Calendar } from "lucide-react"
+import { getApiUrl } from "@/lib/api"
 
 interface Policy {
     provider_name: string
@@ -37,8 +38,7 @@ export default function Insurance() {
             }
 
             try {
-                const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
-                const response = await fetch(`${API_URL}/api/insurance/`, {
+                const response = await fetch(getApiUrl("/api/insurance/"), {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'

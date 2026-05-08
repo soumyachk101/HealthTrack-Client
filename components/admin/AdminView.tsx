@@ -9,6 +9,7 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout"
 import { getCookie } from "@/lib/csrf"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
+import { getApiUrl } from "@/lib/api"
 
 const adminNavItems = [
     { icon: Activity, label: "Dashboard", href: "/admin/dashboard" },
@@ -28,7 +29,6 @@ export function AdminView() {
     const [searchTerm, setSearchTerm] = useState('')
     const [filterType, setFilterType] = useState('')
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
 
     useEffect(() => {
         fetchData()
@@ -43,7 +43,7 @@ export function AdminView() {
         }
         try {
             // Fetch Stats
-            const statsRes = await fetch(`${API_URL}/admin-panel/api/stats/`, {
+            const statsRes = await fetch(getApiUrl("/admin-panel/api/stats/"), {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
 
@@ -57,7 +57,7 @@ export function AdminView() {
             if (statsData.success) setStats(statsData.stats)
 
             // Fetch Users
-            const usersRes = await fetch(`${API_URL}/admin-panel/api/users/`, {
+            const usersRes = await fetch(getApiUrl("/admin-panel/api/users/"), {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
             const usersData = await usersRes.json()
@@ -74,7 +74,7 @@ export function AdminView() {
         const token = localStorage.getItem('token')
         const csrfToken = getCookie("csrftoken")
         try {
-            const res = await fetch(`${API_URL}/admin-panel/api/users/${id}/action/`, {
+            const res = await fetch(getApiUrl(`/admin-panel/api/users/${id}/action/`), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

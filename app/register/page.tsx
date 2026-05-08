@@ -9,6 +9,7 @@ import { Loader2, User, Mail, MapPin, Lock, Eye, EyeOff, ArrowRight, Sparkles, S
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { getApiUrl } from "@/lib/api"
 
 function RegisterForm() {
     const router = useRouter()
@@ -29,7 +30,6 @@ function RegisterForm() {
         role: "patient"
     })
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
 
     useEffect(() => {
         const token = getCookie("csrftoken")
@@ -53,7 +53,7 @@ function RegisterForm() {
         }
 
         try {
-            const response = await fetch(`${API_URL}/accounts/api/register/`, {
+            const response = await fetch(getApiUrl("/accounts/api/register/"), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

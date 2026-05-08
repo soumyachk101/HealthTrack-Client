@@ -7,6 +7,7 @@ import { Activity, Plus, Heart, Droplet, Weight, Wind, AlertCircle } from "lucid
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { getApiUrl } from "@/lib/api"
 
 interface HealthRecord {
     recorded_at: string
@@ -39,8 +40,7 @@ export default function HealthTrack() {
             }
 
             try {
-                const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
-                const response = await fetch(`${API_URL}/api/health-track/`, {
+                const response = await fetch(getApiUrl("/api/health-track/"), {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'

@@ -7,6 +7,7 @@ import { Pill, Plus, Clock, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { getApiUrl } from "@/lib/api"
 
 interface Medicine {
     name: string
@@ -38,8 +39,7 @@ export default function Medicines() {
             }
 
             try {
-                const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
-                const response = await fetch(`${API_URL}/api/medicines/`, {
+                const response = await fetch(getApiUrl("/api/medicines/"), {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'

@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getCookie } from "@/lib/csrf"
 import { Loader2, FileText } from "lucide-react"
+import { getApiUrl } from "@/lib/api"
 
 export default function AddPrescription() {
     const [isLoading, setIsLoading] = useState(false)
@@ -19,8 +20,6 @@ export default function AddPrescription() {
         const token = getCookie("csrftoken")
         if (token) setCsrfToken(token)
     }, [])
-
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -33,7 +32,7 @@ export default function AddPrescription() {
         }
 
         try {
-            const response = await fetch(`${API_URL}/api/prescriptions/add/`, {
+            const response = await fetch(getApiUrl("/api/prescriptions/add/"), {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { DashboardLayout } from "@/components/layout/DashboardLayout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Heart, FileText, Calendar } from "lucide-react"
+import { getApiUrl } from "@/lib/api"
 
 interface HealthRecord {
     recorded_at: string
@@ -38,8 +39,7 @@ export default function PastRecords() {
             }
 
             try {
-                const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
-                const response = await fetch(`${API_URL}/api/past-records/`, {
+                const response = await fetch(getApiUrl("/api/past-records/"), {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'

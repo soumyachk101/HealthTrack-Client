@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { getCookie } from "@/lib/csrf"
 import { Loader2, Activity } from "lucide-react"
+import { getApiUrl } from "@/lib/api"
 
 export default function AddHealthRecord() {
     const [isLoading, setIsLoading] = useState(false)
@@ -20,8 +21,6 @@ export default function AddHealthRecord() {
         if (token) setCsrfToken(token)
     }, [])
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setIsLoading(true)
@@ -30,7 +29,7 @@ export default function AddHealthRecord() {
         const data = Object.fromEntries(formData.entries())
 
         try {
-            const response = await fetch(`${API_URL}/api/health-track/add/`, {
+            const response = await fetch(getApiUrl("/api/health-track/add/"), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

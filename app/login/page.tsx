@@ -9,6 +9,7 @@ import { Loader2, Eye, EyeOff, Mail, Lock, ArrowRight, User, Stethoscope, Buildi
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { getApiUrl } from "@/lib/api"
 
 export default function Login() {
     const router = useRouter()
@@ -18,7 +19,6 @@ export default function Login() {
     const [role, setRole] = useState<'patient' | 'doctor' | 'provider'>('patient')
     const [error, setError] = useState<string | null>(null)
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
 
     useEffect(() => {
         const token = getCookie("csrftoken")
@@ -31,7 +31,7 @@ export default function Login() {
         setIsLoading(true)
 
         try {
-            const response = await fetch(`${API_URL}/accounts/api/login/`, {
+            const response = await fetch(getApiUrl("/accounts/api/login/"), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -194,7 +194,7 @@ export default function Login() {
                                     <Label htmlFor="password" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                                         Password
                                     </Label>
-                                    <Link href="/accounts/password_reset/" className="text-xs font-bold text-teal-600 hover:text-teal-700">
+                                    <Link href="/forgot-password" className="text-xs font-bold text-teal-600 hover:text-teal-700">
                                         Forgot Password?
                                     </Link>
                                 </div>
