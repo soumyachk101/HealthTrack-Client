@@ -1,1 +1,5 @@
-import { AdminView } from "@/components/admin/AdminView";\n\nexport default function Page() {\n    return <AdminView />;\n}
+import { AdminView } from "@/components/admin/AdminView";
+
+export default function Page() {
+    return <AdminView />;
+}

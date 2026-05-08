@@ -8,6 +8,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "HealthTrack+",
   description: "Your Comprehensive Health Management Platform",
+  icons: {
+    icon: "/logo.svg",
+  },
 };
 
 export default function RootLayout({
