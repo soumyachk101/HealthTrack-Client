@@ -278,7 +278,7 @@ export default function Login() {
                                     onError={() => setError('Google login failed')}
                                     theme="outline"
                                     size="large"
-                                    width="100%"
+                                    width="384"
                                     text="continue_with"
                                 />
                             </div>
