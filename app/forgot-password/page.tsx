@@ -112,7 +112,7 @@ export default function ForgotPassword() {
                                     <span className="font-bold text-teal-600">{email}</span>
                                 </p>
                                 <p className="text-slate-400 text-xs mt-3">
-                                    The email is from <span className="font-bold">noreply@healthtracker-88cf8.firebaseapp.com</span>
+                                    Check your spam folder if you don&apos;t see it.
                                 </p>
                             </div>
 
