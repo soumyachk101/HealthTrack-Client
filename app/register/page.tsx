@@ -11,6 +11,8 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { getApiUrl } from "@/lib/api"
 import { GoogleLogin } from "@react-oauth/google"
+import { sendSignInLinkToEmail } from "firebase/auth"
+import { auth } from "@/lib/firebase"
 
 function RegisterForm() {
     const router = useRouter()
@@ -78,6 +80,10 @@ function RegisterForm() {
                     localStorage.setItem('verification_email', formData.email)
                     localStorage.setItem('verification_username', formData.username)
                     localStorage.setItem('verification_type', 'register')
+                    await sendSignInLinkToEmail(auth, formData.email, {
+                        url: `${window.location.origin}/verify-email`,
+                        handleCodeInApp: true
+                    })
                     setSentToEmail(formData.email)
                     setEmailSent(true)
                     return
@@ -169,7 +175,7 @@ function RegisterForm() {
                         </div>
                     </div>
                     <p className="text-center text-xs font-mono text-slate-400 uppercase tracking-widest opacity-60 mt-6">
-                        Secure Verification • Supabase Authentication
+                        Secure Verification • Firebase Authentication
                     </p>
                 </div>
             </div>

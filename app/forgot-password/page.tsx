@@ -139,7 +139,7 @@ export default function ForgotPassword() {
                 </div>
 
                 <p className="text-center text-xs font-mono text-slate-400 uppercase tracking-widest opacity-60 mt-6">
-                    Secure Connection • Supabase Authentication
+                    Secure Connection • Firebase Authentication
                 </p>
             </div>
         </div>

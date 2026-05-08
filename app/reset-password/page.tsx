@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2, ArrowRight, KeyRound, Sparkles, Eye, EyeOff, CheckCircle2 } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabase"
+import { confirmPasswordReset, verifyPasswordResetCode } from "firebase/auth"
+import { auth } from "@/lib/firebase"
 import { getApiUrl } from "@/lib/api"
 
 export default function ResetPassword() {
@@ -18,32 +19,25 @@ export default function ResetPassword() {
     const [confirmPassword, setConfirmPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
     const [sessionReady, setSessionReady] = useState(false)
+    const [resetCode, setResetCode] = useState("")
+    const [resetEmail, setResetEmail] = useState("")
 
     useEffect(() => {
-        const hashParams = new URLSearchParams(window.location.hash.substring(1))
-        const accessToken = hashParams.get('access_token')
-        const refreshToken = hashParams.get('refresh_token')
+        const params = new URLSearchParams(window.location.search)
+        const oobCode = params.get('oobCode')
 
-        if (accessToken && refreshToken) {
-            supabase.auth.setSession({
-                access_token: accessToken,
-                refresh_token: refreshToken
-            }).then(({ error }) => {
-                if (error) {
-                    setError("Invalid or expired reset link.")
-                } else {
-                    setSessionReady(true)
-                }
-            })
-        } else {
-            supabase.auth.getSession().then(({ data: { session } }) => {
-                if (session) {
-                    setSessionReady(true)
-                } else {
-                    setError("Invalid or expired reset link. Please request a new one.")
-                }
-            })
+        if (!oobCode) {
+            setError("Invalid or expired reset link. Please request a new one.")
+            return
         }
+
+        verifyPasswordResetCode(auth, oobCode)
+            .then((email) => {
+                setResetCode(oobCode)
+                setResetEmail(email)
+                setSessionReady(true)
+            })
+            .catch(() => setError("Invalid or expired reset link. Please request a new one."))
     }, [])
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -61,17 +55,13 @@ export default function ResetPassword() {
 
         setIsLoading(true)
         try {
-            const { error: updateError } = await supabase.auth.updateUser({
-                password: password
-            })
-            if (updateError) throw updateError
+            await confirmPasswordReset(auth, resetCode, password)
 
-            const { data: { user } } = await supabase.auth.getUser()
-            if (user?.email) {
+            if (resetEmail) {
                 await fetch(getApiUrl("/accounts/api/update-password/"), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: user.email, new_password: password })
+                    body: JSON.stringify({ email: resetEmail, new_password: password })
                 })
             }
 
@@ -180,7 +170,7 @@ export default function ResetPassword() {
                 </div>
 
                 <p className="text-center text-xs font-mono text-slate-400 uppercase tracking-widest opacity-60 mt-6">
-                    Secure Connection • Supabase Authentication
+                    Secure Connection • Firebase Authentication
                 </p>
             </div>
         </div>

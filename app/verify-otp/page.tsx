@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react"
 import { Loader2, ShieldCheck, RefreshCw, Sparkles, Mail } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabase"
+import { sendSignInLinkToEmail } from "firebase/auth"
+import { auth } from "@/lib/firebase"
 
 export default function VerifyOTP() {
     const router = useRouter()
@@ -30,17 +31,14 @@ export default function VerifyOTP() {
         setIsLoading(true)
         setError(null)
         try {
-            const { error: supaError } = await supabase.auth.signInWithOtp({
-                email: emailAddress,
-                options: {
-                    emailRedirectTo: `${window.location.origin}/verify-email`,
-                }
+            await sendSignInLinkToEmail(auth, emailAddress, {
+                url: `${window.location.origin}/verify-email`,
+                handleCodeInApp: true
             })
-            if (supaError) throw supaError
             setLinkSent(true)
             setSuccess("Verification link sent! Check your inbox.")
         } catch (err: any) {
-            console.error('Supabase magic link error:', err)
+            console.error('Firebase email link error:', err)
             setError(err.message || "Failed to send verification email")
         } finally {
             setIsLoading(false)
@@ -137,7 +135,7 @@ export default function VerifyOTP() {
                 </div>
 
                 <p className="text-center text-xs font-mono text-slate-400 uppercase tracking-widest opacity-60 mt-6">
-                    Secure Verification • Supabase Authentication
+                    Secure Verification • Firebase Authentication
                 </p>
             </div>
         </div>

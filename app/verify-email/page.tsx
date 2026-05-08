@@ -4,7 +4,8 @@ import { useState, useEffect } from "react"
 import { Loader2, ShieldCheck, Sparkles, CheckCircle2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { getApiUrl } from "@/lib/api"
-import { supabase } from "@/lib/supabase"
+import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth"
+import { auth } from "@/lib/firebase"
 
 export default function VerifyEmail() {
     const router = useRouter()
@@ -17,38 +18,22 @@ export default function VerifyEmail() {
 
     const handleCallback = async () => {
         try {
-            const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-
-            if (sessionError) {
+            if (!isSignInWithEmailLink(auth, window.location.href)) {
                 setStatus('error')
-                setError(sessionError.message)
+                setError("Invalid verification link.")
                 return
             }
 
-            if (!session) {
-                const hashParams = new URLSearchParams(window.location.hash.substring(1))
-                const accessToken = hashParams.get('access_token')
-                const refreshToken = hashParams.get('refresh_token')
-
-                if (accessToken && refreshToken) {
-                    const { error: setErr } = await supabase.auth.setSession({
-                        access_token: accessToken,
-                        refresh_token: refreshToken
-                    })
-                    if (setErr) {
-                        setStatus('error')
-                        setError(setErr.message)
-                        return
-                    }
-                } else {
-                    setStatus('error')
-                    setError("Invalid verification link.")
-                    return
-                }
+            const storedEmail = localStorage.getItem('verification_email') || ''
+            if (!storedEmail) {
+                setStatus('error')
+                setError("Verification email is missing. Please register again in this browser.")
+                return
             }
 
-            const { data: { user } } = await supabase.auth.getUser()
-            const email = user?.email || localStorage.getItem('verification_email') || ''
+            const credential = await signInWithEmailLink(auth, storedEmail, window.location.href)
+            const firebaseToken = await credential.user.getIdToken()
+            const email = credential.user.email || storedEmail
             const username = localStorage.getItem('verification_username') || ''
             const otpType = localStorage.getItem('verification_type') || 'register'
 
@@ -59,7 +44,7 @@ export default function VerifyEmail() {
                     email: email,
                     username: username,
                     otp_type: otpType,
-                    supabase_verified: true
+                    firebase_token: firebaseToken
                 })
             })
 
@@ -148,7 +133,7 @@ export default function VerifyEmail() {
                 </div>
 
                 <p className="text-center text-xs font-mono text-slate-400 uppercase tracking-widest opacity-60 mt-6">
-                    Secure Verification • Supabase Authentication
+                    Secure Verification • Firebase Authentication
                 </p>
             </div>
         </div>
