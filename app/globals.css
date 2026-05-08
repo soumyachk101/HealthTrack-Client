@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* SKEUOMORPHIC PALETTE (Medical Chic) */
+    /* Base Background needs to be off-white for highlights to show */
+    --background: 210 20% 96%;
+    /* #EFF6FF - Eraser White/Soft Blue Grey */
+    --foreground: 215 28% 30%;
+    /* #374151 - Soft Charcoal */
+
+    --card: 210 20% 96%;
+    --card-foreground: 215 28% 30%;
+
+    --popover: 210 20% 96%;
+    --popover-foreground: 215 28% 30%;
+
+    --primary: 173 80% 40%;
+    /* #0D9488 - Teal 600 (Darker for contrast on light buttons) */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 20% 90%;
+    /* Light Grey structure */
+    --secondary-foreground: 215 28% 30%;
+
+    --muted: 210 20% 90%;
+    --muted-foreground: 215 20% 60%;
+
+    --accent: 173 50% 90%;
+    /* Very light teal for engaged states */
+    --accent-foreground: 173 80% 30%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 210 20% 85%;
+    --input: 210 20% 96%;
+    --ring: 173 80% 40%;
+
+    --radius: 1rem;
+    /* Softer, rounder corners key for skeuo */
+  }
+
+  body {
+    @apply bg-[#EFF6FF] text-slate-700 antialiased selection:bg-teal-200 selection:text-teal-900;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+  }
+}
+
+@layer components {
+
+  /* --- SKEUOMORPHIC COMPONENT UTILITIES --- */
+
+  /* The Base Surface */
+  .skeuo-surface {
+    @apply bg-[#EFF6FF] rounded-2xl shadow-skeuo-md border border-white/50;
+  }
+
+  /* Buttons - Tactile and Physical */
+  .btn-skeuo {
+    @apply px-6 py-3 rounded-xl font-bold transition-all duration-200 ease-out active:scale-[0.98];
+    @apply bg-[#EFF6FF] text-slate-600;
+    @apply shadow-skeuo-sm active:shadow-skeuo-inset-sm;
+    @apply hover:text-teal-600;
+  }
+
+  .btn-skeuo-primary {
+    @apply px-6 py-3 rounded-xl font-bold transition-all duration-200 ease-out active:scale-[0.98];
+    @apply bg-teal-500 text-white;
+    /* Custom shadow for colored buttons to avoid grey mud */
+    box-shadow: 5px 5px 10px rgba(45, 212, 191, 0.4), -5px -5px 10px rgba(255, 255, 255, 0.8), inset 0 0 0 transparent;
+  }
+
+  .btn-skeuo-primary:active {
+    box-shadow: inset 3px 3px 6px rgba(15, 118, 110, 0.4), inset -3px -3px 6px rgba(255, 255, 255, 0.2);
+  }
+
+  /* Inputs - Deep Wells */
+  .input-skeuo {
+    @apply w-full px-4 py-3 rounded-xl outline-none transition-all duration-200;
+    @apply bg-[#EFF6FF] text-slate-700 placeholder:text-slate-400;
+    @apply shadow-skeuo-inset-md border-b border-transparent focus:border-teal-400/50;
+  }
+
+  /* Cards */
+  .card-skeuo {
+    @apply bg-[#EFF6FF] rounded-3xl p-6;
+    @apply shadow-skeuo-lg;
+    /* Subtle gradient to enhance curvature */
+    background: linear-gradient(145deg, #ffffff, #e6eef8);
+  }
+
+  .card-skeuo-hover {
+    @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-skeuo-floating;
+  }
+
+  /* Text Effects */
+  .text-skeuo-pressed {
+    color: transparent;
+    text-shadow: 2px 2px 2px rgba(255, 255, 255, 1), -1px -1px 1px rgba(0, 0, 0, 0.1);
+    -webkit-background-clip: text;
+    background-color: #374151;
+  }
+}
+
+/* Subtle texture overlay for "paper/plastic" feel */
+.bg-texture {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #EFF6FF;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 6px;
+  border: 3px solid #EFF6FF;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

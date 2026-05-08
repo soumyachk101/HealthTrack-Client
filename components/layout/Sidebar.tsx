@@ -1,0 +1,64 @@
+import { LogOut } from "lucide-react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { navItems } from "./nav-config"
+
+
+interface SidebarProps {
+    className?: string
+    items?: typeof navItems
+}
+
+export function Sidebar({ className, items = navItems }: SidebarProps) {
+
+    const pathname = usePathname()
+
+    return (
+        <aside className={`fixed left-0 top-0 h-screen w-64 border-r border-border bg-white hidden lg:flex flex-col shadow-sm ${className || ''}`}>
+            <div className="p-6 border-b border-border/50">
+                <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-lg flex items-center justify-center">
+                        <img src="/logo.svg" alt="HealthTrack Logo" className="h-8 w-8" />
+                    </div>
+                    <span className="font-bold tracking-tight text-foreground text-lg">HealthTrack+</span>
+                </div>
+            </div>
+
+            <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+                {items.map((item) => {
+                    // Check if current path starts with the item's href (to handle sub-paths like /medicines/add/)
+                    const isActive = pathname.startsWith(item.href) || (item.href !== "/" && pathname.includes(item.href))
+
+                    return (
+                        <Link
+                            key={item.label}
+                            href={item.href}
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
+                                ? "bg-primary text-white shadow-md shadow-primary/20"
+                                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                                }`}
+                        >
+                            <item.icon className="h-4 w-4" />
+                            {item.label}
+                        </Link>
+                    )
+                })}
+            </nav>
+
+            <div className="p-4 border-t border-border/50">
+                <button
+                    onClick={() => {
+                        localStorage.removeItem('token')
+                        localStorage.removeItem('user')
+                        window.location.href = '/login'
+                    }}
+                    className="flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/5 transition-colors"
+                >
+                    <LogOut className="h-4 w-4" />
+                    Log Out
+                </button>
+            </div>
+        </aside>
+    )
+}
+
