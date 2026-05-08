@@ -7,7 +7,6 @@ import { Label } from "@/components/ui/label"
 import { Loader2, ArrowRight, ArrowLeft, Mail, Sparkles, KeyRound } from "lucide-react"
 import Link from "next/link"
 import { getApiUrl } from "@/lib/api"
-import { supabase } from "@/lib/supabase"
 
 export default function ForgotPassword() {
     const [isLoading, setIsLoading] = useState(false)
@@ -21,10 +20,13 @@ export default function ForgotPassword() {
         setIsLoading(true)
 
         try {
-            const { error: supaError } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/reset-password`,
+            const response = await fetch(getApiUrl("/accounts/api/forgot-password/"), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
             })
-            if (supaError) throw supaError
+            const data = await response.json()
+            if (!data.success) throw new Error(data.error || "Failed to send reset email")
             setSuccess(true)
         } catch (err: any) {
             console.error('Password reset error:', err)
