@@ -22,6 +22,12 @@ export default function ForgotPassword() {
         setIsLoading(true)
 
         try {
+            await fetch(getApiUrl("/accounts/api/forgot-password/"), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            })
+
             await sendPasswordResetEmail(auth, email, {
                 url: `${window.location.origin}/login`,
                 handleCodeInApp: false,
