@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { getCookie } from "@/lib/csrf"
-import { Loader2, User, Mail, MapPin, Lock, Eye, EyeOff, ArrowRight, Sparkles, Shield, Zap, Users, Stethoscope, Building2 } from "lucide-react"
+import { Loader2, User, Mail, MapPin, Lock, Eye, EyeOff, ArrowRight, Sparkles, Shield, Zap, Users, Stethoscope, Building2, CheckCircle2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
@@ -20,6 +20,8 @@ function RegisterForm() {
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [emailSent, setEmailSent] = useState(false)
+    const [sentToEmail, setSentToEmail] = useState("")
     const [formData, setFormData] = useState({
         first_name: "",
         last_name: "",
@@ -72,10 +74,12 @@ function RegisterForm() {
             const data = await response.json()
 
             if (data.success) {
-                if (data.otp_required) {
+                if (data.otp_required || data.email_verification_required) {
                     localStorage.setItem('verification_email', formData.email)
+                    localStorage.setItem('verification_username', formData.username)
                     localStorage.setItem('verification_type', 'register')
-                    router.push('/verify-otp')
+                    setSentToEmail(formData.email)
+                    setEmailSent(true)
                     return
                 }
                 localStorage.setItem('token', data.token)
@@ -121,6 +125,55 @@ function RegisterForm() {
             case 'provider': return "Provider Registration"
             default: return "Create Account"
         }
+    }
+
+    if (emailSent) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-[#EFF6FF] text-slate-700 font-sans selection:bg-teal-200 selection:text-teal-900 relative overflow-hidden">
+                <div className="bg-texture"></div>
+                <div className="absolute top-[10%] right-[15%] w-64 h-64 bg-teal-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+                <div className="absolute bottom-[10%] left-[15%] w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+                <div className="w-full max-w-md px-4 relative z-10">
+                    <div className="card-skeuo">
+                        <div className="text-center mb-6">
+                            <div className="flex items-center justify-center gap-2 mb-4">
+                                <Sparkles className="h-5 w-5 text-teal-500" />
+                                <span className="text-lg font-black text-slate-800 tracking-tighter">HealthTrack+</span>
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-center gap-4 py-6">
+                            <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center">
+                                <CheckCircle2 className="h-8 w-8 text-emerald-500" />
+                            </div>
+                            <div className="text-center">
+                                <p className="text-slate-700 font-bold text-lg mb-2">Check Your Email!</p>
+                                <p className="text-slate-500 text-sm">
+                                    We&apos;ve sent a verification link to<br />
+                                    <span className="font-bold text-teal-600">{sentToEmail}</span>
+                                </p>
+                                <p className="text-slate-400 text-xs mt-3">
+                                    Click the link to verify your account. Check spam if you don&apos;t see it.
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => { setEmailSent(false); setSentToEmail("") }}
+                                className="mt-2 text-teal-600 font-bold text-sm hover:underline decoration-2 underline-offset-4"
+                            >
+                                Use a different email
+                            </button>
+                        </div>
+                        <div className="mt-6 pt-6 border-t border-slate-200 text-center">
+                            <Link href="/login" className="text-teal-600 font-bold text-sm hover:underline decoration-2 underline-offset-4">
+                                Already verified? Login here
+                            </Link>
+                        </div>
+                    </div>
+                    <p className="text-center text-xs font-mono text-slate-400 uppercase tracking-widest opacity-60 mt-6">
+                        Secure Verification • Supabase Authentication
+                    </p>
+                </div>
+            </div>
+        )
     }
 
     return (
