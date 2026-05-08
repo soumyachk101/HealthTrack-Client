@@ -129,7 +129,7 @@ export default function Login() {
                                 {getRoleIcon()}
                             </div>
                             <h2 className="text-3xl font-bold text-slate-800">{getRoleTitle()}</h2>
-                            <p className="mt-2 text-slate-500 font-medium">Enter your credentials to access the system.</p>
+                            <p className="mt-2 text-slate-500 font-medium">Sign in to your account</p>
                         </div>
 
                         <div className="grid grid-cols-3 gap-3 p-2 rounded-2xl bg-[#EFF6FF] shadow-skeuo-inset-sm mb-8 border-b border-white/50">
@@ -151,6 +151,54 @@ export default function Login() {
                                     {r.charAt(0).toUpperCase() + r.slice(1)}
                                 </button>
                             ))}
+                        </div>
+
+                        {/* Google Login at the Top */}
+                        <div className="mb-8">
+                            <div className="flex justify-center p-2 rounded-2xl bg-white/30 shadow-skeuo-inset-sm border border-white/40">
+                                <GoogleLogin
+                                    onSuccess={async (credentialResponse) => {
+                                        setError(null)
+                                        setIsLoading(true)
+                                        try {
+                                            const response = await fetch(getApiUrl("/accounts/api/google-login/"), {
+                                                method: 'POST',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({ credential: credentialResponse.credential })
+                                            })
+                                            const data = await response.json()
+                                            if (data.success) {
+                                                localStorage.setItem('token', data.token)
+                                                if (data.user) {
+                                                    localStorage.setItem('user', JSON.stringify(data.user))
+                                                    if (data.user.role === 'doctor') { router.push('/doctor/dashboard'); return }
+                                                    if (data.user.role === 'provider') { router.push('/provider/dashboard'); return }
+                                                    if (data.user.role === 'admin') { router.push('/admin/dashboard'); return }
+                                                }
+                                                router.push('/dashboard')
+                                            } else {
+                                                setError(data.error || 'Google login failed')
+                                            }
+                                        } catch (err) {
+                                            setError('Network error. Please try again.')
+                                            console.error(err)
+                                        } finally {
+                                            setIsLoading(false)
+                                        }
+                                    }}
+                                    onError={() => setError('Google login failed')}
+                                    theme="filled_blue"
+                                    size="large"
+                                    shape="pill"
+                                    width="360"
+                                    text="signin_with"
+                                />
+                            </div>
+
+                            <div className="text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-8 mb-4 relative">
+                                <span className="px-3 bg-[#EFF6FF] relative z-10">Or sign in with email</span>
+                                <div className="absolute left-0 right-0 top-1/2 h-[1px] bg-slate-200 -z-0"></div>
+                            </div>
                         </div>
 
                         <form onSubmit={handleSubmit} className="space-y-6">
@@ -241,48 +289,6 @@ export default function Login() {
                                 )}
                             </Button>
                         </form>
-
-                        <div className="mt-6 pt-6 border-t border-slate-200">
-                            <div className="text-center text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Or continue with</div>
-                            <div className="flex justify-center">
-                                <GoogleLogin
-                                    onSuccess={async (credentialResponse) => {
-                                        setError(null)
-                                        setIsLoading(true)
-                                        try {
-                                            const response = await fetch(getApiUrl("/accounts/api/google-login/"), {
-                                                method: 'POST',
-                                                headers: { 'Content-Type': 'application/json' },
-                                                body: JSON.stringify({ credential: credentialResponse.credential })
-                                            })
-                                            const data = await response.json()
-                                            if (data.success) {
-                                                localStorage.setItem('token', data.token)
-                                                if (data.user) {
-                                                    localStorage.setItem('user', JSON.stringify(data.user))
-                                                    if (data.user.role === 'doctor') { router.push('/doctor/dashboard'); return }
-                                                    if (data.user.role === 'provider') { router.push('/provider/dashboard'); return }
-                                                    if (data.user.role === 'admin') { router.push('/admin/dashboard'); return }
-                                                }
-                                                router.push('/dashboard')
-                                            } else {
-                                                setError(data.error || 'Google login failed')
-                                            }
-                                        } catch (err) {
-                                            setError('Network error. Please try again.')
-                                            console.error(err)
-                                        } finally {
-                                            setIsLoading(false)
-                                        }
-                                    }}
-                                    onError={() => setError('Google login failed')}
-                                    theme="outline"
-                                    size="large"
-                                    width="384"
-                                    text="continue_with"
-                                />
-                            </div>
-                        </div>
 
                         <div className="mt-6 pt-6 border-t border-slate-200">
                             <p className="text-center text-slate-500 font-medium">
