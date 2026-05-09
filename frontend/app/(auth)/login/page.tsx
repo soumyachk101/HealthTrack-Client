@@ -303,7 +303,7 @@ function LoginForm() {
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center px-2">
                                     <Label htmlFor="password" className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Security Key</Label>
-                                    <Link href="/forgot-password" size="sm" className="text-xs font-black text-slate-300 hover:text-teal-600 transition-colors uppercase tracking-widest">
+                                    <Link href="/forgot-password" className="text-xs font-black text-slate-300 hover:text-teal-600 transition-colors uppercase tracking-widest">
                                         Forgot?
                                     </Link>
                                 </div>
