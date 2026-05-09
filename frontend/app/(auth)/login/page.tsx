@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Loader2, User, Mail, Lock, Eye, EyeOff, ArrowRight, Sparkles, ShieldCheck, Zap, Stethoscope, Building2, AlertCircle, CheckCircle2, RefreshCw } from "lucide-react"
+import { Loader2, User, Mail, Lock, Eye, EyeOff, ArrowRight, Sparkles, ShieldCheck, Zap, Stethoscope, Building2, AlertCircle, RefreshCw } from "lucide-react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
@@ -60,7 +60,7 @@ function LoginForm() {
                 else if (role === 'admin') router.push('/admin/dashboard')
                 else router.push('/dashboard')
             } else {
-                if (data.needs_verification) {
+                if (data.requires_verification) {
                     setNeedsVerification(true)
                     setUnverifiedEmail(data.email || formData.username)
                     setError(data.error || "Email not verified")
@@ -68,7 +68,7 @@ function LoginForm() {
                     setError(data.error || "Invalid credentials")
                 }
             }
-        } catch (err: unknown) {
+        } catch (_err) {
             setError("Connection failed. Please check your internet.")
         } finally {
             setIsLoading(false)
@@ -91,7 +91,7 @@ function LoginForm() {
                 setError(data.error || "Failed to resend link")
                 setResendStatus('idle')
             }
-        } catch (err: unknown) {
+        } catch (_err) {
             setError("Network error. Try again.")
             setResendStatus('idle')
         }

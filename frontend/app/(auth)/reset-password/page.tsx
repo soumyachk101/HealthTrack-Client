@@ -4,9 +4,11 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Loader2, ArrowRight, KeyRound, Sparkles, Eye, EyeOff, CheckCircle2 } from "lucide-react"
+import { Loader2, ArrowRight, KeyRound, Sparkles, Eye, EyeOff, CheckCircle2, Lock, AlertCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { getApiUrl } from "@/lib/api"
+import { motion, AnimatePresence } from "framer-motion"
+import { cn } from "@/lib/utils"
 
 export default function ResetPassword() {
     const router = useRouter()
@@ -71,116 +73,143 @@ export default function ResetPassword() {
                 router.push('/login')
             }, 3000)
         } catch (err: unknown) {
-            if (err instanceof Error) {
-                console.error('Password reset error:', err.message)
-                setError(err.message || "Failed to reset password. The link may have expired.")
-            } else {
-                console.error('Password reset error:', err)
-                setError("Failed to reset password. The link may have expired.")
-            }
+            setError(err instanceof Error ? err.message : "Failed to reset password. The link may have expired.")
         } finally {
             setIsLoading(false)
         }
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#EFF6FF] text-slate-700 font-sans selection:bg-teal-200 selection:text-teal-900 relative overflow-hidden">
-            <div className="bg-texture"></div>
-
-            <div className="absolute top-[10%] right-[15%] w-64 h-64 bg-teal-500/10 rounded-full blur-[80px] pointer-events-none"></div>
-            <div className="absolute bottom-[10%] left-[15%] w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] pointer-events-none"></div>
-
-            <div className="w-full max-w-md px-4 relative z-10">
-                <div className="card-skeuo">
-                    <div className="text-center mb-8">
-                        <div className="mx-auto w-20 h-20 rounded-2xl bg-[#EFF6FF] shadow-skeuo-floating flex items-center justify-center mb-6 border border-white">
-                            <KeyRound className="h-8 w-8 text-teal-600" />
+        <div className="min-h-screen flex items-center justify-center bg-[#FDFDFF] text-slate-700 font-sans relative overflow-hidden">
+            {/* Background Aesthetics */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#f0f9ff_0%,transparent_100%)] opacity-50"></div>
+            
+            <div className="w-full max-w-lg px-8 relative z-10">
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white rounded-[3rem] shadow-skeuo-floating border border-slate-50 p-12 text-center space-y-10"
+                >
+                    {/* Header */}
+                    <div className="space-y-4">
+                        <div className="mx-auto w-24 h-24 rounded-3xl bg-white shadow-skeuo-md flex items-center justify-center mb-6 border-2 border-white">
+                            <Lock className="h-10 w-10 text-teal-600" />
                         </div>
-                        <div className="flex items-center justify-center gap-2 mb-4">
+                        <div className="flex items-center justify-center gap-2">
                             <Sparkles className="h-5 w-5 text-teal-500" />
-                            <span className="text-lg font-black text-slate-800 tracking-tighter">HealthTrack+</span>
+                            <span className="text-xl font-black text-slate-800 tracking-tighter uppercase">HealthTrack+ Elite</span>
                         </div>
-                        <h2 className="text-3xl font-bold text-slate-800">New Password</h2>
-                        <p className="mt-3 text-slate-500 font-medium text-sm">
-                            Enter your new password below.
+                        <h2 className="text-4xl font-black text-slate-800 tracking-tight">Set Security Key</h2>
+                        <p className="text-slate-400 font-bold text-lg mt-2 leading-relaxed">
+                            {success 
+                                ? "Identity restored. Synchronizing your profile." 
+                                : "Define a new cryptographic entry key for your account."}
                         </p>
                     </div>
 
                     {success ? (
-                        <div className="flex flex-col items-center gap-4 py-6">
-                            <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center">
-                                <CheckCircle2 className="h-10 w-10 text-emerald-500" />
-                            </div>
-                            <p className="text-slate-700 font-bold text-lg">Password Reset!</p>
-                            <p className="text-slate-500 text-sm">Redirecting to login...</p>
+                        <div className="space-y-8">
+                            <motion.div 
+                                initial={{ scale: 0.9, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                className="p-8 rounded-[2.5rem] bg-emerald-50 border border-emerald-100 flex flex-col items-center gap-4 text-center"
+                            >
+                                <div className="h-16 w-16 rounded-2xl bg-white shadow-sm flex items-center justify-center">
+                                    <CheckCircle2 className="h-10 w-10 text-emerald-500" />
+                                </div>
+                                <div>
+                                    <p className="text-slate-800 font-black text-xl mb-1">Key Synchronized</p>
+                                    <p className="text-slate-500 font-medium">Redirecting to login portal...</p>
+                                </div>
+                            </motion.div>
                         </div>
                     ) : (
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                        <form onSubmit={handleSubmit} className="space-y-8 text-left">
                             {error && (
-                                <div className="p-3 rounded-lg bg-red-50 text-red-600 text-sm border border-red-100 text-center font-medium">
-                                    {error}
-                                </div>
+                                <motion.div 
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="p-5 rounded-3xl bg-red-50 text-red-600 border border-red-100 flex items-start gap-4"
+                                >
+                                    <AlertCircle className="h-6 w-6 mt-0.5 shrink-0" />
+                                    <p className="text-base font-bold leading-tight">{error}</p>
+                                </motion.div>
                             )}
 
-                            <div className="space-y-2">
-                                <Label htmlFor="password" className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">
-                                    New Password
-                                </Label>
-                                <div className="relative">
-                                    <Input
-                                        id="password"
-                                        type={showPassword ? "text" : "password"}
-                                        required
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className="input-skeuo pr-12"
-                                        placeholder="Enter new password"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                                    >
-                                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                                    </button>
+                            <div className="space-y-6">
+                                <div className="space-y-3">
+                                    <Label htmlFor="password" className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] ml-2">New Security Key</Label>
+                                    <div className="relative group">
+                                        <div className={cn("absolute left-5 top-1/2 -translate-y-1/2 transition-colors duration-300", password ? "text-teal-600" : "text-slate-300")}>
+                                            <KeyRound className="h-6 w-6" />
+                                        </div>
+                                        <Input
+                                            id="password"
+                                            type={showPassword ? "text" : "password"}
+                                            required
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            className="h-16 pl-14 pr-14 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-[6px] focus:ring-slate-100 focus:border-slate-200 transition-all text-lg font-medium shadow-none"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors"
+                                        >
+                                            {showPassword ? <EyeOff className="h-6 w-6" /> : <Eye className="h-6 w-6" />}
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="confirm" className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">
-                                    Confirm Password
-                                </Label>
-                                <Input
-                                    id="confirm"
-                                    type="password"
-                                    required
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className="input-skeuo"
-                                    placeholder="Confirm new password"
-                                />
+                                <div className="space-y-3">
+                                    <Label htmlFor="confirm" className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Confirm Key</Label>
+                                    <div className="relative group">
+                                        <div className={cn("absolute left-5 top-1/2 -translate-y-1/2 transition-colors duration-300", confirmPassword === password && password ? "text-teal-600" : "text-slate-300")}>
+                                            <KeyRound className="h-6 w-6" />
+                                        </div>
+                                        <Input
+                                            id="confirm"
+                                            type="password"
+                                            required
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            className="h-16 pl-14 pr-6 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-[6px] focus:ring-slate-100 focus:border-slate-200 transition-all text-lg font-medium shadow-none"
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
                             <Button
                                 type="submit"
-                                className="w-full btn-skeuo-primary h-14 text-lg shadow-skeuo-md hover:shadow-skeuo-floating"
+                                className="w-full h-18 bg-teal-600 text-white font-black text-xl rounded-[2rem] shadow-2xl shadow-teal-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 group"
                                 disabled={isLoading || !sessionReady || !password || !confirmPassword}
                             >
                                 {isLoading ? (
-                                    <Loader2 className="h-6 w-6 animate-spin mx-auto" />
+                                    <Loader2 className="h-8 w-8 animate-spin mx-auto" />
                                 ) : (
-                                    <span className="flex items-center justify-center gap-2">
-                                        Reset Password <ArrowRight className="h-5 w-5" />
+                                    <span className="flex items-center justify-center gap-3">
+                                        Finalize Reset <ArrowRight className="h-6 w-6 group-hover:translate-x-2 transition-transform" />
                                     </span>
                                 )}
                             </Button>
                         </form>
                     )}
-                </div>
 
-                <p className="text-center text-xs font-mono text-slate-400 uppercase tracking-widest opacity-60 mt-6">
-                    Secure Connection • Firebase Authentication
-                </p>
+                    <div className="pt-6 border-t border-slate-50 text-center">
+                        <Link
+                            href="/login"
+                            className="text-xs font-black uppercase tracking-widest text-slate-300 hover:text-teal-600 transition-colors"
+                        >
+                            Return to Entry Portal
+                        </Link>
+                    </div>
+                </motion.div>
+
+                <div className="mt-12 text-center">
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300 opacity-60">
+                        Institutional Recovery System • 256-BIT ENCRYPTED
+                    </p>
+                </div>
             </div>
         </div>
     )

@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Loader2, User, Mail, Lock, Eye, EyeOff, ArrowRight, Sparkles, ShieldCheck, Zap, Stethoscope, Building2, AlertCircle, CheckCircle2, Phone, BadgeCheck, MapPin, Briefcase } from "lucide-react"
+import { Loader2, User, Mail, Lock, Eye, EyeOff, ArrowRight, Sparkles, ShieldCheck, Zap, Stethoscope, Building2, AlertCircle, CheckCircle2, Phone, BadgeCheck, Briefcase } from "lucide-react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
@@ -69,7 +69,7 @@ function RegisterForm() {
             } else {
                 setError(data.error || "Registration failed")
             }
-        } catch (err: unknown) {
+        } catch (_err) {
             setError("Connection failed. Please try again.")
         } finally {
             setIsLoading(false)
@@ -141,7 +141,7 @@ function RegisterForm() {
                     <div className="space-y-4">
                         <h2 className="text-4xl font-black text-slate-800 tracking-tight">Check Your Inbox</h2>
                         <p className="text-lg text-slate-500 font-medium leading-relaxed">
-                            We've sent a verification link to <span className="font-bold text-slate-800">{formData.email}</span>. Please verify to activate your {formData.role} account.
+                            We&apos;ve sent a verification link to <span className="font-bold text-slate-800">{formData.email}</span>. Please verify to activate your {formData.role} account.
                         </p>
                     </div>
                     <Button 
@@ -362,7 +362,7 @@ function RegisterForm() {
                                     >
                                         <Label htmlFor={field.name} className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] ml-2">{field.label}</Label>
                                         <div className="relative">
-                                            <div className={cn("absolute left-5 top-1/2 -translate-y-1/2 transition-colors duration-300", (formData as any)[field.name] ? currentStyle.text : "text-slate-300")}>
+                                            <div className={cn("absolute left-5 top-1/2 -translate-y-1/2 transition-colors duration-300", formData[field.name as keyof typeof formData] ? currentStyle.text : "text-slate-300")}>
                                                 <field.icon className="h-6 w-6" />
                                             </div>
                                             <Input
@@ -370,7 +370,7 @@ function RegisterForm() {
                                                 name={field.name}
                                                 required
                                                 className="h-16 pl-14 pr-6 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-[6px] focus:ring-slate-100 focus:border-slate-200 transition-all text-lg font-medium shadow-none"
-                                                value={(formData as any)[field.name]}
+                                                value={formData[field.name as keyof typeof formData]}
                                                 onChange={handleChange}
                                             />
                                         </div>
