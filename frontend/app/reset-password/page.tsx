@@ -6,9 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2, ArrowRight, KeyRound, Sparkles, Eye, EyeOff, CheckCircle2 } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { confirmPasswordReset, verifyPasswordResetCode } from "firebase/auth"
-import { auth } from "@/lib/firebase"
 import { getApiUrl } from "@/lib/api"
+import Link from "next/link"
 
 export default function ResetPassword() {
     const router = useRouter()
@@ -24,20 +23,17 @@ export default function ResetPassword() {
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search)
-        const oobCode = params.get('oobCode')
+        const otp = params.get('otp')
+        const email = params.get('email')
 
-        if (!oobCode) {
+        if (!otp || !email) {
             setError("Invalid or expired reset link. Please request a new one.")
             return
         }
 
-        verifyPasswordResetCode(auth, oobCode)
-            .then((email) => {
-                setResetCode(oobCode)
-                setResetEmail(email)
-                setSessionReady(true)
-            })
-            .catch(() => setError("Invalid or expired reset link. Please request a new one."))
+        setResetCode(otp)
+        setResetEmail(email)
+        setSessionReady(true)
     }, [])
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -55,20 +51,29 @@ export default function ResetPassword() {
 
         setIsLoading(true)
         try {
-            await confirmPasswordReset(auth, resetCode, password)
-
-            if (resetEmail) {
-                await fetch(getApiUrl("/accounts/api/update-password/"), {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: resetEmail, new_password: password })
+            const response = await fetch(getApiUrl("/accounts/api/reset-password/"), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: resetEmail,
+                    otp: resetCode,
+                    new_password: password
                 })
+            })
+
+            const data = await response.json()
+
+            if (!data.success) {
+                throw new Error(data.error || "Failed to reset password")
             }
 
             setSuccess(true)
-            setTimeout(() => router.push('/login'), 2000)
+            setTimeout(() => {
+                router.push('/login')
+            }, 3000)
         } catch (err: any) {
-            setError(err.message || "Failed to reset password")
+            console.error('Password reset error:', err)
+            setError(err.message || "Failed to reset password. The link may have expired.")
         } finally {
             setIsLoading(false)
         }

@@ -5,14 +5,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { getCookie } from "@/lib/csrf"
-import { Loader2, User, Mail, MapPin, Lock, Eye, EyeOff, ArrowRight, Sparkles, Shield, Zap, Users, Stethoscope, Building2, CheckCircle2 } from "lucide-react"
+import { Loader2, User, Mail, MapPin, Lock, Eye, EyeOff, ArrowRight, Sparkles, Shield, Zap, Users, Stethoscope, Building2, CheckCircle2, RefreshCw } from "lucide-react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { getApiUrl } from "@/lib/api"
 import { GoogleLogin } from "@react-oauth/google"
-import { sendSignInLinkToEmail } from "firebase/auth"
-import { auth } from "@/lib/firebase"
+
 
 function RegisterForm() {
     const router = useRouter()
@@ -104,6 +103,32 @@ function RegisterForm() {
         }
     }
 
+    const handleResend = async () => {
+        setIsLoading(true)
+        setError(null)
+        try {
+            const response = await fetch(getApiUrl("/accounts/api/resend-otp/"), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: sentToEmail,
+                    first_name: formData.first_name,
+                    otp_type: 'register'
+                })
+            })
+            const data = await response.json()
+            if (data.success) {
+                // Success feedback
+            } else {
+                setError(data.error || "Failed to resend link")
+            }
+        } catch (err) {
+            setError("Network error. Please try again.")
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target
         setFormData(prev => ({ ...prev, [name]: value }))
@@ -159,8 +184,20 @@ function RegisterForm() {
                                 </p>
                             </div>
                             <button
-                                onClick={() => { setEmailSent(false); setSentToEmail("") }}
-                                className="mt-2 text-teal-600 font-bold text-sm hover:underline decoration-2 underline-offset-4"
+                                onClick={handleResend}
+                                disabled={isLoading}
+                                className="mt-4 flex items-center gap-2 text-slate-500 font-bold text-sm hover:text-teal-600 transition-colors disabled:opacity-50"
+                            >
+                                {isLoading ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                    <RefreshCw className="h-4 w-4" />
+                                )}
+                                Resend verification link
+                            </button>
+                            <button
+                                onClick={() => { setEmailSent(false); setSentToEmail(""); setError(null) }}
+                                className="mt-2 text-teal-600 font-bold text-xs uppercase tracking-widest hover:underline decoration-2 underline-offset-4 opacity-70"
                             >
                                 Use a different email
                             </button>
@@ -172,7 +209,7 @@ function RegisterForm() {
                         </div>
                     </div>
                     <p className="text-center text-xs font-mono text-slate-400 uppercase tracking-widest opacity-60 mt-6">
-                        Secure Verification • Firebase Authentication
+                        Secure Verification • HealthTrack Auth System
                     </p>
                 </div>
             </div>
@@ -425,14 +462,22 @@ function RegisterForm() {
                                         const response = await fetch(getApiUrl("/accounts/api/google-login/"), {
                                             method: 'POST',
                                             headers: { 'Content-Type': 'application/json' },
-                                            body: JSON.stringify({ credential: credentialResponse.credential })
+                                            body: JSON.stringify({ credential: credentialResponse.credential, role: formData.role })
                                         })
                                         const data = await response.json()
-                                        if (data.success) {
-                                            localStorage.setItem('token', data.token)
-                                            if (data.user) localStorage.setItem('user', JSON.stringify(data.user))
-                                            router.push('/dashboard')
-                                        } else {
+                                            if (data.success) {
+                                                localStorage.setItem('token', data.token)
+                                                if (data.user) {
+                                                    localStorage.setItem('user', JSON.stringify(data.user))
+                                                    const role = data.user.role
+                                                    if (role === 'doctor') router.push('/doctor/dashboard')
+                                                    else if (role === 'provider') router.push('/provider/dashboard')
+                                                    else if (role === 'admin') router.push('/admin/dashboard')
+                                                    else router.push('/dashboard')
+                                                } else {
+                                                    router.push('/dashboard')
+                                                }
+                                            } else {
                                             setError(data.error || 'Google sign up failed')
                                         }
                                     } catch (err) {

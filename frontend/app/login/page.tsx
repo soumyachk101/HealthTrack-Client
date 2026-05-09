@@ -39,15 +39,31 @@ export default function Login() {
                 },
                 body: JSON.stringify({
                     username: (e.target as any).username.value,
-                    password: (e.target as any).password.value
+                    password: (e.target as any).password.value,
+                    role: role
                 })
             })
 
             const data = await response.json()
 
             if (data.success) {
-                localStorage.setItem('token', data.token)
                 if (data.user) {
+                    // Make sure the role matches the portal they selected (unless they are admin)
+                    if (data.user.role !== role && data.user.role !== 'admin') {
+                        // Wait, it could be that a provider logs in as 'provider' but their type is 'provider', which matches.
+                        // But if they selected 'doctor' and their role is 'provider', that's a mismatch.
+                        if (
+                            (role === 'doctor' && data.user.role !== 'doctor') ||
+                            (role === 'provider' && data.user.role !== 'provider') ||
+                            (role === 'patient' && (data.user.role === 'doctor' || data.user.role === 'provider'))
+                        ) {
+                            setError(`Access denied. Your account is registered as a ${data.user.role}, not a ${role}.`);
+                            setIsLoading(false);
+                            return;
+                        }
+                    }
+
+                    localStorage.setItem('token', data.token)
                     localStorage.setItem('user', JSON.stringify(data.user))
                     if (data.user.role === 'doctor') {
                         router.push('/doctor/dashboard')
@@ -60,6 +76,7 @@ export default function Login() {
                         return
                     }
                 }
+                localStorage.setItem('token', data.token)
                 router.push('/dashboard')
             } else {
                 setError(data.error || "Login failed")
@@ -164,18 +181,33 @@ export default function Login() {
                                             const response = await fetch(getApiUrl("/accounts/api/google-login/"), {
                                                 method: 'POST',
                                                 headers: { 'Content-Type': 'application/json' },
-                                                body: JSON.stringify({ credential: credentialResponse.credential })
+                                                body: JSON.stringify({ credential: credentialResponse.credential, role: role })
                                             })
                                             const data = await response.json()
                                             if (data.success) {
-                                                localStorage.setItem('token', data.token)
                                                 if (data.user) {
+                                                    if (data.user.role !== role && data.user.role !== 'admin') {
+                                                        if (
+                                                            (role === 'doctor' && data.user.role !== 'doctor') ||
+                                                            (role === 'provider' && data.user.role !== 'provider') ||
+                                                            (role === 'patient' && (data.user.role === 'doctor' || data.user.role === 'provider'))
+                                                        ) {
+                                                            setError(`Access denied. Your account is registered as a ${data.user.role}, not a ${role}.`);
+                                                            setIsLoading(false);
+                                                            return;
+                                                        }
+                                                    }
+                                                    localStorage.setItem('token', data.token)
                                                     localStorage.setItem('user', JSON.stringify(data.user))
-                                                    if (data.user.role === 'doctor') { router.push('/doctor/dashboard'); return }
-                                                    if (data.user.role === 'provider') { router.push('/provider/dashboard'); return }
-                                                    if (data.user.role === 'admin') { router.push('/admin/dashboard'); return }
+                                                    const userRole = data.user.role
+                                                    if (userRole === 'doctor') router.push('/doctor/dashboard')
+                                                    else if (userRole === 'provider') router.push('/provider/dashboard')
+                                                    else if (userRole === 'admin') router.push('/admin/dashboard')
+                                                    else router.push('/dashboard')
+                                                } else {
+                                                    localStorage.setItem('token', data.token)
+                                                    router.push('/dashboard')
                                                 }
-                                                router.push('/dashboard')
                                             } else {
                                                 setError(data.error || 'Google login failed')
                                             }

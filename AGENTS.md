@@ -66,6 +66,11 @@ S79 Migrate password reset flow from Firebase/direct Supabase client to server-c
 299 " 🔴 Fixed forgot-password 500 by Auto-Provisioning Missing Supabase Auth Users
 300 " 🔴 Fix Committed and Deployed to GitHub; Production Endpoint Verified
 301 11:33p 🔵 Health Track AI Chatbot — Recent Auth Fixes and AGENTS.md Update
+S80 Fix Google OAuth "Access Blocked" error, redesign login UI, and configure production API endpoint (May 9 at 12:05 AM)
+302 12:05a 🔴 Fixed Google Auth 401/403 by Adding NEXT_PUBLIC_GOOGLE_CLIENT_ID to Frontend .env
+303 " ✅ Frontend API Endpoint Pointed to Production Vercel Deployment
+304 " 🟣 Login UI Redesigned: Google Sign-In Moved to Top with Enhanced 'Filled Blue' Styling
+305 " ✅ Changes Committed to HealthTrack-Client; Push Pending Network Resolution
 
 Access 283k tokens of past work via get_observations([IDs]) or mem-search skill.
 </claude-mem-context>

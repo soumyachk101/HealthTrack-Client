@@ -1,5 +1,6 @@
 # dependencies
 /node_modules
+/frontend/node_modules
 /server/node_modules
 /.pnp
 .pnp.js
@@ -9,6 +10,7 @@
 
 # next.js
 /.next/
+/frontend/.next/
 /out/
 
 # production
@@ -27,6 +29,7 @@ yarn-error.log*
 # local env files
 .env
 .env*.local
+frontend/.env
 server/.env
 
 # server runtime files
@@ -45,5 +48,4 @@ next-env.d.ts
 
 # local dirs
 .vscode/
-/frontend/
 /server/
