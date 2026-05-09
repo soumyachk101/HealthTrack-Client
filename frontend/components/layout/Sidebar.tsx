@@ -1,5 +1,6 @@
 import { LogOut } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { navItems } from "./nav-config"
 
@@ -18,7 +19,7 @@ export function Sidebar({ className, items = navItems }: SidebarProps) {
             <div className="p-6 border-b border-border/50">
                 <div className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded-lg flex items-center justify-center">
-                        <img src="/logo.svg" alt="HealthTrack Logo" className="h-8 w-8" />
+                        <Image src="/logo.svg" alt="HealthTrack Logo" width={32} height={32} className="h-8 w-8" />
                     </div>
                     <span className="font-bold tracking-tight text-foreground text-lg">HealthTrack+</span>
                 </div>

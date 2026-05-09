@@ -5,6 +5,36 @@ import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getApiUrl } from '@/lib/api';
 
+interface SpeechRecognitionConstructor {
+    new(): SpeechRecognition;
+}
+
+declare global {
+    interface Window {
+        SpeechRecognition: SpeechRecognitionConstructor;
+        webkitSpeechRecognition: SpeechRecognitionConstructor;
+    }
+}
+
+interface SpeechRecognitionEvent extends Event {
+    results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionErrorEvent extends Event {
+    error: string;
+}
+
+interface SpeechRecognition extends EventTarget {
+    continuous: boolean;
+    interimResults: boolean;
+    lang: string;
+    onresult: (event: SpeechRecognitionEvent) => void;
+    onerror: (event: SpeechRecognitionErrorEvent) => void;
+    onend: () => void;
+    start: () => void;
+    stop: () => void;
+}
+
 type Message = {
     id: string;
     sender: 'user' | 'bot';
@@ -28,31 +58,33 @@ const Chatbot: React.FC = () => {
     const [voiceEnabled, setVoiceEnabled] = useState(false);
     const [isSpeaking, setIsSpeaking] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
-    const recognitionRef = useRef<any>(null);
+    const recognitionRef = useRef<SpeechRecognition | null>(null);
 
     // Initialize Speech Recognition
     useEffect(() => {
-        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-        if (SpeechRecognition) {
-            recognitionRef.current = new SpeechRecognition();
-            recognitionRef.current.continuous = false;
-            recognitionRef.current.interimResults = false;
-            recognitionRef.current.lang = 'en-US';
+        const SpeechRecognitionClass = (window as Window).SpeechRecognition || (window as Window).webkitSpeechRecognition;
+        if (SpeechRecognitionClass) {
+            recognitionRef.current = new SpeechRecognitionClass();
+            if (recognitionRef.current) {
+                recognitionRef.current.continuous = false;
+                recognitionRef.current.interimResults = false;
+                recognitionRef.current.lang = 'en-US';
 
-            recognitionRef.current.onresult = (event: any) => {
-                const transcript = event.results[0][0].transcript;
-                setInput(transcript);
-                setIsListening(false);
-            };
+                recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
+                    const transcript = event.results[0][0].transcript;
+                    setInput(transcript);
+                    setIsListening(false);
+                };
 
-            recognitionRef.current.onerror = (event: any) => {
-                console.error('Speech recognition error:', event.error);
-                setIsListening(false);
-            };
+                recognitionRef.current.onerror = (event: SpeechRecognitionErrorEvent) => {
+                    console.error('Speech recognition error:', event.error);
+                    setIsListening(false);
+                };
 
-            recognitionRef.current.onend = () => {
-                setIsListening(false);
-            };
+                recognitionRef.current.onend = () => {
+                    setIsListening(false);
+                };
+            }
         }
 
         // Preload voices

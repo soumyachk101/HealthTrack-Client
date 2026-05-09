@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { usePathname } from 'next/navigation'
 import { Users, ShieldCheck, Activity, AlertCircle, Check, X, Trash2, Search, FileText, Settings, Database } from 'lucide-react'
 import { cn } from "@/lib/utils"
@@ -10,6 +10,23 @@ import { getCookie } from "@/lib/csrf"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
 import { getApiUrl } from "@/lib/api"
+
+interface AdminStats {
+    total_users: number
+    patients: number
+    pending_approvals: number
+    total_records: number
+    providers: number
+}
+
+interface AdminUser {
+    id: number
+    username: string
+    email: string
+    user_type: string
+    is_approved: boolean
+    date_joined: string
+}
 
 const adminNavItems = [
     { icon: Activity, label: "Dashboard", href: "/admin/dashboard" },
@@ -23,18 +40,14 @@ export function AdminView() {
     const pathname = usePathname()
     const router = useRouter()
     const activePath = pathname
-    const [stats, setStats] = useState<any>(null)
-    const [users, setUsers] = useState<any[]>([])
+    const [stats, setStats] = useState<AdminStats | null>(null)
+    const [users, setUsers] = useState<AdminUser[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
     const [filterType, setFilterType] = useState('')
 
 
-    useEffect(() => {
-        fetchData()
-    }, [])
-
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         setIsLoading(true)
         const token = localStorage.getItem('token')
         if (!token) {
@@ -63,12 +76,16 @@ export function AdminView() {
             const usersData = await usersRes.json()
             if (usersData.success) setUsers(usersData.users)
 
-        } catch (err) {
+        } catch (err: unknown) {
             console.error("Failed to fetch admin data", err)
         } finally {
             setIsLoading(false)
         }
-    }
+    }, [router])
+
+    useEffect(() => {
+        fetchData()
+    }, [fetchData])
 
     const handleUserAction = async (id: number, action: string) => {
         const token = localStorage.getItem('token')
@@ -87,8 +104,11 @@ export function AdminView() {
             if (data.success) {
                 fetchData() // Refresh
             }
-        } catch (err) {
+        } catch (err: unknown) {
             console.error("Admin action failed", err)
+            if (err instanceof Error) {
+                // Potential feedback to user here if needed
+            }
         }
     }
 

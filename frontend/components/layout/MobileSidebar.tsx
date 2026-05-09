@@ -1,5 +1,6 @@
 import { Menu, X, LogOut } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useState, useEffect } from "react"
 import { navItems } from "./nav-config"
@@ -36,7 +37,7 @@ export function MobileSidebar({ items = navItems }: MobileSidebarProps) {
             <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-border z-40 flex items-center px-4 justify-between">
                 <div className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded-lg flex items-center justify-center">
-                        <img src="/logo.svg" alt="HealthTrack Logo" className="h-8 w-8" />
+                        <Image src="/logo.svg" alt="HealthTrack Logo" width={32} height={32} className="h-8 w-8" />
                     </div>
                     <span className="font-bold tracking-tight text-foreground text-lg">HealthTrack+</span>
                 </div>

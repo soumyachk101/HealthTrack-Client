@@ -48,14 +48,14 @@ module.exports = {
                 '3xl': '2rem',
             },
             boxShadow: {
-                'soft': '0 4px 20px -2px rgba(45, 212, 191, 0.1)',
-                'skeuo-sm': '5px 5px 10px #d1d9e6, -5px -5px 10px #ffffff',
-                'skeuo-md': '8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff',
-                'skeuo-lg': '12px 12px 24px #d1d9e6, -12px -12px 24px #ffffff',
-                'skeuo-inset-sm': 'inset 2px 2px 5px #d1d9e6, inset -2px -2px 5px #ffffff',
-                'skeuo-inset-md': 'inset 5px 5px 10px #d1d9e6, inset -5px -5px 10px #ffffff',
-                'skeuo-convex': '6px 6px 12px #b8c2cc, -6px -6px 12px #ffffff',
-                'skeuo-floating': '14px 14px 28px #d1d9e6, -14px -14px 28px #ffffff, 0 4px 20px rgba(45, 212, 191, 0.2)',
+                'soft': '0 4px 20px -2px rgba(45, 212, 191, 0.05)',
+                'skeuo-sm': '4px 4px 8px rgba(163, 177, 198, 0.3), -4px -4px 8px rgba(255, 255, 255, 0.7)',
+                'skeuo-md': '8px 8px 16px rgba(163, 177, 198, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.8)',
+                'skeuo-lg': '12px 12px 24px rgba(163, 177, 198, 0.4), -12px -12px 24px rgba(255, 255, 255, 0.8)',
+                'skeuo-inset-sm': 'inset 2px 2px 5px rgba(163, 177, 198, 0.3), inset -2px -2px 5px rgba(255, 255, 255, 0.7)',
+                'skeuo-inset-md': 'inset 5px 5px 10px rgba(163, 177, 198, 0.4), inset -5px -5px 10px rgba(255, 255, 255, 0.8)',
+                'skeuo-convex': '6px 6px 12px rgba(163, 177, 198, 0.4), -6px -6px 12px rgba(255, 255, 255, 0.8)',
+                'skeuo-floating': '20px 20px 40px rgba(163, 177, 198, 0.3), -20px -20px 40px rgba(255, 255, 255, 0.7), 0 4px 20px rgba(45, 212, 191, 0.1)',
             },
             keyframes: {
                 'glow-subtle': {
