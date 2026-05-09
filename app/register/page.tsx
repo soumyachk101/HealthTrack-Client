@@ -76,23 +76,20 @@ function RegisterForm() {
             const data = await response.json()
 
             if (data.success) {
-                if (data.otp_required || data.email_verification_required) {
-                    localStorage.setItem('verification_email', formData.email)
-                    localStorage.setItem('verification_username', formData.username)
-                    localStorage.setItem('verification_type', 'register')
-                    await sendSignInLinkToEmail(auth, formData.email, {
-                        url: `${window.location.origin}/verify-email`,
-                        handleCodeInApp: true
-                    })
-                    setSentToEmail(formData.email)
+                // Email verification is handled by the backend now
+                if (!data.token) {
+                    // Registration requires email verification
+                    setSentToEmail(data.email || formData.email)
                     setEmailSent(true)
                     return
                 }
                 localStorage.setItem('token', data.token)
                 if (formData.role === 'doctor') {
-                    router.push('/doctor-dashboard')
+                    router.push('/doctor/dashboard')
                 } else if (formData.role === 'provider') {
-                    router.push('/provider-dashboard')
+                    router.push('/provider/dashboard')
+                } else if (formData.role === 'admin') {
+                    router.push('/admin/dashboard')
                 } else {
                     router.push('/dashboard')
                 }

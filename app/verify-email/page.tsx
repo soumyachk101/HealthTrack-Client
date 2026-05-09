@@ -1,50 +1,38 @@
 "use client";
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { Loader2, ShieldCheck, Sparkles, CheckCircle2 } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { getApiUrl } from "@/lib/api"
-import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth"
-import { auth } from "@/lib/firebase"
 
-export default function VerifyEmail() {
+function VerifyEmailContent() {
     const router = useRouter()
+    const searchParams = useSearchParams()
     const [status, setStatus] = useState<'verifying' | 'success' | 'error'>('verifying')
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
         handleCallback()
-    }, [])
+    }, [searchParams])
 
     const handleCallback = async () => {
         try {
-            if (!isSignInWithEmailLink(auth, window.location.href)) {
+            const otp = searchParams.get('otp')
+            const emailParam = searchParams.get('email')
+
+            if (!otp || !emailParam) {
                 setStatus('error')
-                setError("Invalid verification link.")
+                setError("Invalid verification link. Missing token or email.")
                 return
             }
 
-            const storedEmail = localStorage.getItem('verification_email') || ''
-            if (!storedEmail) {
-                setStatus('error')
-                setError("Verification email is missing. Please register again in this browser.")
-                return
-            }
-
-            const credential = await signInWithEmailLink(auth, storedEmail, window.location.href)
-            const firebaseToken = await credential.user.getIdToken()
-            const email = credential.user.email || storedEmail
-            const username = localStorage.getItem('verification_username') || ''
-            const otpType = localStorage.getItem('verification_type') || 'register'
-
-            const response = await fetch(getApiUrl("/accounts/api/verify-email-link/"), {
+            const response = await fetch(getApiUrl("/accounts/api/verify-otp/"), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    email: email,
-                    username: username,
-                    otp_type: otpType,
-                    firebase_token: firebaseToken
+                    email: emailParam,
+                    otp: otp,
+                    otp_type: 'register'
                 })
             })
 
@@ -55,10 +43,6 @@ export default function VerifyEmail() {
                 if (data.user) {
                     localStorage.setItem('user', JSON.stringify(data.user))
                 }
-
-                localStorage.removeItem('verification_email')
-                localStorage.removeItem('verification_username')
-                localStorage.removeItem('verification_type')
 
                 setStatus('success')
 
@@ -133,9 +117,17 @@ export default function VerifyEmail() {
                 </div>
 
                 <p className="text-center text-xs font-mono text-slate-400 uppercase tracking-widest opacity-60 mt-6">
-                    Secure Verification • Firebase Authentication
+                    Secure Verification • HealthTrack+
                 </p>
             </div>
         </div>
+    )
+}
+
+export default function VerifyEmail() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#EFF6FF]"><Loader2 className="h-8 w-8 animate-spin text-teal-600" /></div>}>
+            <VerifyEmailContent />
+        </Suspense>
     )
 }
