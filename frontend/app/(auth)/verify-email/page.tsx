@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense, useCallback } from "react"
-import { Loader2, ShieldCheck, Sparkles, CheckCircle2, ArrowRight, AlertCircle, RefreshCw } from "lucide-react"
+import { Sparkles, CheckCircle2, ArrowRight, AlertCircle, RefreshCw } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { getApiUrl } from "@/lib/api"
 import { motion, AnimatePresence } from "framer-motion"
@@ -56,7 +56,7 @@ function VerifyEmailContent() {
                 setStatus('error')
                 setError(data.error || "Verification failed")
             }
-        } catch (err: unknown) {
+        } catch (_err) {
             setStatus('error')
             setError("Connection failed. The link may have expired.")
         }

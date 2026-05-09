@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Loader2, ArrowRight, ArrowLeft, Mail, Sparkles, KeyRound, AlertCircle, CheckCircle2 } from "lucide-react"
 import Link from "next/link"
 import { getApiUrl } from "@/lib/api"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
 export default function ForgotPassword() {
